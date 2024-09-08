@@ -1,0 +1,30 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+    <div class="card-container">
+      <div class="card-header">
+        <div class="img-avatar"><img src="/chatbot-avatar.jpg" class="img-avatar"></div>
+        <div class="text-chat">ChatBot</div>
+        <div class="online"></div>
+      </div>
+      <div class="card-body">
+        <div id="messages-container" class="messages-container">
+            <div id="bot-message" class="message-box left">
+                <p class="response">Hello, i am  a ChatBot </p>
+                <span class="typeit"></span>
+            </div>
+            <!-- <div id="user-message" class="message-box right">
+                <p>I'm good, thanks for asking! How about you?</p>
+            </div> -->
+        </div>
+        <div class="message-input">
+          <form>
+            <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send"></textarea>
+            <button (click)="sendMessage()" id="button-send" type="submit" class="button-send">Gửi</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+  

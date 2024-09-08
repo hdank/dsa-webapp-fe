@@ -1,0 +1,33 @@
+.navigation-card {
+    width: fit-content;
+    height: fit-content;
+    display:flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+    background-color: rgb(255, 255, 255);
+    padding: 15px 20px;
+    border-radius: 50px;
+    margin-bottom: -80px;
+    position: absolute; /* Make the navigation-card float */
+    right: 20px; /* Position it 20px from the right side */
+    top: 20px; /* Optional: Position it 20px from the top */
+  }
+  .tab {
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    background-color: rgb(252, 252, 252);
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .tab:hover {
+    background-color: rgb(223, 223, 223);
+  }
+  
