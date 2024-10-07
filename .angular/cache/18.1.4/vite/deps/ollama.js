@@ -584,8 +584,8 @@ if (!g.fetch) {
   g.Response = Response;
 }
 
-// ../../../node_modules/ollama/dist/shared/ollama.5360ad67.mjs
-var version = "0.5.8";
+// ../../../node_modules/ollama/dist/shared/ollama.133b951a.mjs
+var version = "0.5.9";
 var __defProp$1 = Object.defineProperty;
 var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, {
   enumerable: true,
@@ -712,7 +712,8 @@ var post = (fetch3, host, data, options) => __async(void 0, null, function* () {
   const response = yield fetchWithHeaders(fetch3, host, {
     method: "POST",
     body: formattedData,
-    signal: options?.signal
+    signal: options?.signal,
+    headers: options?.headers
   });
   yield checkOk(response);
   return response;
@@ -837,7 +838,8 @@ var Ollama$1 = class Ollama {
       if (request.stream) {
         const abortController = new AbortController();
         const response2 = yield post(this.fetch, host, request, {
-          signal: abortController.signal
+          signal: abortController.signal,
+          headers: this.config.headers
         });
         if (!response2.body) {
           throw new Error("Missing body");
@@ -852,7 +854,9 @@ var Ollama$1 = class Ollama {
         this.ongoingStreamedRequests.push(abortableAsyncIterator);
         return abortableAsyncIterator;
       }
-      const response = yield post(this.fetch, host, request);
+      const response = yield post(this.fetch, host, request, {
+        headers: this.config.headers
+      });
       return yield response.json();
     });
   }

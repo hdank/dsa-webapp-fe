@@ -8,11 +8,13 @@ import { Router } from '@angular/router';
 import { Ollama } from 'ollama'
 import {HumanMessage} from '@langchain/core/messages'
 import { AIMessage } from '@langchain/core/messages';
+import { catchError, of } from 'rxjs';
 interface ApiResponse {
   model: string;
   created_at: string;
   response: string;
   done: boolean;
+  choices: Array<{ message: { role: string; content: string } }>; // Updated typing for choices
 }
 @Component({
   selector: 'app-chat',
@@ -24,10 +26,9 @@ interface ApiResponse {
 })
 
 export class ChatComponent implements OnInit {
-  private apiUrl = "http://localhost:11434/api/generate";
   private count = 0;
-  private chatHistory =[ {role: "system", content: "You are a helpful AI Assistant. Always answer in English."}];
-
+  private chatHistory =[ {role: "system", content: "Bạn là một giảng viên đại học giải thích về thuật toán được người dùng nhập vào trong môn học cấu trúc dữ liệu và giải thuật cho người mới học lập trình. Khi được hỏi, bạn trả lời về khái niệm và ví dụ về thuật toán mà bạn được người dùng nhập vào."}];
+  private apiUrl = "http://localhost:1234/v1/chat/completions";
   constructor(private router: Router, private http: HttpClient) { }
   
   ngOnInit(): void {
@@ -64,7 +65,7 @@ export class ChatComponent implements OnInit {
       var p2 = document.createElement('p');
       p2.className = "response";
       var p2 = document.createElement('p');
-      const llm = new Ollama({ host: 'http://127.0.0.1:11434' });
+      const llm = new Ollama({ host: 'http://localhost:1234' });
       p2.className = "response" + this.count;
       var div2 = document.createElement('div');
       var time2 = document.createElement('p');
@@ -81,21 +82,37 @@ export class ChatComponent implements OnInit {
         {role: 'user', content: input}
       )
       //Ollama call
-      const response = await llm.chat(
-        {
-          model: 'llama3.1',
-          messages: this.chatHistory,
+      // const response = await llm.chat(
+      //   {
+      //     model: 'dsa',
+      //     messages: this.chatHistory,
           
-          stream: true
-        }
-      )
-      var tempResponse ='';
-      for await (const r of response) {
-        console.log(r.message.content);
-        p2.innerHTML += r.message.content;
-        tempResponse += r.message.content;
-      }
-      this.chatHistory.push({role: 'assistant', content:tempResponse})
+      //     stream: true
+      //   }
+      // )
+      this.http.post<ApiResponse>(this.apiUrl, { model: "dsa", messages: this.chatHistory, stream: false }, { headers })
+        .pipe(
+          catchError(err => {
+            console.error('Error occurred:', err);
+            return of(null); // Handle error and return empty observable
+          })
+        )
+        .subscribe(async (response: ApiResponse | null) => {
+          if (response && response.choices && response.choices[0] && response.choices[0].message) {
+            p2.innerHTML = response.choices[0].message.content; // Display the bot's message
+            this.chatHistory.push({ role: 'assistant', content: response.choices[0].message.content });
+            console.log(this.chatHistory);
+          } else {
+            p2.innerHTML = "Error: Could not retrieve response.";
+          }
+        });
+      // var tempResponse ='';
+      // for await (const r of response) {
+      //   console.log(r.message.content);
+      //   p2.innerHTML += r.message.content;
+      //   tempResponse += r.message.content;
+      // }
+      // this.chatHistory.push({role: 'assistant', content:tempResponse})
       console.log(this.chatHistory)
     }
   }
