@@ -39,11 +39,14 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/sign-up']);
   }
   userLogin() {
-    this.authService.userLogin(this.user).subscribe(token=>{
-      if(token){
-        const tokenString = String(token);
+    this.authService.userLogin(this.user).subscribe(res=>{
+      if(res){
+        const tokenString = String(res.token);
+        const roles = String(res.user.roles);
         console.log(tokenString);
+        console.log(roles)
         localStorage.setItem('authToken',tokenString);
+        localStorage.setItem('roles',roles);
         this.router.navigate(['/chat']);
       }
       else{
@@ -51,4 +54,17 @@ export class LoginComponent implements OnInit {
       }
     })
   }
+  // userLogin() {
+  //   this.authService.userLogin(this.user).subscribe(token=>{
+  //     if(token){
+  //       const tokenString = String(token);
+  //       console.log(tokenString);
+  //       localStorage.setItem('authToken',tokenString);
+  //       this.router.navigate(['/chat']);
+  //     }
+  //     else{
+  //       alert("Please enter mssv and password correctly");
+  //     }
+  //   })
+  // }
 }

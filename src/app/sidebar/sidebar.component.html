@@ -1,9 +1,21 @@
-<div class="sidebar">
+<div class="sidebar" *ngIf="Role == 'admin'">
+    <ul>
+      <li><a (click)="navigateToGeneralPage()">Tổng quan Cấu trúc dữ liệu và Giải thuật</a></li>
+      <li><a (click)="navigateToChatPage()">Trò chuyện cùng ChatBot</a></li>
+      <li>Thêm xóa sửa tài liệu</li>
+      <li>Quản lý người dùng</li>
+      <li>Thống kê câu hỏi người dùng</li>
+      <li><a href="#">Hồ sơ của Admin</a></li>
+      <li><a  (click)="logout()">Đăng xuất</a></li>
+    </ul>
+</div>
+
+<div class="sidebar" *ngIf="Role != 'admin'">
     <ul>
       <li><a (click)="navigateToGeneralPage()">Tổng quan Cấu trúc dữ liệu và Giải thuật</a></li>
       <li><a (click)="navigateToChatPage()">Trò chuyện cùng ChatBot</a></li>
       <li><a href="#">Hồ sơ</a></li>
       <li><a  (click)="logout()">Đăng xuất</a></li>
     </ul>
-  </div>
+</div>
   

@@ -2,12 +2,29 @@
     <div class="flex flex-col items-center justify-center h-screen">
       <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Đăng ký</h2>
-        <form (ngSubmit)="signUp()" class="flex flex-col">
-          <input [(ngModel)]="user.mssv" name="mssv" placeholder="Mã số sinh viên" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="text">
+        <form #form="ngForm" (ngSubmit)="signUp()" class="flex flex-col">
+
+          <div class="error" *ngIf="mssvField.touched && mssvField.invalid">
+            <div *ngIf="mssvField.errors?.['pattern']" >Xin hãy nhập mã số sinh viên (10 số)</div>
+          </div>
+          <input [(ngModel)]="user.mssv" name="mssv" placeholder="Mã số sinh viên" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="text" 
+          pattern="[0-9]{10}" #mssvField="ngModel">
+          
           <input [(ngModel)]="user.fname" name="fname" placeholder="Họ và tên đệm" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="text">
           <input [(ngModel)]="user.lname" name="lname" placeholder="Tên" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="text">
-          <input [(ngModel)]="user.email" name="email" placeholder="Email" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="email">
-          <input [(ngModel)]="user.phoneNumber" name="phoneNumber" placeholder="Số điện thoại" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="number">
+          
+          <div class="error" *ngIf="emailField.touched && emailField.invalid">
+            <div *ngIf="emailField.errors?.['pattern']" >Xin hãy nhập email</div>
+          </div>
+          <input [(ngModel)]="user.email" name="email" placeholder="Email" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="email"
+          pattern="[a-z0-9]+@[a-z0-9]+\.[a-z]{2,}" #emailField="ngModel">
+          <div class="error" *ngIf="sdtField.touched && sdtField.invalid">
+
+            <div *ngIf="sdtField.errors?.['pattern']" >Xin hãy nhập số điện thoại (10 số)</div>
+          </div>
+          <input [(ngModel)]="user.phoneNumber" name="phoneNumber" placeholder="Số điện thoại" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="text"
+          pattern="[0-9]{10}" #sdtField="ngModel">
+
           <input [(ngModel)]="user.password" name="password" id="pwd"  (keyup)="checkPassword()" placeholder="Mật khẩu" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="password">
           <input id="confirm_pwd"  (keyup)="checkPassword()"  placeholder="Xác nhận mật khẩu" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150" type="password">
           <span id="message"></span>
@@ -23,7 +40,8 @@
           </label>
           <input [(ngModel)]="user.birth" name="birth" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2" id="birth" type="date">
           <p class="text-gray-900 mt-4"> Đã có tài khoản? <a class="text-sm text-blue-500 -200 hover:underline mt-4" href="#">Đăng nhập</a></p>
-          <button class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"  type="submit">Đăng ký</button>
+          <button class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"  type="submit"
+          [disabled]="form.invalid">Đăng ký</button>
         </form>
       </div>
     </div>

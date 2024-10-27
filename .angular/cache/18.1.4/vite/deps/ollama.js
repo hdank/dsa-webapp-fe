@@ -61,7 +61,7 @@ var require_os = __commonJS({
   }
 });
 
-// ../../../node_modules/whatwg-fetch/fetch.js
+// node_modules/whatwg-fetch/fetch.js
 var g = typeof globalThis !== "undefined" && globalThis || typeof self !== "undefined" && self || // eslint-disable-next-line no-undef
 typeof global !== "undefined" && global || {};
 var support = {
@@ -584,7 +584,7 @@ if (!g.fetch) {
   g.Response = Response;
 }
 
-// ../../../node_modules/ollama/dist/shared/ollama.133b951a.mjs
+// node_modules/ollama/dist/shared/ollama.133b951a.mjs
 var version = "0.5.9";
 var __defProp$1 = Object.defineProperty;
 var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, {
@@ -1048,7 +1048,7 @@ var Ollama$1 = class Ollama {
 };
 var browser = new Ollama$1();
 
-// ../../../node_modules/ollama/dist/index.mjs
+// node_modules/ollama/dist/index.mjs
 var import_fs = __toESM(require_fs(), 1);
 var import_path = __toESM(require_path(), 1);
 var import_crypto = __toESM(require_crypto(), 1);

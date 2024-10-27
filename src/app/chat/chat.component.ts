@@ -33,6 +33,7 @@ export class ChatComponent implements OnInit {
   
   ngOnInit(): void {
     var token = localStorage.getItem('authToken');
+    var role = localStorage.getItem('roles');
     if (token != null) {
       console.log("Chat page");
     }

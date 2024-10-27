@@ -13,12 +13,18 @@ export class LoginUserService {
 
 
   constructor(private httpClient: HttpClient) { }
-  loginUser(user: UserComponent): Observable<string>{
+  loginUser(user: UserComponent): Observable<Authresponse>{
     console.log(user);
     return this.httpClient.post<Authresponse>(`${this.baseUrl}`, user)
-            .pipe(
-              map(response=> response.token),
-              catchError(() => of(""))
-            )
+            .pipe()
   }
+  // constructor(private httpClient: HttpClient) { }
+  // loginUser(user: UserComponent): Observable<string>{
+  //   console.log(user);
+  //   return this.httpClient.post<Authresponse>(`${this.baseUrl}`, user)
+  //           .pipe(
+  //             map(response=> response.token),
+  //             catchError(() => of(""))
+  //           )
+  // }
 }
