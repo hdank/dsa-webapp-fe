@@ -3,8 +3,8 @@ body{
     color: black;
 }
 .dark-mode{
-    background-color: black;
-    color: white;
+    background-color: rgb(41, 41, 41);
+    color: #ffffff;
 }
 .plane-switch {
     --dot: #fff;
@@ -21,11 +21,11 @@ body{
     bottom: 10px;
     right: 0px;
   }
-  
+
   .plane-switch input {
     display: none;
   }
-  
+
   .plane-switch input + div {
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     position: relative;
@@ -39,7 +39,7 @@ body{
     background-size: 400% auto;
     transition: background-position 0.6s;
   }
-  
+
   .plane-switch input + div:before, .plane-switch input + div:after {
     content: "";
     display: block;
@@ -47,7 +47,7 @@ body{
     transform: translateX(var(--s, 0));
     transition: transform 0.3s;
   }
-  
+
   .plane-switch input + div:before {
     width: 42px;
     right: 2px;
@@ -56,7 +56,7 @@ body{
     background: var(--street-line);
     box-shadow: 0 16px 0 0 var(--street-line);
   }
-  
+
   .plane-switch input + div:after {
     width: 2px;
     height: 2px;
@@ -67,12 +67,12 @@ body{
     animation: lights2 2s linear infinite;
     box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
   }
-  
+
   .plane-switch input + div span {
     display: block;
     position: absolute;
   }
-  
+
   .plane-switch input + div span.street-middle {
     top: 12px;
     left: 21px;
@@ -83,7 +83,7 @@ body{
     box-shadow: 5px 0 0 var(--street-line-mid), 10px 0 0 var(--street-line-mid), 15px 0 0 var(--street-line-mid), 20px 0 0 var(--street-line-mid), 25px 0 0 var(--street-line-mid);
     transition: transform 0.3s;
   }
-  
+
   .plane-switch input + div span.cloud {
     width: 12px;
     height: 4px;
@@ -97,7 +97,7 @@ body{
     -webkit-animation: clouds2 2s linear infinite var(--cd, 0s);
     animation: clouds2 2s linear infinite var(--cd, 0s);
   }
-  
+
   .plane-switch input + div span.cloud:before, .plane-switch input + div span.cloud:after {
     content: "";
     position: absolute;
@@ -109,18 +109,18 @@ body{
     bottom: 1px;
     left: 1px;
   }
-  
+
   .plane-switch input + div span.cloud:after {
     --cs: 6px;
     --cx: 4px;
   }
-  
+
   .plane-switch input + div span.cloud.two {
     --ct: 20px;
     --cd: 1s;
     opacity: var(--co-2, 0);
   }
-  
+
   .plane-switch input + div div {
     display: table;
     position: relative;
@@ -131,7 +131,7 @@ body{
     transform: translateX(var(--x, 0));
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.35, 1.2);
   }
-  
+
   .plane-switch input + div div svg {
     width: 13px;
     height: 13px;
@@ -139,7 +139,7 @@ body{
     color: var(--c, var(--street));
     transition: color 0.6s;
   }
-  
+
   .plane-switch input:checked + div {
     --p: 100%;
     --x: 25px;
@@ -148,35 +148,35 @@ body{
     --co: .8;
     --co-2: .6;
   }
-  
+
   @keyframes lights2 {
     20%, 30% {
       box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-1), 8px 21px 0 var(--light-1), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
     }
-  
+
     55%, 65% {
       box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-1), 16px 21px 0 var(--light-1);
     }
-  
+
     90%, 100% {
       box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
     }
   }
-  
+
   @keyframes clouds2 {
     97% {
       transform: translateX(-72px);
       visibility: visible;
     }
-  
+
     98%, 100% {
       visibility: hidden;
     }
-  
+
     99% {
       transform: translateX(-72px);
     }
-  
+
     100% {
       transform: translateX(0);
     }
