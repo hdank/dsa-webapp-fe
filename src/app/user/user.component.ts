@@ -16,4 +16,5 @@ export class UserComponent {
   gender!: string;
   phoneNumber!: string;
   birth!: string;
+  role!: string;
 }

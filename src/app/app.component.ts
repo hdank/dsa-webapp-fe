@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { HttpClient } from '@angular/common/http';
 import { AuthserviceService } from './authservice.service';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -16,5 +17,5 @@ import { AuthserviceService } from './authservice.service';
 export class AppComponent{
   title = 'LangchainWebApp';
   message =[];
-  
+
 }
