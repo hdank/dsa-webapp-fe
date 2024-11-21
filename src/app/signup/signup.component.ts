@@ -12,7 +12,7 @@ import { catchError, map, Observable, of } from 'rxjs';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css'
+  styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
   user: UserComponent = new UserComponent();

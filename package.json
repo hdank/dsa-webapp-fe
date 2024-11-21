@@ -18,7 +18,9 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
+    "ollama": "^0.5.10",
     "rxjs": "~7.8.0",
+    "sass": "^1.81.0",
     "tslib": "^2.3.0",
     "typewriter-effect": "^2.21.0",
     "zone.js": "~0.14.3"
