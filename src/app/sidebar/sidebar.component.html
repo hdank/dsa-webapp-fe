@@ -1,9 +1,41 @@
 <div class="sidebar">
+  <img class="logo" src="/logo.png" alt="">
     <ul>
-      <li><a (click)="navigateToGeneralPage()">Tổng quan Cấu trúc dữ liệu và Giải thuật</a></li>
-      <li><a (click)="navigateToChatPage()">Trò chuyện cùng ChatBot</a></li>
-      <li *ngIf="role ==='admin'" ><a (click)="navigateToStatisticsPage()">Thống kê người dùng</a></li>
-      <li><a href="#">Hồ sơ</a></li>
-      <li><a  (click)="logout()">Đăng xuất</a></li>
+      <li class="sidebar-item" [class.active]="activeItem === 'general'"><a (click)="navigateToGeneralPage()">
+        <span class="material-symbols-outlined">
+          apps
+        </span>
+        Tổng quan
+      </a></li>
+      <li class="sidebar-item" [class.active]="activeItem === 'chat'"><a (click)="navigateToChatPage()">
+        <span class="material-symbols-outlined">
+          speaker_notes
+        </span>
+        Trò chuyện cùng ChatBot
+      </a></li>
+      <li class="sidebar-item" *ngIf="role ==='admin'" [class.active]="activeItem === 'file-manager'"><a (click)="navigateToFileManagerPage()">
+        <span class="material-symbols-outlined">
+          folder_open
+        </span>
+        Quản lý tài liệu
+      </a></li>
+      <li class="sidebar-item" *ngIf="role ==='admin'" [class.active]="activeItem === 'statistics'"><a (click)="navigateToStatisticsPage()">
+        <span class="material-symbols-outlined">
+          person
+        </span>
+        Thống kê người dùng
+      </a></li>
+      <li class="sidebar-item"><a href="#">
+        <span class="material-symbols-outlined">
+          contact_page
+        </span>
+        Hồ sơ
+      </a></li>
+      <li><a  (click)="logout()">
+        <span class="material-symbols-outlined">
+          logout
+        </span>
+        Đăng xuất
+      </a></li>
     </ul>
-  </div>
+</div>

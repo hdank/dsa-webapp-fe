@@ -33,8 +33,12 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/chat']);
       }
     })
+    }
+
+  document.querySelector(".frame-left")?.classList.add("show");
   }
-  }
+
+
   navigateToSignUp(){
     this.router.navigate(['/sign-up']);
   }

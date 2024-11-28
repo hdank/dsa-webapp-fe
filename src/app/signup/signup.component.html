@@ -1,33 +1,41 @@
   <div class="authPage-container">
-      <form (ngSubmit)="signUp()" action="">
-        <h2>Đăng ký</h2>
-        <input class="form-field" autocomplete="off" [(ngModel)]="user.mssv" name="mssv" placeholder="Mã số sinh viên" type="text">
-        <div class="form-itemGr">
-          <input class="form-field"  autocomplete="off" [(ngModel)]="user.fname" name="fname" placeholder="Họ và tên đệm" type="text">
-          <input class="form-field"  autocomplete="off" [(ngModel)]="user.lname" name="lname" placeholder="Tên" type="text">
-        </div>
-        <div class="form-itemGr">
-          <input class="form-field"  autocomplete="off" [(ngModel)]="user.email" name="email" placeholder="Email" type="email">
-          <input class="form-field"  autocomplete="off" [(ngModel)]="user.phoneNumber" name="phoneNumber" placeholder="Số điện thoại" type="number">
-        </div>
-        <div class="form-itemGr">
-          <input class="form-field"  autocomplete="off" [(ngModel)]="user.password" name="password" id="pwd"  (keyup)="checkPassword()" placeholder="Mật khẩu" type="password">
-          <input class="form-field"  autocomplete="off" id="confirm_pwd"  (keyup)="checkPassword()"  placeholder="Xác nhận mật khẩu" type="password">
-          <span id="message"></span>
-        </div>
-        <div class="form-itemGr">
-          <div class="selectGr">
-          <label for="gender">Gender</label>
-          <select class="form-field" [(ngModel)]="user.gender" name="gender" id="gender">-->
-            <option value="male">Nam</option>
-            <option value="female">Nữ</option>
-          </select>
-        </div>
-          <div class="selectGr">
-            <label for="birth">Ngày sinh</label>
-            <input class="form-field" [(ngModel)]="user.birth" name="birth" id="birth" type="date">
+    <div class="frame">
+      <div class="frame-left">
+        <form (ngSubmit)="signUp()" action="">
+          <h2>Đăng ký</h2>
+          <input class="form-field" autocomplete="off" [(ngModel)]="user.mssv" name="mssv" placeholder="Mã số sinh viên" type="text">
+          <div class="form-itemGr">
+            <input class="form-field"  autocomplete="off" [(ngModel)]="user.fname" name="fname" placeholder="Họ và tên đệm" type="text">
+            <input class="form-field"  autocomplete="off" [(ngModel)]="user.lname" name="lname" placeholder="Tên" type="text">
           </div>
-        </div>
-        <button class="submitBtn"  type="submit">Đăng ký</button>
-      </form>
+          <div class="form-itemGr">
+            <input class="form-field"  autocomplete="off" [(ngModel)]="user.email" name="email" placeholder="Email" type="email">
+            <input class="form-field"  autocomplete="off" [(ngModel)]="user.phoneNumber" name="phoneNumber" placeholder="Số điện thoại" type="number">
+          </div>
+          <div class="form-itemGr">
+            <input class="form-field"  autocomplete="off" [(ngModel)]="user.password" name="password" id="pwd"  (keyup)="checkPassword()" placeholder="Mật khẩu" type="password">
+            <input class="form-field"  autocomplete="off" id="confirm_pwd"  (keyup)="checkPassword()"  placeholder="Xác nhận mật khẩu" type="password">
+            <span id="message"></span>
+          </div>
+          <div class="form-itemGr">
+            <div class="selectGr">
+              <label for="gender">Gender</label>
+              <select class="form-field" [(ngModel)]="user.gender" name="gender" id="gender">-->
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
+            </div>
+            <div class="selectGr">
+              <label for="birth">Ngày sinh</label>
+              <input class="form-field" [(ngModel)]="user.birth" name="birth" id="birth" type="date">
+            </div>
+          </div>
+          <div class="submit-container">
+            <button class="submitBtn"  type="submit">Đăng ký</button>
+            <a class="backToLogin" href="">Trở về trang đăng nhập</a>
+          </div>
+        </form>
+      </div>
+      <img class="frame-right" src="/signup-bg.jpg">
     </div>
+  </div>

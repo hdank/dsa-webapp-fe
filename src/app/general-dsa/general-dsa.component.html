@@ -2,24 +2,7 @@
 <div id="file">
   <div class="container mx-auto p-8 max-w-3xl">
     <div class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Quản lý tài liệu</h2>
-
-      <!-- File Upload Section -->
-      <div class="mb-8" *ngIf="role ==='admin'">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Chọn file cần tải lên (không quá 10MB):</label>
-        <input
-          type="file"
-          (change)="onFileSelected($event)"
-          class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button *ngIf="role ==='admin'"
-          (click)="uploadFile()"
-          class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all"
-        >
-          Tải lên tài liệu
-        </button>
-      </div>
-
+      <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Tài liệu liên quan</h2>
       <!-- Uploaded Files List -->
       <div *ngIf="files.length > 0" class="bg-gray-100 p-4 rounded-lg">
         <h3 class="text-xl font-semibold text-gray-600 mb-4">Các tài liệu về Cấu trúc dữ liệu và Giải thuật</h3>
@@ -31,18 +14,17 @@
             <span class="text-gray-700">{{ file.fileName }}</span>
             <div class="flex space-x-3">
               <button
+                class="actionBtn"
+                title="Xem file"
+              >
+                🗒
+              </button>
+              <button
                 (click)="downloadFile(file.id, file.fileName)"
                 class="text-green-600 hover:text-green-800 transition"
                 title="Tải xuống"
               >
                 ⬇️
-              </button>
-              <button *ngIf="role ==='admin'"
-                (click)="deleteFile(file.id)"
-                class="text-red-600 hover:text-red-800 transition"
-                title="Xóa"
-              >
-                🗑️
               </button>
             </div>
           </li>
@@ -56,6 +38,6 @@
     </div>
   </div>
 </div>
-<h1>Tổng quan về Cấu trúc dữ liệu và Giải thuật</h1>
-<div class="block" id="graph">general-dsa works!</div>
+<!--<h1>Tổng quan về Cấu trúc dữ liệu và Giải thuật</h1>-->
+<!--<div class="block" id="graph">general-dsa works!</div>-->
 

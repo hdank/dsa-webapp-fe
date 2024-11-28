@@ -3,7 +3,7 @@ body{
     color: black;
 }
 .dark-mode{
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(30, 30, 30);
     color: #ffffff;
 }
 .plane-switch {

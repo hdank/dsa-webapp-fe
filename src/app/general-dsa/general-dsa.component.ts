@@ -49,6 +49,7 @@ export class GeneralDSAComponent implements OnInit{
       ))
       .subscribe(response => {
         if(response){
+          console.log(response);
           document.getElementById('graph')!.innerHTML = response.toString();
         }
         else {

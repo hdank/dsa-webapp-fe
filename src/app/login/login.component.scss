@@ -4,69 +4,128 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  .form {
-    background: #ffffff;
+  .frame{
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    padding: 30px;
     display: flex;
-    flex-direction: column;
-    row-gap: 0.5rem;
-    padding: 2rem 3.5rem;
-    max-width: fit-content;
     border-radius: 0.5rem;
     box-shadow: 0 15px 25px -3px rgba(0, 0, 0, 0.2), 0 10px 15px -2px rgba(0, 0, 0, 0.15);
-    .form-title {
-      font-size: 2rem;
-      line-height: 1.75rem;
-      padding-bottom: 1rem;
-      font-weight: bold;
-      text-align: center;
-      color: #000;
-    }
-    .input-container {
-      position: relative;
-      input{
-        outline: none;
-        margin: 8px 0;
-        background-color: #fff;
-        padding: 0.5rem;
-        padding-right: 3rem;
-        font-size: 0.875rem;
-        line-height: 1.25rem;
-        width: 300px;
-        border:none;
-        border-bottom: 2px solid #a1a1a1;
+    overflow: hidden;
+    .frame-left{
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 300px;
+      padding-left: 50px;
+      text-space: 0.5rem;
+      color: #fff;
+      h3,p{
+        font-size: 15px;
+        opacity: 0;
+        animation: frameLeftText .5s .5s ease-in-out forwards;;
+      }
+      h3{
+        font-size: 25px;
+        font-weight: bold;
+        padding: 10px 0;
+      }
+      &::before{
+        content: "";
+        position: absolute;
+        width: 60%;
+        height: 100%;
+        top: 0;
+        left: -10%;
+        background: -webkit-linear-gradient(125deg, #6ca6fa 0%, #2F8EFC 30%,#86eff6 100%);;
+        z-index: -1;
+        animation: frameLeftBg .5s ease-in-out forwards;
       }
     }
-    .submit {
-      display: block;
-      padding: 0.75rem 1.25rem;
-      background:-webkit-linear-gradient(125deg, #005A99 0%, #2F8EFC 30%,#86eff6 100%);
-      background-size: 200% 100%;
-      transition: all 0.4s ease-in-out;
-      color: #ffffff;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-      font-weight: 500;
-      width: 100%;
-      border-radius: 0.5rem;
-      text-transform: uppercase;
-      &:hover{
-        background-position: 100% 0;
-      }
-    }
-    .signup-link {
-      color: #6B7280;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-      text-align: center;
-      button{
-        border: none;
-        text-decoration: underline;
-        color: #2F8EFCFF;
-      }
-      a {
-        text-decoration: underline;
+    .frame-right{
+      .form {
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.5rem;
+        padding: 2rem 3.5rem;
+        max-width: fit-content;
+        .form-title {
+          font-size: 2rem;
+          line-height: 1.75rem;
+          padding-bottom: 1rem;
+          font-weight: bold;
+          text-align: center;
+          color: #000;
+        }
+        .input-container {
+          position: relative;
+          input{
+            outline: none;
+            margin: 8px 0;
+            background-color: #fff;
+            padding: 0.5rem;
+            padding-right: 3rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            width: 300px;
+            border:none;
+            border-bottom: 2px solid #a1a1a1;
+          }
+        }
+        .submit {
+          display: block;
+          padding: 0.75rem 1.25rem;
+          background:-webkit-linear-gradient(125deg, #005A99 0%, #2F8EFC 30%,#86eff6 100%);
+          background-size: 200% 100%;
+          transition: all 0.4s ease-in-out;
+          color: #ffffff;
+          font-size: 0.875rem;
+          line-height: 1.25rem;
+          font-weight: 500;
+          width: 100%;
+          border:none;
+          border-radius: 0.5rem;
+          text-transform: uppercase;
+          &:hover{
+            background-position: 100% 0;
+          }
+        }
+        .signup-link {
+          color: #6B7280;
+          font-size: 0.875rem;
+          line-height: 1.25rem;
+          text-align: center;
+          button{
+            border: none;
+            text-decoration: underline;
+            color: #2F8EFCFF;
+          }
+          a {
+            text-decoration: underline;
+          }
+        }
       }
     }
   }
 }
 
+@keyframes frameLeftBg{
+  from{
+    transform: skew(0deg) translateX(-100%);
+  }
+  to{
+    transform: skew(20deg) translateX(0);
+  }
+}
+
+@keyframes frameLeftText{
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
