@@ -14,10 +14,10 @@ import { AuthserviceService } from '../authservice.service';
   standalone: true,
   imports: [FormsModule, SharedModuleComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
-  
+
   user: UserComponent = new UserComponent();
 
   private baseUrl = "http://localhost:8080/user";
@@ -33,8 +33,12 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/chat']);
       }
     })
+    }
+
+  document.querySelector(".frame-left")?.classList.add("show");
   }
-  }
+
+
   navigateToSignUp(){
     this.router.navigate(['/sign-up']);
   }

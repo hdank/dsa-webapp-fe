@@ -12,7 +12,7 @@ import { catchError, map, Observable, of } from 'rxjs';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css'
+  styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
   user: UserComponent = new UserComponent();
@@ -22,12 +22,12 @@ export class SignupComponent {
     var password = (<HTMLInputElement>document.getElementById('pwd'))!.value;
     var confirmPassword = (<HTMLInputElement>document.getElementById('confirm_pwd'))!.value;
     if(password == confirmPassword){
-      document.getElementById('message')!.style.color ='green';
-      document.getElementById('message')!.innerHTML ='trùng khớp';
+      message!.style.color ='green';
+      message!.innerHTML ='Trùng khớp';
     }
     else{
-      document.getElementById('message')!!.innerHTML ='Không trùng khớp';
-      document.getElementById('message')!!.style.color='red';
+      message!!.innerHTML ='Không trùng khớp';
+      message!!.style.color='red';
     }
   }
   constructor(private router:Router, private http: HttpClient){}
