@@ -34,7 +34,7 @@ export class FileManagerComponent implements OnInit {
   files:any[] =[];
   totalPages:any[] = [];
   currentPage:number= 1;
-  pageSize:number = 5;
+  pageSize:number = 10;
   pageStart:number = (this.currentPage - 1 ) * this.pageSize;
   pageEnd:number = this.currentPage * this.pageSize;
   searchingKey: string | number | string[] | undefined = '';
@@ -42,6 +42,7 @@ export class FileManagerComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private filesService: FileService){
     this.loadFiles(this.searchingKey);
   }
+
   ngOnInit() {
     window.onclick = (e:MouseEvent) =>{
       let uploadEl:HTMLElement = $('.upload-container')[0];
@@ -73,9 +74,17 @@ export class FileManagerComponent implements OnInit {
   loadFiles(searchingKey:any) {
     this.filesService.getFiles().subscribe(data => {
       if (searchingKey == '') {
-        this.files = data;
+        this.files = data.sort((a, b) => {
+          const dateA = new Date(a.uploadTime);
+          const dateB = new Date(b.uploadTime);
+          return dateB.getTime() - dateA.getTime();
+        });
       }else{
-        this.files = data.filter(item => item.id == searchingKey || item.fileName.includes(searchingKey));
+        this.files = (data.filter(item => item.id == searchingKey || item.fileName.includes(searchingKey))).sort((a, b) => {
+          const dateA = new Date(a.uploadTime);
+          const dateB = new Date(b.uploadTime);
+          return dateB.getTime() - dateA.getTime();
+        });
       }
       this.totalPages = new Array(Math.ceil(this.files.length/this.pageSize));
     });
@@ -110,8 +119,7 @@ export class FileManagerComponent implements OnInit {
   }
 
   dateFormat(time:string){
-    const formattedDate = new DatePipe('en-US').transform(time, 'dd/MM/yyyy HH:mm:ss');
-    return formattedDate
+    return new DatePipe('en-US').transform(time, 'dd/MM/yyyy HH:mm:ss')
   }
 
   setActivePage(pageNum:number){

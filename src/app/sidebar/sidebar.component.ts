@@ -55,5 +55,8 @@ export class SidebarComponent implements OnInit{
   navigateToFileManagerPage(){
     this.router.navigate(['/file-manager']);
   }
+  navigateToProfile(){
+    this.router.navigate(['/profile']);
+  }
 
 }

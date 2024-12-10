@@ -1,0 +1,35 @@
+<app-sidebar></app-sidebar>
+<div class="page-container">
+  <div class="profile-container">
+    <div class="personal-container">
+      <img class="avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkAJEkJQ1WumU0hXNpXdgBt9NUKc0QDVIiaw&s" alt="">
+      <div class="name-section">
+        <p id="user-name">{{user.fname+" "+user.lname}}</p>
+        <p id="user-role">{{user.role.toUpperCase()}}</p>
+      </div>
+      <ul class="general-parameter">
+        <li>
+          <span class="parameter-data">3</span>
+          <span>Data 1</span>
+        </li>
+        <li>
+          <span class="parameter-data">5.5</span>
+          <span>Data 2</span>
+        </li>
+        <li>
+          <span class="parameter-data">7.0</span>
+          <span>Data 3</span>
+        </li>
+      </ul>
+      <div class="general-info">
+        <ul class="general-info-list">
+          <li><label>SĐT : </label><br>{{user.phoneNumber}}</li>
+          <li><label>MSSV : </label><br>{{user.mssv}}</li>
+          <li><label>Email : </label><br>{{user.email}}</li>
+          <li><label>Ngày Sinh : </label><br>{{user.birth.split("T")[0]}}</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
