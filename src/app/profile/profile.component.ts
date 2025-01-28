@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {Authresponse} from "../authresponse";
 import {UserComponent} from "../user/user.component";
+import {AuthserviceService} from "../authservice.service";
 
 @Component({
   selector: 'app-profile',
@@ -17,14 +18,15 @@ import {UserComponent} from "../user/user.component";
 
 export class ProfileComponent implements OnInit{
     user!: UserComponent
-    constructor(private router:Router, private http: HttpClient){}
+    constructor(private router:Router, private http: HttpClient , private authService:AuthserviceService){}
     private baseUrl = "http://localhost:8080/user";
     ngOnInit(): void {
-      const token = localStorage.getItem('authToken');
+      //const token = localStorage.getItem('authToken');
+      const token = this.authService.getToken();
       if(token){
-        const stringToken = String(token);
-        this.http.get<UserComponent>(`${this.baseUrl}/get-user-by-token`,{params:{token:stringToken}}).subscribe(
+        this.http.get<UserComponent>(`${this.baseUrl}/get-user-by-token`,{params:{token:token}}).subscribe(
           data=>{
+            console.log("user",this.user)
             this.user = data;
           }
         );

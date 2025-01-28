@@ -5,6 +5,7 @@ import {UserComponent} from "../user/user.component";
 import {DatePipe, NgForOf} from "@angular/common";
 import {Chat} from "../chat";
 import $ from "jquery";
+import {AuthserviceService} from "../authservice.service";
 
 interface UserChat {
   user: UserComponent;
@@ -29,18 +30,19 @@ export class StatisticComponent implements OnInit{
   pageStart:number = (this.currentPage - 1 ) * this.pageSize;
   pageEnd:number = this.currentPage * this.pageSize;
   searchingKey: string | number | string[] | undefined = '';
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient , private authService:AuthserviceService) {
     this.loadUsers(this.searchingKey)
   }
   ngOnInit(): void {
-    let token = localStorage.getItem('authToken');
+    //let token = localStorage.getItem('authToken');
+    let token = this.authService.getToken();
     let parsedToken =  String(token);
     this.http.get<{role: string}>(`${this.userUrl}/is-admin-or-user`, {params: {token:parsedToken}}).subscribe(
       data=>{
         this.role = data.role;
+        console.log(this.role);
       }
     );
-    console.log(this.role);
   }
 
   loadUsers(searchingKey:any){

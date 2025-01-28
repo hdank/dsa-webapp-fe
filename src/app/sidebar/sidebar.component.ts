@@ -26,21 +26,20 @@ export class SidebarComponent implements OnInit{
     this.activeRouter.url.subscribe(segments => {
       this.activeItem = segments[0].path
     })
-    let token = localStorage.getItem('authToken');
+    //let token = localStorage.getItem('authToken');
+    let token = this.authService.getToken();
     let parsedToken =  String(token);
     this.http.get<{role: string}>(`${this.userUrl}/is-admin-or-user`, {params: {token:parsedToken}}).subscribe(
       data=>{
         this.role = data.role;
+        console.log(this.role);
       }
     );
-    console.log(this.role);
   }
 
   logout(){
-    console.log("Log out function in side bar clicked");
-    localStorage.clear();
-    sessionStorage.clear();
-    this.authService.Logout();
+    this.authService.deleteToken();
+    this.router.navigate(['/login']);
   }
   navigateToGeneralPage(){
     this.router.navigate(['/general']);

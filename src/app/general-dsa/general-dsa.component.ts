@@ -5,6 +5,22 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { Router } from '@angular/router';
 import {FileService} from "../../file-service";
 import {NgForOf, NgIf} from "@angular/common";
+import {AuthserviceService} from "../authservice.service";
+
+interface FilesResponse {
+  content: any[];
+  totalPages: number;
+  totalElements: number;
+  numberOfElements: number;
+  size: number;
+  number: number;
+  sort: {
+    sorted: boolean;
+    unsorted: boolean;
+    empty: boolean;
+  };
+  empty: boolean;
+}
 
 @Component({
   selector: 'app-general-dsa',
@@ -21,21 +37,19 @@ export class GeneralDSAComponent implements OnInit{
 
   public role!: string;
 
-  selectedFile!: File;
-
-  imgPath= "/public/table.jpg"
-
-  private displayHtml!: String;
-
   files:any[] =[];
+  currentPage:number= 0;
+  pageSize:number = 10;
+  searchTerm: any = '';
 
-  constructor(private http: HttpClient, private router: Router, private filesService: FileService){
+  constructor(private http: HttpClient, private router: Router, private filesService: FileService, private authService:AuthserviceService ){
     this.loadFiles();
   }
 
 
   ngOnInit(): void {
-    let token = localStorage.getItem('authToken');
+    //let token = localStorage.getItem('authToken');
+    let token = this.authService.getToken();
     let parsedToken =  String(token);
     this.http.get<{role: string}>(`${this.userUrl}/is-admin-or-user`, {params: {token:parsedToken}}).subscribe(
       data=>{
@@ -58,28 +72,9 @@ export class GeneralDSAComponent implements OnInit{
       })
   }
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-  }
 
   loadFiles() {
-    this.filesService.getFiles().subscribe(data => this.files = data);
-  }
-
-  uploadFile() {
-    if(this.selectedFile){
-      this.filesService.uploadFile(this.selectedFile).subscribe(() => {
-        alert('File uploaded successfully.');
-        this.loadFiles();
-      })
-    }
-  }
-
-  deleteFile(id: number) {
-    this.filesService.deleteFile(id).subscribe(() => {
-      alert('Đã xóa file');
-      this.loadFiles();
-    })
+    this.filesService.getFiles(this.currentPage,this.pageSize,this.searchTerm).subscribe(data => this.files = data.content);
   }
 
   downloadFile(id: number, filename: string) {
@@ -91,5 +86,4 @@ export class GeneralDSAComponent implements OnInit{
       a.click();
     })
   }
-
 }

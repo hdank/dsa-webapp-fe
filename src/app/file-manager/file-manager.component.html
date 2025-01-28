@@ -52,18 +52,12 @@
       </tr>
       </thead>
       <tbody *ngIf="files.length > 0" class="">
-      <tr *ngFor="let file of files.slice(pageStart,pageEnd); let i = index">
-        <th scope="row">{{(currentPage-1)*pageSize+i+1}}</th>
+      <tr *ngFor="let file of files; let i = index">
+        <th scope="row">{{currentPage*pageSize+i+1}}</th>
         <td>{{ file.id }}</td>
         <td>{{ file.fileName }}</td>
         <td>{{ dateFormat(file.uploadTime) }}</td>
         <td>
-          <button
-            class="actionBtn"
-            title="Xem file"
-          >
-            🗒
-          </button>
           <button
             (click)="downloadFile(file.id, file.fileName)"
             class="actionBtn"
@@ -89,9 +83,11 @@
     </table>
     <nav aria-label="Page navigation example">
       <ul class="pagination pagination-sm justify-content-end">
-        <li class="page-item" [class.disabled]="currentPage === 1" (click)="currentPage === 1 ? null : navPage('-')"><a class="page-link">Trang trước</a></li>
-        <li *ngFor="let _ of totalPages; let i = index" class="page-item" [class.active]="i === 0" (click)="goToPage(i+1)"><a class="page-link">{{i+1}}</a></li>
-        <li class="page-item" [class.disabled]="currentPage === totalPages.length" (click)="currentPage === totalPages.length ? null : navPage('+')"><a class="page-link">Trang sau</a></li>
+        <li class="page-item" [class.disabled]="currentPage === 0" (click)="currentPage === 0 ? null : navPage('-')"><a class="page-link">Trang trước</a></li>
+        <li *ngFor="let _ of pagesArray; let i = index" class="page-item" [class.active]="i === 0" (click)="goToPage(i)">
+          <a class="page-link">{{ i + 1 }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages-1" (click)="currentPage === totalPages ? null : navPage('+')"><a class="page-link">Trang sau</a></li>
       </ul>
     </nav>
   </div>

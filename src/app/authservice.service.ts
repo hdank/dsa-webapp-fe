@@ -26,24 +26,38 @@ export class AuthserviceService {
             .pipe(catchError(()=>of(null)));
   }
 
-  Logout(){
-    const stringToken = localStorage.getItem('authToken');
-    console.log("Log out function clicked");
-    if (stringToken) {
-        this.http.get(`${this.baseUrl}/logout?token=${stringToken}`).subscribe(() => {
-            localStorage.clear();  // Clear local storage after server-side logout
-            this.router.navigate(['/login']);  // Redirect to login page
-        }, error => {
-            console.error("Logout failed", error);  // Handle any logout errors
-            this.router.navigate(['/login']);  // Still redirect to login page
-        });
-    } else {
-        this.router.navigate(['/login']);  // If no token, simply redirect to login
-    }
-  }
   getAuthStatus(): boolean {
     return this.isAuthenticated;
   }
+
+  saveToken(token: string) {
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 1); // Cookie sẽ hết hạn sau 1 ngày
+    document.cookie = `authToken=${token}; expires=${expires.toUTCString()}; path=/`;
+  }
+
+  getToken(): string {
+    const name = 'authToken=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    console.log(decodedCookie)
+    const ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return '';
+  }
+
+  deleteToken() {
+    document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+  }
+
+
   validateToken(token: string): Observable<boolean> {
     // Implement logic to validate the token against your backend
     // Return an observable that emits true if valid, false otherwise

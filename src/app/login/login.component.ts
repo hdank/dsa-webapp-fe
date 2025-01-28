@@ -25,7 +25,8 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthserviceService, private router: Router) {}
   ngOnInit(): void {
     // If the token exists => auto login
-    const token = localStorage.getItem('authToken');
+    //const token = localStorage.getItem('authToken');
+    const token = this.authService.getToken();
   if(token){
     const stringToken = String(token);
     this.authService.autoLogin(stringToken).subscribe(user=>{
@@ -47,7 +48,8 @@ export class LoginComponent implements OnInit {
       if(token){
         const tokenString = String(token);
         console.log(tokenString);
-        localStorage.setItem('authToken',tokenString);
+        this.authService.saveToken(tokenString);
+        //localStorage.setItem('authToken',tokenString);
         this.router.navigate(['/chat']);
       }
       else{

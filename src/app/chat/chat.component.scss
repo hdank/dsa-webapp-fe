@@ -1,0 +1,184 @@
+
+  /* From Uiverse.io by ahmed150up */
+.card-container {
+  /* background-color: #fff; */
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  max-width: 1150px;
+  height: 100vh;
+  margin-left: 316px;
+  .card-header {
+    display: flex;
+    height: 10%;
+    width: 100%;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    .img-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 20px;
+      background-color: #333;
+    }
+    .text-chat {
+      /* color: black; */
+      margin: 0;
+      font-size: 20px;
+    }
+    .online{
+      width: 15px;
+      height: 15px;
+      background-color: rgb(153, 255, 1);
+      border-color: rgb(153, 255, 1);
+      border-radius: 50%;
+      margin-left: 10px;
+    }
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90%;
+    .messages-container {
+      width: 100%;
+      height: 85%;
+      padding: 15px;
+      overflow-y: auto;
+      .message-box {
+        position: relative;
+        width: fit-content;
+        max-width: 800px;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 10px;
+        &.left {
+          background-color: #f1f1f1;
+          color: black;
+          font-size: 13px;
+          left: 0;
+        }
+        &.right {
+          background-color: #333;
+          color: #fff;
+          font-size: 13px;
+          margin-left: auto;
+          margin-right: 0;
+        }
+        .read-button{
+          position: absolute;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          right: 10px;
+          bottom: -10px;
+          border-radius: 50%;
+          border: gray solid 1px;
+          background-color: #ffffff;
+        }
+        .messageTime {
+          font-size: 10px;
+          color: #9f9f9f;
+          padding: 0.5rem 0;
+        }
+        .messageImg{
+          width: 300px;
+          max-width: 300px;
+          max-height: 300px;
+          object-fit: cover;
+        }
+        .response{
+          word-wrap: break-word;
+          white-space: nowrap;
+          padding: 20px;
+        }
+      }
+    }
+    .message-input {
+      position: relative;
+      height: 15%;
+      padding: 5px;
+      border-top: 1px solid #ccc;
+      background-color: #f3f4f6;
+      z-index: 4;
+      .attached-img-container{
+        position: absolute;
+        display: none;
+        align-items: center;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        border: #cccccc 1px solid;
+        background-color: #ffffff;
+        padding: 0 1.5rem;
+        z-index: -1;
+        &:hover{
+          .clear-attach-btn{
+            opacity: 1;
+          }
+        }
+        .clear-attach-btn{
+          position: absolute;
+          top: -10px;
+          right: 10px;
+          background-color: #ffffff;
+          border-radius: 50%;
+          border: #cccccc 3px solid;
+          opacity: 0;
+          transition: 0.3s all ease-in-out;
+          cursor: pointer;
+        }
+        &.attached{
+          display: flex;
+        }
+        .attach-preview{
+          height: 70%;
+        }
+        .attach-preview-name{
+          padding: 0 20px;
+        }
+      }
+      form{
+        display: flex;
+        .message-send {
+          background-color: transparent;
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-radius: 10px;
+          resize: none;
+          outline: none;
+        }
+        .btn-box{
+          display: flex;
+          align-items: center;
+          .button-target {
+            color: #333;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+            border-radius: 10px;
+            &.hide{
+              display: none;
+            }
+            span{
+              font-size: 2rem;
+            }
+          }
+          #attacheFile{
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+

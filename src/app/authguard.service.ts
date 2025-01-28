@@ -13,7 +13,8 @@ export class AuthguardService implements CanActivate{
   private baseUrl = "http://localhost:8080/user";
   constructor(private router: Router,private authService: AuthserviceService){}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>{
-    const token = localStorage.getItem('token');
+    //const token = localStorage.getItem('token');
+    const token = this.authService.getToken();
     if (token) {
       return this.authService.validateToken(token).pipe(
         map((isValid: any) => {
