@@ -1,32 +1,78 @@
 <app-sidebar></app-sidebar>
-<div>Thống kê người dùng: </div>
-<table class='table table-striped table-dark'>
-  <thead>
-  <tr>
-    <th>Mã số sinh viên</th>
-    <th>Tên</th>
-    <th>Email</th>
-    <th>Ngày tháng năm sinh</th>
-    <th>Conversations</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let userChat of userChats">
-    <td>{{userChat.user.mssv}}</td>
-    <td>{{userChat.user.lname}}</td>
-    <td>{{userChat.user.email}}</td>
-    <td>{{userChat.user.birth}}</td>
+<div class="page-container">
+  <h2>Quản lý người dùng</h2>
+  <div class="tools-container">
+    <span class="sumaryCount">Tổng cộng : {{users ? users.length : 0}} tài liệu</span>
+    <div class="tools-searching">
+      <input id="searchInp" type="text" placeholder="Search by keywords or ID">
+      <button (click)="search()">
+        🔍
+      </button>
+    </div>
+  </div>
+  <table class='table table-striped'>
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Mã số sinh viên</th>
+      <th>Tên</th>
+      <th>Email</th>
+      <th>Ngày tháng năm sinh</th>
+      <th>Vai trò</th>
+      <th>Trạng thái</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of users?.slice(pageStart,pageEnd); let i = index">
+      <th scope="row">{{(currentPage-1)*pageSize+i+1}}</th>
+      <td>{{item.mssv}}</td>
+      <td>{{item.fname +" "+ item.lname}}</td>
+      <td>{{item.email}}</td>
+      <td>{{item.birth.split("T")[0]}}</td>
+      <td>{{item.role}}</td>
+      <td>
+        <label class="switch">
+          <input type="checkbox">
+          <span class="slider"></span>
+          <span class="knob"></span>
+        </label>
+      </td>
+      <td>
+        <button
+          class="actionBtn"
+          title="Lịch sử trò chuyện">
+          💬
+        </button>
+        <button
+          class="actionBtn"
+          title="Đặt lại mật khẩu">
+          🔑
+        </button>
+        <button
+          class="actionBtn"
+          title="Bổ nhiệm">
+          👤
+        </button>
+      </td>
+      <!-- Display all chat messages for the current user -->
+<!--      <td colspan="2">-->
+<!--        <div *ngFor="let chat of userChat.chats">-->
+<!--          <strong>Question:</strong> {{chat.question}}<br />-->
+<!--          <strong>Message:</strong> {{chat.messages}}<br />-->
+<!--          <strong>Created Date:</strong> {{ dateFormat(chat.created_date) }}<br />-->
+<!--          <hr />-->
+<!--        </div>-->
+<!--      </td>-->
+    </tr>
+    </tbody>
+  </table>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination pagination-sm justify-content-end">
+      <li class="page-item" [class.disabled]="currentPage === 1" (click)="currentPage === 1 ? null : navPage('-')"><a class="page-link">Trang trước</a></li>
+      <li *ngFor="let _ of totalPages; let i = index" class="page-item" [class.active]="i === 0" (click)="goToPage(i+1)"><a class="page-link">{{i+1}}</a></li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages.length" (click)="currentPage === totalPages.length ? null : navPage('+')"><a class="page-link">Trang sau</a></li>
+    </ul>
+  </nav>
+</div>
 
-    <!-- Display all chat messages for the current user -->
-    <td colspan="2">
-      <div *ngFor="let chat of userChat.chats">
-        <strong>Question:</strong> {{chat.question}}<br />
-        <strong>Message:</strong> {{chat.messages}}<br />
-        <strong>Created Date:</strong> {{chat.created_date}}<br />
-        <hr />
-      </div>
-    </td>
-
-  </tr>
-  </tbody>
-</table>

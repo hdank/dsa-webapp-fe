@@ -1,0 +1,93 @@
+<div  class="block"><app-sidebar></app-sidebar></div>
+<div class="page-container">
+  <h2>Quản lý tài liệu</h2>
+  <!-- File Upload Section -->
+  <div class="tools-container">
+  <div class="tools-section">
+    <button class="showBtn" (click)="showUpload()">
+      Thêm tài liệu mới
+    </button>
+    <span class="sumaryCount">Tổng cộng : {{files.length}} tài liệu</span>
+  </div>
+  <div class="tools-searching">
+    <input id="searchInp" type="text" placeholder="Search by keywords or ID">
+    <button (click)="search()">
+      🔍
+    </button>
+  </div>
+  </div>
+  <div class="upload-container" *ngIf="role ==='admin'">
+    <label class="upload-file-label">Chọn file cần tải lên (không quá 10MB):</label>
+    <input
+      id="uploadFileInp"
+      type="file"
+      (change)="onFileSelected($event)"
+      class="block w-200 text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+      <button *ngIf="role ==='admin'"
+              (click)="uploadFile()"
+              class="uploadBtn"
+      >
+        <svg
+          height="24"
+          width="24"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
+        </svg>
+        Tải lên tài liệu
+      </button>
+  </div>
+  <!-- Uploaded Files List -->
+    <table class="table table-striped">
+      <thead class="">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">ID</th>
+        <th scope="col">Tên file</th>
+        <th scope="col">Thời gian tải lên</th>
+        <th scope="col">Thao tác</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="files.length > 0" class="">
+      <tr *ngFor="let file of files; let i = index">
+        <th scope="row">{{currentPage*pageSize+i+1}}</th>
+        <td>{{ file.id }}</td>
+        <td>{{ file.fileName }}</td>
+        <td>{{ dateFormat(file.uploadTime) }}</td>
+        <td>
+          <button
+            (click)="downloadFile(file.id, file.fileName)"
+            class="actionBtn"
+            title="Tải xuống"
+          >
+            ⬇️
+          </button>
+          <button *ngIf="role ==='admin'"
+                  (click)="deleteFile(file.id)"
+                  class="actionBtn"
+                  title="Xóa"
+          >
+            🗑️
+          </button>
+        </td>
+      </tr>
+      </tbody>
+      <tbody *ngIf="files.length === 0">
+        <tr>
+          <td colspan="5" style="text-align: center">Chưa có tài liệu nào được tải lên.</td>
+        </tr>
+      </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination pagination-sm justify-content-end">
+        <li class="page-item" [class.disabled]="currentPage === 0" (click)="currentPage === 0 ? null : navPage('-')"><a class="page-link">Trang trước</a></li>
+        <li *ngFor="let _ of pagesArray; let i = index" class="page-item" [class.active]="i === 0" (click)="goToPage(i)">
+          <a class="page-link">{{ i + 1 }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages-1" (click)="currentPage === totalPages ? null : navPage('+')"><a class="page-link">Trang sau</a></li>
+      </ul>
+    </nav>
+  </div>

@@ -1,11 +1,108 @@
-/* .block{
-    width: 40%;
-  padding: 20px;
-  display: inline-block;
-} */
-table, th, td{
+.page-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  margin: 20px;
   margin-left: 316px;
-  border: 3px solid;
-  border: 1px solid black;
-  border-collapse: collapse;
+
+  h2 {
+    font-weight: bold;
+    font-size: 28px;
+  }
+  .tools-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .sumaryCount{
+      font-size: 14px;
+      padding: 0 10px;
+    }
+    .tools-searching{
+      position: relative;
+      min-width: 250px;
+      #searchInp{
+        width: 100%;
+        height: 100%;
+        outline: none;
+        border: 1px solid #eee;
+        padding: 9px 15px;
+        border-radius: 20px;
+        transition: all 0.3s ease-in-out;
+        &:focus{
+          border-bottom: 2px solid black;
+          outline: none;
+          border-radius: 0;
+        }
+      }
+      button {
+        height: 100%;
+        position: absolute;
+        right: 0;
+        margin: 0 10px;
+      }
+    }
+  }
+  table{
+    box-shadow: 2px 2px 8px #ccc;
+    tbody{
+      .switch {
+        display: inline-block;
+        position: relative;
+        width: 60px;
+        height: 34px;
+        transform: scale(0.7);
+        input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        .slider {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          cursor: pointer;
+          background-color: #ff6b6b;
+          border-radius: 34px;
+          transition: background-color 0.3s ease;
+          &::before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+          }
+        }
+        input:checked + .slider {
+          background-color: #66bb6a;
+          &:before {
+            transform: translateX(26px);
+          }
+        }
+        .knob {
+          position: absolute;
+          top: 50%;
+          left: 4px;
+          transform: translateY(-50%);
+          width: 26px;
+          height: 26px;
+          background-color: #ffffff;
+          border-radius: 50%;
+          transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        input:checked ~ .knob {
+          transform: translateX(27px) translateY(-50%);
+        }
+      }
+    }
+    .actionBtn{
+      padding: 0 4px;
+    }
+  }
 }

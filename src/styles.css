@@ -3,7 +3,7 @@ body{
     color: black;
 }
 .dark-mode{
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(30, 30, 30);
     color: #ffffff;
 }
 .plane-switch {
@@ -20,6 +20,7 @@ body{
     position: fixed;
     bottom: 10px;
     right: 0px;
+    z-index: 9;
   }
 
   .plane-switch input {
