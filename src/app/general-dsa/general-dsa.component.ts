@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { catchError, map, of } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { Router } from '@angular/router';
-import {FileService} from "../../file-service";
+import {FileService} from "../../service/file-service";
 import {NgForOf, NgIf} from "@angular/common";
 import {AuthserviceService} from "../authservice.service";
 

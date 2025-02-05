@@ -3,7 +3,7 @@ import {SidebarComponent} from "../sidebar/sidebar.component";
 import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {FileService} from "../../file-service";
+import {FileService} from "../../service/file-service";
 import $ from "jquery";
 import {AuthserviceService} from "../authservice.service";
 import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";

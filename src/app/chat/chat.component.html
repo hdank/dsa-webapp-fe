@@ -19,12 +19,12 @@
             <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send"></textarea>
             <div class="btn-box">
               <button [ngClass]="!isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
-                <span class="material-symbols-outlined" (click)="stopListening()">
+                <span class="material-symbols-outlined" (click)="stopRecord()">
                   stop
                 </span>
               </button>
               <button [ngClass]="isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
-                <span class="material-symbols-outlined" (click)="startListening()">
+                <span class="material-symbols-outlined" (click)="startRecord()">
                   mic
                 </span>
               </button>
