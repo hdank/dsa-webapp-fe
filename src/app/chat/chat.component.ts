@@ -1,327 +1,189 @@
-import { Component, contentChild, model, OnInit, ViewEncapsulation } from '@angular/core';
-import {NgClass, NgFor} from '@angular/common';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { NgClass, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthserviceService } from "../authservice.service";
-import { SpeechService } from "../speech.service";
+import { SpeechService } from "../../service/speech.service";
+import { ChatService } from "../../service/chat.service";
 
-interface ApiResponse {
-  id: string,
-  object: string,
-  created_at: string;
-  model: string;
-  done: boolean;
-  choices: Array<{index: number , message: { role: string; content: string } }>; // Updated typing for choices
-}
 @Component({
   selector: 'app-chat',
-  standalone: true,
-  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass],
-  templateUrl: './chat.component.html',
-  styleUrl: './chat.component.scss',
-  encapsulation: ViewEncapsulation.None //apllying the css of the component to the insert element from user
+  standalone: true,  // This component is a standalone component
+  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass], // Import necessary modules and components
+  templateUrl: './chat.component.html',  // Path to the HTML template
+  styleUrl: './chat.component.scss',  // Path to the component's CSS/SCSS
+  encapsulation: ViewEncapsulation.None // Apply the component's CSS to the inserted HTML elements
 })
 
 export class ChatComponent implements OnInit {
-  private count = 0;
-  private chatHistory =[{}];
-  private apiUrl = "http://localhost:8080/api/conversation";
-  isRecording = false;
-  isSending = false;
-  MAX_SIZE = 10*1024*1024
-  attachedImage!: File | null;
-  content: any;
-  transcript: string = '';
+  private chatHistory = [{}];  // Initialize chat history
+  private token = '';  // Token for user authentication
+  private apiUrl = "http://localhost:8080/api/conversation";  // Base API URL
+  isRecording = false;  // State to track if speech recognition is active
+  isSending = false;  // State to track if a message is being sent
+  content: any;  // Placeholder for content, may be used later
+  testStatus = false;  // Toggle state for testing purposes
 
-
-
-  constructor(private router: Router, private http: HttpClient , private authService:AuthserviceService , private speechService:SpeechService) {
-  }
-
-  helloWord(){
-    var div = document.createElement('div');
-    var p = document.createElement('p');
-    var time = document.createElement('p');
-    let messageTime = new Date();
-    p.innerHTML = "Chào bạn , mình là ChatBot"
-    time.innerHTML = messageTime.toLocaleString();
-    time.className = "messageTime";
-    div.className = "message-box left";
-    div.appendChild(time);
-    div.appendChild(p);
-    document.getElementById('messages-container')?.appendChild(div);
-  }
+  // Inject necessary services and modules into the constructor
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient,
+    private authService: AuthserviceService,
+    private speechService: SpeechService,
+    private chatService: ChatService
+  ) {}
 
   ngOnInit(): void {
-    //var token = localStorage.getItem('authToken');
-    const token = this.authService.getToken();
-    if (token != null) {
+    // Retrieve token from the auth service
+    this.token = this.authService.getToken();
+    if (this.token != null) {
       console.log("Chat page");
+    } else {
+      this.router.navigate(['/login']);  // Redirect to login if no token
     }
-    else {
-      this.router.navigate(['/login']);
+
+    // Get conversation ID from URL parameters
+    this.route.paramMap.subscribe(params => {
+      const convId = params.get('id');
+      if (convId) {
+        this.chatService.setCurrentConvId(convId);  // Set the current conversation ID
+        // Fetch conversation history from the API if conversation ID exists
+        fetch(`http://127.0.0.1:5000/conversation_history/${convId}`)
+          .then(response => response.json())  // Parse the response as JSON
+          .then(data => {
+            this.chatHistory = data.history;  // Set chat history from the response
+            this.setHistoryInit();  // Initialize the chat history
+          })
+          .catch(error => {
+            console.log(error);  // Log error if fetch fails
+            this.router.navigate(['/chat']);  // Redirect to chat if an error occurs
+          });
+      } else {
+        this.router.navigate(['/chat']);  // Redirect to chat if no conversation ID
+      }
+    });
+
+    // Check if it's a new conversation and send the first message if required
+    let firstMsg = this.chatService.getFirstMsg();
+    if (firstMsg) {
+      this.chatService.sendMessage(this.token);  // Send the first message
     }
-    this.helloWord();
   }
 
-  clearAttached(){
-    this.attachedImage = null;
-    const attachedContainer = document.querySelector("#attached-img-container");
-    const closebtn = document.querySelector(".clear-attach-btn");
-    attachedContainer?.classList.remove("attached");
-    if (attachedContainer && closebtn){
-      Array.from(attachedContainer.children).forEach(child => {
-        // Nếu phần tử con không phải là phần tử cần giữ, xóa nó
-        if (child !== closebtn) {
-          attachedContainer.removeChild(child);
-        }
-      });
-    }
-    console.log("this.attachedImage",this.attachedImage)
+  // Toggle the status of a test button
+  testBtn() {
+    this.testStatus = !this.testStatus;
   }
 
+  // Handle key press to send message on "Enter" key press
+  onKeyDown(event: KeyboardEvent) {
+    if (event.keyCode == 13) {
+      this.sendMessage();  // Send message on "Enter" key press
+    }
+  }
+
+  // Initialize chat history if available
+  setHistoryInit() {
+    if (this.chatHistory.length > 0) {
+      for (const item of this.chatHistory) {
+        this.chatService.setHistory(item);  // Add each item to chat history in the service
+      }
+    } else {
+      return;  // No history, return early
+    }
+  }
+
+  // Clear any attached files or images from the chat
+  clearAttached() {
+    this.chatService.clearAttached();  // Call the service method to clear attachments
+  }
+
+  // Handle image file attachment
   onImageAttached(event: any) {
-    let image = document.createElement('img');
-    let imageName = document.createElement('p');
-    image.className = "attach-preview"
-    imageName.className = "attach-preview-name"
-    //Check image size
-    if (event.target.files[0].size > this.MAX_SIZE){
-      alert("Maximum file size : 2MB")
-      return;
-    }
-    console.log("test")
-    //Set upload image to variable
-    this.attachedImage = event.target.files[0];
-    //Show attached image container
-    const attachedContainer = document.querySelector("#attached-img-container");
-    if(!this.attachedImage){
-      attachedContainer?.classList.remove('attached');
-      return;
-    }else{
-      attachedContainer?.classList.add('attached');
-      const reader = new FileReader();
-      reader.onload = (e)=>{
-        const base64String = e.target?.result;
-        image.src = <string>base64String;
-        imageName.innerHTML = <string>this.attachedImage?.name + ` (${<string><unknown>this.attachedImage?.size})`
-        attachedContainer?.append(image)
-        attachedContainer?.append(imageName)
-      }
-      reader.readAsDataURL(event.target.files[0]);
-    }
+    this.chatService.setImageAttached(event.target.files[0]);  // Attach the selected image to chat
   }
 
-  userInput(query:string){
-    var div = document.createElement('div');
-    var p = document.createElement('p');
-    var time = document.createElement('p');
-    let messageTime = new Date();
-    p.innerHTML = query;
-    time.innerHTML = messageTime.toLocaleString();
-    time.className = "messageTime";
-    div.className = "message-box right";
-    div.appendChild(time);
-    div.appendChild(p);
-    document.getElementById('messages-container')?.appendChild(div);
-    //clear input area value
-    (<HTMLTextAreaElement>document.getElementById('textarea')).value = "";
-  }
-
-  userSendImg(){
-    var div = document.createElement('div');
-    var img = document.createElement('img');
-    var time = document.createElement('p');
-    let messageTime = new Date();
-    console.log(this.attachedImage)
-    const reader = new FileReader();
-    reader.onload = (e)=>{
-      const base64String = e.target?.result;
-      img.src = <string>base64String;
-    }
-    if (this.attachedImage == null){
-      return;
-    }
-    reader.readAsDataURL(this.attachedImage);
-    time.innerHTML = messageTime.toLocaleString();
-    time.className = "messageTime";
-    img.className = "messageImg"
-    div.className = "message-box right";
-    div.appendChild(time);
-    div.appendChild(img);
-    document.getElementById('messages-container')?.appendChild(div);
-  }
-
-  // Define a function to read the content
-  readMessage = (message: "" | null | string) => {
-    console.log(message)
-    if(message == null){
-      alert("Have some problem with speeching");
-      return;
-    }
-
-    const speech = new SpeechSynthesisUtterance(message);
-    // Speech config
-    speech.rate = 1;
-    speech.pitch = 1;
-    speech.volume = 1;
-    speech.onend = () => {
-      speechSynthesis.cancel();
-      console.log("Speech finished, no repeat.");
-    };
-    speechSynthesis.speak(speech);
-  };
-
-  serverResponse(query:string){
-    //Create empty element
-    let div = document.createElement('div');
-    let p = document.createElement('p');
-    let time = document.createElement('p');
-    //Create speeching button
-    let readButton = document.createElement('button');
-    //config message box
-    const formData = new FormData();
-    formData.append("image", this.attachedImage || '');
-    formData.append("query", query);
-    let messageTime = new Date();
-    time.innerHTML = messageTime.toLocaleString();
-    time.className = "messageTime";
-    readButton.innerHTML = "<span class=\"material-symbols-outlined\">volume_up</span>";
-    readButton.className = "read-button";
-    div.className = "message-box left";
-    p.className = "response" + this.count;
-    div.appendChild(time);
-    div.appendChild(p);
-    div.appendChild(readButton);
-    document.getElementById('messages-container')?.appendChild(div);
-
-    // To store the complete response
-    let fullResponse = '';
-    console.log("this.attachedImage",this.attachedImage)
-    if (this.attachedImage == null){
-      //if don't have attached image call api to ask_pdf
-      fetch('http://127.0.0.1:5000/ask_pdf', {
-        method: 'POST',
-        body: formData
-      }).then((response) => {
-        console.log(response)
-        const reader = response.body?.getReader()
-        const read =()=>{
-          //Start streaming
-          reader?.read().then(({done,value})=>{
-            if(done){
-              console.log("end")
-              return
-            }
-            const decoder = new TextDecoder()
-            console.log(decoder.decode(value))
-            //Remove "data :" title in response , decode response value then parse to Objects for streaming
-            const jsonData = JSON.parse(decoder.decode(value).replace(/^data:\s*/, ''))
-            fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g,'');
-            p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g,'<code>');
-            readButton.addEventListener('click', () => this.readMessage(fullResponse));
-            read();
-          })
-        }
-        read();
-      });
-    }else {
-      //if have attached image call api to ask_image
-      fetch('http://127.0.0.1:5000/ask_image', {
-        method: 'POST',
-        body: formData
-      }).then((response) => {
-        console.log(response)
-        const reader = response.body?.getReader()
-        const read =()=>{
-          //Start streaming
-          reader?.read().then(({done,value})=>{
-            if(done){
-              console.log("end")
-              return
-            }
-            const decoder = new TextDecoder()
-            //Parse to Objects for streaming
-            console.log(decoder.decode(value))
-            const jsonData = JSON.parse(decoder.decode(value).replace(/^data:\s*/, ''))
-            fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g,'');
-            p.innerHTML += jsonData.response.replace(/\n/g, '<br>').replace(/```/g,'<code>');
-            readButton.addEventListener('click', () => this.readMessage(fullResponse));
-            read();
-          })
-        }
-        read();
-      })
-    }
-    //clear attached image
-    this.clearAttached()
-  };
-
-  sendMessage()
-  {
-    //Set sending status for disable sending and speeching button make delay for stop speeching completely
-    this.isSending = true;
-    setTimeout(() => {this.isSending = false;}, 1000);
-    //isRecording == true => speeching => stop
+  // Method to send a message (handles both text and speech)
+  sendMessage() {
     if (this.isRecording) {
-      this.stopListening()
+      this.isRecording = false;  // Stop recording if it was ongoing
+      this.speechService.stopRecognition();  // Stop speech recognition service
     }
-    setTimeout(()=>{
-      let query = (<HTMLTextAreaElement>document.getElementById('textarea')).value;
-      if (!query){
-        alert('Please enter something');
-        return;
-      }
 
-      //If have attachedImage create a element for pic
-      if (this.attachedImage){
-        this.userSendImg()
-        document.querySelector("#attached-img-container")?.classList.remove("attached")
-      }
+    // Set sending status to disable send button and provide feedback
+    this.isSending = true;
+    setTimeout(() => {
+      this.isSending = false;  // Reset sending state after 1 second delay
+    }, 1000);
 
-      //Create a p tag after each input from user
-      if (query){
-        this.userInput(query);
-      }
-
-      //Create a p tag for server response
-      this.serverResponse(query);
-    },1000)
-  };
-
-  startListening(): void {
-    //Create timer for textarea value delay
-    let debounceTimeout: any = null;
-    this.isRecording = true;
-    this.speechService.startRecognition();
-    this.speechService.onResult((event) => {
-      //Get result of record
-      this.transcript = event.results[0][0].transcript;
-      console.log(this.transcript)
-      //Clear timer if have this timer before
-      if (debounceTimeout) {
-        clearTimeout(debounceTimeout);
-      }
-      //Input speeching result to inputField
-      debounceTimeout = setTimeout(() => {
-        const inputField = document.querySelector('#textarea');
-        if (inputField) {
-          (inputField as HTMLTextAreaElement).value = this.transcript;
-        }
-      }, 100);
-    });
-
-    this.speechService.onError((event) => {
-      console.log(event)
-      console.error('Error occurred in speech recognition: ', event.error);
-    });
+    this.chatService.sendMessage(this.token);  // Call service to send message
   }
 
-  stopListening(): void {
+  // Stop recording if active
+  stopRecord() {
     this.isRecording = false;
-    this.speechService.stopRecognition();
+    this.speechService.stopRecognition();  // Stop speech recognition
+  }
+
+  // Start recording for speech-to-text functionality
+  startRecord(): void {
+    this.isRecording = true;
+    this.speechService.startRecognition();  // Start speech recognition service
+  }
+
+  // Navigate to a new chat page (can be used for resetting the chat)
+  navigateNewChat() {
+    this.router.navigate(['/chat']);  // Navigate to the chat page
+  }
+
+  // This method is triggered when an item is dragged over the target area.
+  dragHover(event: DragEvent) {
+    event.preventDefault();  // Prevent the default behavior to allow drop
+
+    // Get the input element by its ID 'message-input'
+    const inputElement = document.getElementById('message-input');
+
+    // If the input element is found and it doesn't already have the 'draging' class
+    if (inputElement && !inputElement.classList.contains('draging')) {
+      inputElement.classList.add('draging');  // Add the 'draging' class to indicate an active drag
+    }
+  }
+
+  // This method is triggered when the dragged item leaves the target area.
+  dragLeave(event: DragEvent) {
+    event.preventDefault();  // Prevent the default behavior
+
+    // Get the input element by its ID 'message-input'
+    const inputElement = document.getElementById('message-input');
+
+    // If the input element is found and it has the 'draging' class
+    if (inputElement && inputElement.classList.contains('draging')) {
+      inputElement.classList.remove('draging');  // Remove the 'draging' class to indicate the drag has ended
+    }
+  }
+
+  // This method is triggered when the item is dropped onto the target area.
+  onDrop(event: DragEvent) {
+    event.preventDefault();  // Prevent the default behavior to allow drop
+
+    // Get the input element by its ID 'message-input'
+    const inputElement = document.getElementById('message-input');
+
+    // If the input element is found and it has the 'draging' class
+    if (inputElement && inputElement.classList.contains('draging')) {
+      inputElement.classList.remove('draging');  // Remove the 'draging' class to finalize the drop
+    }
+
+    // Retrieve the file from the drop event (if any files are dropped)
+    const file = event.dataTransfer?.files[0];
+
+    // If a file is found, pass it to the chat service to handle the image attachment
+    if (file) {
+      this.chatService.setImageAttached(file);  // Call the service to attach the dropped file (image)
+    }
   }
 }

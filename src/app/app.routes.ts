@@ -9,11 +9,13 @@ import { LandingpageComponent } from './landingpage/landingpage.component';
 import {StatisticComponent} from "./statistic/statistic.component";
 import {FileManagerComponent} from "./file-manager/file-manager.component";
 import {ProfileComponent} from "./profile/profile.component";
+import {NewChatComponent} from "./new-chat/new-chat.component";
 
 export const routes: Routes = [
     {path: 'login', component: LoginComponent},
     {path:'auto-login', component:LoginComponent},
-    {path: 'chat', component: ChatComponent, /*canActivate:[AuthguardService]*/},
+    {path: 'chat', component: NewChatComponent},
+    {path: 'chat/:id', component: ChatComponent, /*canActivate:[AuthguardService]*/},
     {path: 'logout', redirectTo: '/login', pathMatch: 'full' },
     {path: '', redirectTo: '/login', pathMatch: 'full'},
     {path: 'sign-up', component: SignupComponent},

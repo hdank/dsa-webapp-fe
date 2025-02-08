@@ -2,29 +2,41 @@
 <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
     <div class="card-container">
       <div class="card-header">
-        <div class="img-avatar"><img src="/chatbot-avatar.jpg" class="img-avatar"></div>
-        <div class="text-chat">ChatBot</div>
-        <div class="online"></div>
+        <div class="bot-status">
+          <div class="img-avatar"><img src="/logo-removebg-preview.png" class="img-avatar"></div>
+          <div class="text-chat">DSA Bot</div>
+          <div class="online"></div>
+        </div>
+        <button class="new-chat-btn" (click)="navigateNewChat()">
+          <span class="material-symbols-outlined">
+          add_comment
+          </span>
+          New chat</button>
       </div>
       <div class="card-body">
         <div id="messages-container" class="messages-container">
         </div>
-        <div class="message-input">
+        <div id="message-input" class="message-input">
           <div id="attached-img-container" class="attached-img-container">
             <span class="material-symbols-outlined clear-attach-btn" (click)="clearAttached()">
               close
             </span>
+
           </div>
           <form>
-            <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send"></textarea>
+            <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send hover"
+                      (dragover)="dragHover($event)"
+                      (dragleave)="dragLeave($event)"
+                      (drop)="onDrop($event)"
+                      (keydown)="onKeyDown($event)"></textarea>
             <div class="btn-box">
               <button [ngClass]="!isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
-                <span class="material-symbols-outlined" (click)="stopListening()">
+                <span class="material-symbols-outlined" (click)="stopRecord()">
                   stop
                 </span>
               </button>
               <button [ngClass]="isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
-                <span class="material-symbols-outlined" (click)="startListening()">
+                <span class="material-symbols-outlined" (click)="startRecord()">
                   mic
                 </span>
               </button>

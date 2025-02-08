@@ -1,0 +1,63 @@
+<app-sidebar></app-sidebar>
+<script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+<div class="card-container new-chat-container">
+  <div class="card-body">
+    <div class="card-slogan-container">
+      <h2 class="card-title">Xin chào, Mình là trợ thủ DSA.</h2>
+      <h4>Hôm nay tôi có thể giúp gì cho bạn nào?</h4>
+    </div>
+    <div class="message-input">
+      <div id="attached-img-container" class="attached-img-container">
+            <span class="material-symbols-outlined clear-attach-btn" (click)="clearAttached()">
+              close
+            </span>
+      </div>
+      <form>
+        <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send hover"
+                  (dragover)="dragHover($event)"
+                  (dragleave)="dragLeave($event)"
+                  (drop)="onDrop($event)"
+                  (keydown)="onKeyDown($event)"></textarea>
+        <div class="btn-box">
+          <button [ngClass]="!isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
+                <span class="material-symbols-outlined" (click)="stopRecord()">
+                  stop
+                </span>
+          </button>
+          <button [ngClass]="isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
+                <span class="material-symbols-outlined" (click)="startRecord()">
+                  mic
+                </span>
+          </button>
+          <label for="attacheFile" class="button-target">
+                <span class="material-symbols-outlined">
+                  image
+                </span>
+          </label>
+          <input id="attacheFile" type="file" (change)="onImageAttached($event)">
+          <button (click)="sendMessage()" id="button-attach-image" type="submit" class="button-target send-msg" [disabled]="isSending">
+                <span class="material-symbols-outlined">
+                send
+                </span>
+          </button>
+        </div>
+      </form>
+      <div *ngIf="convHistory && convHistory.length > 0" class="history-container">
+        <h5>History</h5>
+        <div class="history-box">
+          <div class="history-item" *ngFor="let conv of convHistory; let i = index" (click)="navigateHistory(conv.id)">
+            <span class="material-symbols-outlined">
+              sort
+            </span>
+            <div class="history-detail">
+              <p class="history-time">{{dateFormat(conv.createdDate)}}</p>
+              <p class="history-title">{{conv.title}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
