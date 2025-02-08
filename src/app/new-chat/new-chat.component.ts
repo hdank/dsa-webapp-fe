@@ -113,4 +113,51 @@ export class NewChatComponent {
   dateFormat(time: string) {
     return new DatePipe('en-US').transform(time, 'dd/MM/yyyy HH:mm:ss');
   }
+
+  // This method is triggered when an item is dragged over the target area.
+  dragHover(event: DragEvent) {
+    event.preventDefault();  // Prevent the default behavior to allow drop
+
+    // Get the input element by its ID 'message-input'
+    const inputElement = document.getElementById('message-input');
+
+    // If the input element is found and it doesn't already have the 'draging' class
+    if (inputElement && !inputElement.classList.contains('draging')) {
+      inputElement.classList.add('draging');  // Add the 'draging' class to indicate an active drag
+    }
+  }
+
+  // This method is triggered when the dragged item leaves the target area.
+  dragLeave(event: DragEvent) {
+    event.preventDefault();  // Prevent the default behavior
+
+    // Get the input element by its ID 'message-input'
+    const inputElement = document.getElementById('message-input');
+
+    // If the input element is found and it has the 'draging' class
+    if (inputElement && inputElement.classList.contains('draging')) {
+      inputElement.classList.remove('draging');  // Remove the 'draging' class to indicate the drag has ended
+    }
+  }
+
+  // This method is triggered when the item is dropped onto the target area.
+  onDrop(event: DragEvent) {
+    event.preventDefault();  // Prevent the default behavior to allow drop
+
+    // Get the input element by its ID 'message-input'
+    const inputElement = document.getElementById('message-input');
+
+    // If the input element is found and it has the 'draging' class
+    if (inputElement && inputElement.classList.contains('draging')) {
+      inputElement.classList.remove('draging');  // Remove the 'draging' class to finalize the drop
+    }
+
+    // Retrieve the file from the drop event (if any files are dropped)
+    const file = event.dataTransfer?.files[0];
+
+    // If a file is found, pass it to the chat service to handle the image attachment
+    if (file) {
+      this.chatService.setImageAttached(file);  // Call the service to attach the dropped file (image)
+    }
+  }
 }

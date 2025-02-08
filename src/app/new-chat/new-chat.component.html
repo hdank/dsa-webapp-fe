@@ -13,7 +13,11 @@
             </span>
       </div>
       <form>
-        <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send" (keydown)="onKeyDown($event)"></textarea>
+        <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send hover"
+                  (dragover)="dragHover($event)"
+                  (dragleave)="dragLeave($event)"
+                  (drop)="onDrop($event)"
+                  (keydown)="onKeyDown($event)"></textarea>
         <div class="btn-box">
           <button [ngClass]="!isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
                 <span class="material-symbols-outlined" (click)="stopRecord()">
