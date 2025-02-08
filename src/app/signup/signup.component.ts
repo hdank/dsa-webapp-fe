@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Authresponse } from '../authresponse';
 import { catchError, map, Observable, of } from 'rxjs';
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-signup',
@@ -16,7 +17,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 })
 export class SignupComponent {
   user: UserComponent = new UserComponent();
-  private baseUrl="http://localhost:8080/user/sign-up";
+  private baseUrl=`${environments.API_JAVA_BE}/user/sign-up`;
   checkPassword(){
     var message = document.getElementById('message');
     var password = (<HTMLInputElement>document.getElementById('pwd'))!.value;

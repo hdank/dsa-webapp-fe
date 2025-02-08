@@ -6,6 +6,7 @@ import { DatePipe, NgForOf } from "@angular/common";
 import { Chat } from "../chat";
 import $ from "jquery";
 import { AuthserviceService } from "../authservice.service";
+import {environments} from "../../environments/environments";
 
 // Interface to store user and their associated chat history
 interface UserChat {
@@ -21,7 +22,7 @@ interface UserChat {
   styleUrl: './statistic.component.css'  // Path to the component's CSS
 })
 export class StatisticComponent implements OnInit {
-  private userUrl = "http://localhost:8080/user";  // API URL for user-related operations
+  private userUrl = `${environments.API_JAVA_BE}/user`;  // API URL for user-related operations
   public role!: string;  // Role of the current user (admin/user)
   users!: UserComponent[];  // Array to hold all users
   chats!: Chat[];  // Array to hold all chat data

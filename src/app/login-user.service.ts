@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { UserComponent } from './user/user.component';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Authresponse } from './authresponse';
+import {environments} from "../environments/environments";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginUserService {
 
-  private baseUrl="http://localhost:8080/user/login";
+  private baseUrl=`${environments.API_JAVA_BE}/login`;
 
 
   constructor(private httpClient: HttpClient) { }

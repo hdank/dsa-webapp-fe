@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environments} from "../environments/environments";
 
 // Interface to define the structure of the response when retrieving files
 interface FilesResponse {
@@ -24,7 +25,7 @@ interface FilesResponse {
 })
 export class FileService {
   // Base API URL for file operations
-  private apiUrl = "http://localhost:8080/subject";
+  private apiUrl = `${environments.API_JAVA_BE}/subject`;
 
   // Inject HttpClient to make HTTP requests
   constructor(private http: HttpClient) {}

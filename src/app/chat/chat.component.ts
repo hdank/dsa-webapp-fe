@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthserviceService } from "../authservice.service";
 import { SpeechService } from "../../service/speech.service";
 import { ChatService } from "../../service/chat.service";
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,7 @@ import { ChatService } from "../../service/chat.service";
 export class ChatComponent implements OnInit {
   private chatHistory = [{}];  // Initialize chat history
   private token = '';  // Token for user authentication
-  private apiUrl = "http://localhost:8080/api/conversation";  // Base API URL
+  private flaskUrl = `${environments.API_FLASK_BE}`;  // Base API URL
   isRecording = false;  // State to track if speech recognition is active
   isSending = false;  // State to track if a message is being sent
   content: any;  // Placeholder for content, may be used later
@@ -52,7 +53,7 @@ export class ChatComponent implements OnInit {
       if (convId) {
         this.chatService.setCurrentConvId(convId);  // Set the current conversation ID
         // Fetch conversation history from the API if conversation ID exists
-        fetch(`http://127.0.0.1:5000/conversation_history/${convId}`)
+        fetch(`${this.flaskUrl}/conversation_history/${convId}`)
           .then(response => response.json())  // Parse the response as JSON
           .then(data => {
             this.chatHistory = data.history;  // Set chat history from the response

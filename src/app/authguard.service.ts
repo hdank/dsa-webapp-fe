@@ -10,7 +10,6 @@ import { HttpClient } from '@angular/common/http';
 export class AuthguardService implements CanActivate{
 
   http!: HttpClient;
-  private baseUrl = "http://localhost:8080/user";
   constructor(private router: Router,private authService: AuthserviceService){}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>{
     //const token = localStorage.getItem('token');

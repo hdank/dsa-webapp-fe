@@ -6,11 +6,12 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { tap } from 'rxjs';
 import { LoginUserService } from './login-user.service';
 import { Authresponse } from './authresponse';
+import {environments} from "../environments/environments";
 @Injectable({
   providedIn: 'root'
 })
 export class AuthserviceService {
-  private baseUrl="http://localhost:8080/user";
+  private baseUrl=`${environments.API_JAVA_BE}/user`;
 
   constructor(private http: HttpClient, private router:Router,private loginUserService: LoginUserService){}
   private isAuthenticated = false;
@@ -61,7 +62,7 @@ export class AuthserviceService {
   validateToken(token: string): Observable<boolean> {
     // Implement logic to validate the token against your backend
     // Return an observable that emits true if valid, false otherwise
-    return this.http.get<boolean>('http://localhost:8080/user/auto-login', {params:{token} })
+    return this.http.get<boolean>(`${this.baseUrl}/auto-login`, {params:{token} })
     .pipe(
       map(response => !!response),
       catchError(() => of(false))

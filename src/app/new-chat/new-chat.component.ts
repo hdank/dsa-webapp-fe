@@ -6,6 +6,7 @@ import { AuthserviceService } from "../authservice.service";
 import { SpeechService } from "../../service/speech.service";
 import { ChatService } from "../../service/chat.service";
 import { DatePipe, NgClass, NgForOf, NgIf } from "@angular/common";
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-new-chat',
@@ -43,7 +44,7 @@ export class NewChatComponent {
     }
 
     // Fetch conversations from the backend
-    fetch(`http://localhost:8080/user/get-conversations?token=${token}`)
+    fetch(`${environments.API_JAVA_BE}/user/get-conversations?token=${token}`)
       .then(response => response.json())
       .then(data => {
         this.convHistory = data;  // Store conversation history

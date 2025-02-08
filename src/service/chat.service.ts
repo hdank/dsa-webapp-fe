@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
+import {environments} from "../environments/environments";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-
+  private flaskUrl = `${environments.API_FLASK_BE}`
+  private baseUrl = `${environments.API_JAVA_BE}`
   private currentConId: string | null = null; // Holds the current conversation ID
   private firstMsg: string = ''; // First message for a new chat, shared between components
   private count = 0; // Used for tracking message counts for unique class names
@@ -165,7 +167,7 @@ export class ChatService {
     }
 
     // Fetch server response
-    fetch('http://127.0.0.1:5000/ask_pdf', {
+    fetch(`${this.flaskUrl}/ask_pdf`, {
       method: 'POST',
       body: formData
     }).then((response) => {
@@ -285,7 +287,7 @@ export class ChatService {
     };
 
     // Send the conversation data to the server
-    fetch('http://localhost:8080/user/set-new-conversations', {
+    fetch(`${this.baseUrl}/user/set-new-conversations`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -332,7 +334,7 @@ export class ChatService {
 
   // Fetch a new conversation ID from the server
   getNewConvId() {
-    return fetch('http://127.0.0.1:5000/new_conversation', {
+    return fetch(`${this.flaskUrl}/new_conversation`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import { AuthserviceService } from '../authservice.service';
 import {UserComponent} from "../user/user.component";
 import {NgIf} from "@angular/common";
 import { ActivatedRoute } from '@angular/router';
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-sidebar',
@@ -19,7 +20,7 @@ export class SidebarComponent implements OnInit{
 
   }
   public role!: string;
-  private userUrl = "http://localhost:8080/user";
+  private userUrl = `${environments.API_JAVA_BE}/user`;
   user!: UserComponent;
   activeItem = 'general';
   ngOnInit(): void {

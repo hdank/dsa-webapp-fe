@@ -20,8 +20,6 @@ export class LoginComponent implements OnInit {
 
   user: UserComponent = new UserComponent();
 
-  private baseUrl = "http://localhost:8080/user";
-
   constructor(private authService: AuthserviceService, private router: Router) {}
   ngOnInit(): void {
     // If the token exists => auto login
