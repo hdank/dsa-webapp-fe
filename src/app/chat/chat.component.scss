@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
   /* From Uiverse.io by ahmed150up */
 .card-container {
@@ -10,30 +11,46 @@
   margin-left: 316px;
   .card-header {
     display: flex;
+    justify-content: space-between;
     height: 10%;
     width: 100%;
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
-    .img-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      margin-right: 20px;
-      background-color: #333;
+    .bot-status{
+      display: flex;
+      align-items: center;
+      .img-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 20px;
+        object-fit: cover;
+      }
+      .text-chat {
+        /* color: black; */
+        font-family: "Chakra Petch", serif;
+        font-weight: bold;
+        margin: 0;
+        font-size: 20px;
+      }
+      .online{
+        width: 10px;
+        height: 10px;
+        background-color: rgb(153, 255, 1);
+        border-color: rgb(153, 255, 1);
+        border-radius: 50%;
+        margin-left: 10px;
+      }
     }
-    .text-chat {
-      /* color: black; */
-      margin: 0;
-      font-size: 20px;
-    }
-    .online{
-      width: 15px;
-      height: 15px;
-      background-color: rgb(153, 255, 1);
-      border-color: rgb(153, 255, 1);
-      border-radius: 50%;
-      margin-left: 10px;
+    .new-chat-btn{
+      display: flex;
+      align-items: center;
+      column-gap: 10px;
+      transition: all 0.2s ease-in-out;
+      &:hover{
+        color: #2F8EFC;
+      }
     }
   }
   .card-body {
@@ -42,6 +59,9 @@
     justify-content: space-between;
     height: 90%;
     .messages-container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 15px;
       width: 100%;
       height: 85%;
       padding: 15px;
@@ -55,6 +75,7 @@
         border-radius: 10px;
         &.left {
           background-color: #f1f1f1;
+          min-width: 700px;
           color: black;
           font-size: 13px;
           left: 0;
@@ -96,12 +117,36 @@
       }
     }
     .message-input {
+      display: flex;
+      flex-direction: column;
+      row-gap: 50px;
       position: relative;
       height: 15%;
       padding: 5px;
       border-top: 1px solid #ccc;
       background-color: #f3f4f6;
       z-index: 4;
+      &:before{
+        content: "+";
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        color: gray;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(186, 186, 186, 0.25);
+        pointer-events: none;
+        z-index: 5;
+      }
+      &.draging{
+        &:before{
+          display: flex;
+        }
+      }
       .attached-img-container{
         position: absolute;
         display: none;
@@ -135,9 +180,6 @@
         &.attached{
           display: flex;
         }
-        .attach-preview{
-          height: 70%;
-        }
         .attach-preview-name{
           padding: 0 20px;
         }
@@ -145,6 +187,7 @@
       form{
         display: flex;
         .message-send {
+          position: relative;
           background-color: transparent;
           width: 100%;
           padding: 10px;
@@ -176,9 +219,112 @@
         }
       }
     }
+    }
+  .relate-doc-container{
+    background-color: #ffffff;
+    .relate-doc-extendBtn{
+      background-color: #d1d1d1;
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 10px;
+      min-width: 300px;
+      cursor: pointer;
+      &:hover>p{
+        text-decoration: underline;
+      }
+    }
+    .relate-doc-dropdown{
+      display: none;
+      overflow: hidden;
+      max-height: 0;
+      flex-direction: column;
+      transition: max-height 0.5s ease-out;
+      .relate-doc{
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+        cursor: pointer;
+        &:hover{
+          background-color: #7D8590;
+        }
+        .doc-name,.author,.score{
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding : 0 10px
+        }
+      }
+      &.show{
+        display: block;
+        max-height: 100%;
+      }
+    }
   }
 }
+  //new-chat component scss
+  .card-container.new-chat-container{
+    padding: 0 230px;
+    .card-body{
+      justify-content: center;
+      .card-slogan-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: "Chakra Petch", serif;
+        padding: 20px;
+        margin-bottom: 100px;
+          .card-title{
+            font-size: 2.2rem;
+            font-weight: bold;
+            padding: 10px;
+          }
+          .card-slogan{
+            padding: 10px;
+            font-size: 1.8rem;
+          }
+      }
+    }
+  }
 
 
 
+.history-container{
 
+  .history-box{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 20px;
+    column-gap: 20px;
+    padding: 10px;
+    .history-item{
+      display: flex;
+      align-items: center;
+      column-gap: 10px;
+      max-width: 200px;
+      max-height: 70px;
+      padding: 10px;
+      background-color: #eeeeee;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all .2s;
+      .history-detail{
+        width: 70%;
+        .history-time{
+          font-size: 0.6rem;
+        }
+        .history-title{
+          width: 100%;
+          font-size: 0.9rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis
+        }
+      }
+      &:hover{
+        color: #ffffff;
+        background-color: #1e1e1e;
+      }
+    }
+  }
+}

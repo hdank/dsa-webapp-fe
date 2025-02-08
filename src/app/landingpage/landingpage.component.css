@@ -222,11 +222,15 @@ body {
 
 .header--logo{
   display: flex;
+  align-items: center;
   column-gap: 10px;
 }
 .header--logo>span{
   font-size: 25px;
   font-weight: 700;
+}
+.header--logo--img{
+  width: 60px;
 }
 
 .intro {
