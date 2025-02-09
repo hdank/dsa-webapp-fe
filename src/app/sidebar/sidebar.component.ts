@@ -27,7 +27,6 @@ export class SidebarComponent implements OnInit{
     this.activeRouter.url.subscribe(segments => {
       this.activeItem = segments[0].path
     })
-    //let token = localStorage.getItem('authToken');
     let token = this.authService.getToken();
     let parsedToken =  String(token);
     this.http.get<{role: string}>(`${this.userUrl}/is-admin-or-user`, {params: {token:parsedToken}}).subscribe(

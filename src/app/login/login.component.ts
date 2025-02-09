@@ -23,15 +23,14 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthserviceService, private router: Router) {}
   ngOnInit(): void {
     // If the token exists => auto login
-    //const token = localStorage.getItem('authToken');
     const token = this.authService.getToken();
-  if(token){
-    const stringToken = String(token);
-    this.authService.autoLogin(stringToken).subscribe(user=>{
-      if(user){
-        this.router.navigate(['/chat']);
-      }
-    })
+    if(token){
+      const stringToken = String(token);
+      this.authService.autoLogin(stringToken).subscribe(user=>{
+        if(user){
+          this.router.navigate(['/chat']);
+        }
+      })
     }
 
   document.querySelector(".frame-left")?.classList.add("show");
@@ -41,16 +40,17 @@ export class LoginComponent implements OnInit {
   navigateToSignUp(){
     this.router.navigate(['/sign-up']);
   }
+
   userLogin() {
-    this.authService.userLogin(this.user).subscribe(token=>{
-      if(token){
-        const tokenString = String(token);
-        console.log(tokenString);
-        this.authService.saveToken(tokenString);
-        //localStorage.setItem('authToken',tokenString);
+    this.authService.userLogin(this.user).subscribe(response=>{
+      console.log(response)
+      if(response){
+        const tokenString = String(response.token);
+        const mssvString = String(response.mssv);
+        const roleString = String(response.role);
+        this.authService.saveToken(tokenString,mssvString,roleString);
         this.router.navigate(['/chat']);
-      }
-      else{
+      }else{
         alert("Please enter mssv and password correctly");
       }
     })

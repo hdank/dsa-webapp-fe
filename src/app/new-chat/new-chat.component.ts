@@ -22,6 +22,8 @@ import {environments} from "../../environments/environments";
   styleUrl: '../chat/chat.component.scss'
 })
 export class NewChatComponent {
+  selectedModel = ''
+  private userId = ''
   isRecording = false;  // Flag to check if recording is in progress
   isSending = false;    // Flag to check if the message is being sent
   public convHistory: any[] = []  // Array to store conversation history
@@ -36,7 +38,9 @@ export class NewChatComponent {
 
   // On component initialization, check token and fetch conversation history
   ngOnInit(): void {
+    this.userId = this.authService.getMssv()  // Set init userId for set conversations record
     const token = this.authService.getToken();  // Get the authentication token
+
     if (token != null) {  // If token exists, continue
       console.log("Chat page");
     } else {
@@ -44,13 +48,28 @@ export class NewChatComponent {
     }
 
     // Fetch conversations from the backend
-    fetch(`${environments.API_JAVA_BE}/user/get-conversations?token=${token}`)
+    fetch(`${environments.API_JAVA_BE}/user/get-conversations?id=${this.userId}`)
       .then(response => response.json())
       .then(data => {
         this.convHistory = data;  // Store conversation history
       });
 
     console.log("this.convHistory", this.convHistory);  // Log for debugging purposes
+
+    // Check selectedModel for option button render
+    this.selectedModel = this.chatService.getSelectedModel()
+    if (this.selectedModel == 'ask_llama'){
+      let radioBtn = document.getElementById("llama") as HTMLInputElement;
+      radioBtn.checked = true;
+    }else{
+      let radioBtn = document.getElementById("llamaVision") as HTMLInputElement;
+      radioBtn.checked = true;
+    }
+  }
+
+  onSetModel(modelValue:string){
+    this.chatService.setSelectedModel(modelValue);
+    this.selectedModel = this.chatService.getSelectedModel();
   }
 
   // Handle key press event for sending message when Enter key is pressed

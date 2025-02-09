@@ -7,7 +7,7 @@
     <button class="showBtn" (click)="showUpload()">
       Thêm tài liệu mới
     </button>
-    <span class="sumaryCount">Tổng cộng : {{files.length}} tài liệu</span>
+    <span class="sumaryCount">Tổng cộng : {{files.length || 0}} tài liệu</span>
   </div>
   <div class="tools-searching">
     <input id="searchInp" type="text" placeholder="Search by keywords or ID">
@@ -51,7 +51,7 @@
         <th scope="col">Thao tác</th>
       </tr>
       </thead>
-      <tbody *ngIf="files.length > 0" class="">
+      <tbody *ngIf="files" class="">
       <tr *ngFor="let file of files; let i = index">
         <th scope="row">{{currentPage*pageSize+i+1}}</th>
         <td>{{ file.id }}</td>
@@ -75,7 +75,7 @@
         </td>
       </tr>
       </tbody>
-      <tbody *ngIf="files.length === 0">
+      <tbody *ngIf="files?.length === 0">
         <tr>
           <td colspan="5" style="text-align: center">Chưa có tài liệu nào được tải lên.</td>
         </tr>

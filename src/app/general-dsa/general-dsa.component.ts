@@ -83,8 +83,8 @@ export class GeneralDSAComponent implements OnInit {
 
   // Load the files based on the current page, page size, and search term
   loadFiles() {
-    this.filesService.getFiles(this.currentPage, this.pageSize, this.searchTerm).subscribe(data => {
-      this.files = data.content;  // Store the fetched files into the 'files' array
+    this.filesService.getFiles(this.currentPage, this.pageSize, this.searchTerm).subscribe((response:any) => {
+      this.files = response;  // Store the fetched files into the 'files' array
     });
   }
 

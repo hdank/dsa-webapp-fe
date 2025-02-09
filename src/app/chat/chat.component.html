@@ -7,11 +7,27 @@
           <div class="text-chat">DSA Bot</div>
           <div class="online"></div>
         </div>
-        <button class="new-chat-btn" (click)="navigateNewChat()">
+        <div class="new-chat-navTools">
+          <button class="new-chat-btn" (click)="navigateNewChat()">
           <span class="material-symbols-outlined">
           add_comment
           </span>
-          New chat</button>
+            New chat
+          </button>
+          <div class="wrapper">
+            <div class="option">
+              <input (click)="onSetModel('ask_llama')" id="llama" value="option1" name="btn" type="radio" class="input">
+              <div class="btn">
+                <span class="span">Llama3.2</span>
+              </div>
+            </div>
+            <div class="option">
+              <input (click)="onSetModel('ask_llama_vision')" id="llamaVision" value="option2" name="btn" type="radio" class="input">
+              <div class="btn">
+                <span class="span">Llama3.2-vision</span>
+              </div>  </div>
+          </div>
+        </div>
       </div>
       <div class="card-body">
         <div id="messages-container" class="messages-container">
@@ -40,7 +56,7 @@
                   mic
                 </span>
               </button>
-              <label for="attacheFile" class="button-target">
+              <label *ngIf="selectedModel == 'ask_llama_vision'" for="attacheFile" class="button-target">
                 <span class="material-symbols-outlined">
                   image
                 </span>
