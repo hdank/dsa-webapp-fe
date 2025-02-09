@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FileService } from "../../service/file-service";
 import { NgForOf, NgIf } from "@angular/common";
 import { AuthserviceService } from "../authservice.service";
+import {environments} from "../../environments/environments";
 
 // Interface to define the structure of the response for file-related operations
 interface FilesResponse {
@@ -32,8 +33,8 @@ interface FilesResponse {
 })
 
 export class GeneralDSAComponent implements OnInit {
-  private baseUrl = "http://localhost:8080/subject";  // API endpoint for subject-related requests
-  private userUrl = "http://localhost:8080/user";  // API endpoint for user-related requests
+  private baseUrl = `${environments.API_JAVA_BE}/subject`;  // API endpoint for subject-related requests
+  private userUrl = `${environments.API_JAVA_BE}/user`;  // API endpoint for user-related requests
 
   public role!: string;  // User's role (admin or user)
 
@@ -82,8 +83,8 @@ export class GeneralDSAComponent implements OnInit {
 
   // Load the files based on the current page, page size, and search term
   loadFiles() {
-    this.filesService.getFiles(this.currentPage, this.pageSize, this.searchTerm).subscribe(data => {
-      this.files = data.content;  // Store the fetched files into the 'files' array
+    this.filesService.getFiles(this.currentPage, this.pageSize, this.searchTerm).subscribe((response:any) => {
+      this.files = response;  // Store the fetched files into the 'files' array
     });
   }
 

@@ -5,6 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {Authresponse} from "../authresponse";
 import {UserComponent} from "../user/user.component";
 import {AuthserviceService} from "../authservice.service";
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-profile',
@@ -19,10 +20,13 @@ import {AuthserviceService} from "../authservice.service";
 export class ProfileComponent implements OnInit{
     user!: UserComponent
     constructor(private router:Router, private http: HttpClient , private authService:AuthserviceService){}
-    private baseUrl = "http://localhost:8080/user";
+    private baseUrl = `${environments.API_JAVA_BE}/user`;
     ngOnInit(): void {
-      //const token = localStorage.getItem('authToken');
       const token = this.authService.getToken();
+      const userId = this.authService.getMssv();
+      const userRole = this.authService.getRole();
+      console.log(userId);
+      console.log(userRole)
       if(token){
         this.http.get<UserComponent>(`${this.baseUrl}/get-user-by-token`,{params:{token:token}}).subscribe(
           data=>{

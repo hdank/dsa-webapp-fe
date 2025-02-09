@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
 import { FileService } from "../../service/file-service";
 import $ from "jquery";
 import { AuthserviceService } from "../authservice.service";
+import {environments} from "../../environments/environments";
 
 // Interface to define the structure of the response for file-related operations
 interface FilesResponse {
@@ -37,9 +38,8 @@ interface FilesResponse {
 export class FileManagerComponent implements OnInit {
 
   // API base URLs for different services
-  private baseUrl = "http://localhost:8080/subject";
-  private userUrl = "http://localhost:8080/user";
-  private flaskUrl = "http://127.0.0.1:5000";
+  private userUrl = `${environments.API_JAVA_BE}/user`;
+  private flaskUrl = `${environments.API_FLASK_BE}`;
 
   public role!: string;  // User role (admin or user)
   selectedFile!: File;  // Selected file for upload
@@ -96,8 +96,9 @@ export class FileManagerComponent implements OnInit {
 
   // Load files with optional search term
   loadFiles(searchTerm: any) {
-    this.filesService.getFiles(this.currentPage, this.pageSize, searchTerm).subscribe((response: FilesResponse) => {
-      this.files = response.content;  // Store the files data
+    this.filesService.getFiles(this.currentPage, this.pageSize, searchTerm).subscribe((response: any) => {
+      console.log(response)
+      this.files = response;  // Store the files data
       this.totalPages = response.totalPages;  // Store the total number of pages
       console.log(this.files);  // Log the files data for debugging
       console.log(this.totalPages);  // Log total pages for debugging

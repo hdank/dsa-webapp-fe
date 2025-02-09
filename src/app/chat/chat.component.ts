@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { NgClass, NgFor } from '@angular/common';
+import {NgClass, NgFor, NgIf} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -8,20 +8,22 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthserviceService } from "../authservice.service";
 import { SpeechService } from "../../service/speech.service";
 import { ChatService } from "../../service/chat.service";
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-chat',
   standalone: true,  // This component is a standalone component
-  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass], // Import necessary modules and components
+  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass, NgIf], // Import necessary modules and components
   templateUrl: './chat.component.html',  // Path to the HTML template
   styleUrl: './chat.component.scss',  // Path to the component's CSS/SCSS
   encapsulation: ViewEncapsulation.None // Apply the component's CSS to the inserted HTML elements
 })
 
 export class ChatComponent implements OnInit {
+  selectedModel = ''
   private chatHistory = [{}];  // Initialize chat history
   private token = '';  // Token for user authentication
-  private apiUrl = "http://localhost:8080/api/conversation";  // Base API URL
+  private flaskUrl = `${environments.API_FLASK_BE}`;  // Base API URL
   isRecording = false;  // State to track if speech recognition is active
   isSending = false;  // State to track if a message is being sent
   content: any;  // Placeholder for content, may be used later
@@ -52,15 +54,16 @@ export class ChatComponent implements OnInit {
       if (convId) {
         this.chatService.setCurrentConvId(convId);  // Set the current conversation ID
         // Fetch conversation history from the API if conversation ID exists
-        fetch(`http://127.0.0.1:5000/conversation_history/${convId}`)
+        fetch(`${this.flaskUrl}/conversation_history/${convId}`)
           .then(response => response.json())  // Parse the response as JSON
           .then(data => {
-            this.chatHistory = data.history;  // Set chat history from the response
+            this.chatHistory = data.data.history;  // Set chat history from the response
+            console.log(data.data)
             this.setHistoryInit();  // Initialize the chat history
           })
           .catch(error => {
             console.log(error);  // Log error if fetch fails
-            this.router.navigate(['/chat']);  // Redirect to chat if an error occurs
+            //this.router.navigate(['/chat']);  // Redirect to chat if an error occurs
           });
       } else {
         this.router.navigate(['/chat']);  // Redirect to chat if no conversation ID
@@ -70,13 +73,23 @@ export class ChatComponent implements OnInit {
     // Check if it's a new conversation and send the first message if required
     let firstMsg = this.chatService.getFirstMsg();
     if (firstMsg) {
-      this.chatService.sendMessage(this.token);  // Send the first message
+      this.chatService.sendMessage();  // Send the first message
+    }
+
+    // Check selectedModel for option button render
+    this.selectedModel = this.chatService.getSelectedModel()
+    if (this.selectedModel == 'ask_llama'){
+      let radioBtn = document.getElementById("llama") as HTMLInputElement;
+      radioBtn.checked = true;
+    }else{
+      let radioBtn = document.getElementById("llamaVision") as HTMLInputElement;
+      radioBtn.checked = true;
     }
   }
 
-  // Toggle the status of a test button
-  testBtn() {
-    this.testStatus = !this.testStatus;
+  onSetModel(modelValue:string){
+    this.chatService.setSelectedModel(modelValue);
+    this.selectedModel = this.chatService.getSelectedModel()
   }
 
   // Handle key press to send message on "Enter" key press
@@ -88,6 +101,7 @@ export class ChatComponent implements OnInit {
 
   // Initialize chat history if available
   setHistoryInit() {
+    console.log(this.chatHistory)
     if (this.chatHistory.length > 0) {
       for (const item of this.chatHistory) {
         this.chatService.setHistory(item);  // Add each item to chat history in the service
@@ -120,7 +134,7 @@ export class ChatComponent implements OnInit {
       this.isSending = false;  // Reset sending state after 1 second delay
     }, 1000);
 
-    this.chatService.sendMessage(this.token);  // Call service to send message
+    this.chatService.sendMessage();  // Call service to send message
   }
 
   // Stop recording if active

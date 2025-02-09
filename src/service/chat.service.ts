@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
+import {environments} from "../environments/environments";
+import {AuthserviceService} from "../app/authservice.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-
+  private flaskUrl = `${environments.API_FLASK_BE}`
+  private baseUrl = `${environments.API_JAVA_BE}`
   private currentConId: string | null = null; // Holds the current conversation ID
   private firstMsg: string = ''; // First message for a new chat, shared between components
+  private selectedModel: string = 'ask_llama' // Set init and share selected model between components
   private count = 0; // Used for tracking message counts for unique class names
   attachedImage!: File | null; // Holds the image attached by the user
   MAX_SIZE = 10 * 1024 * 1024; // Maximum allowed image size (10MB)
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private authService: AuthserviceService,) { }
 
   //conver to Byte
   convertFileSize(sizeInBytes: number): string {
@@ -25,6 +29,16 @@ export class ChatService {
       unitIndex++;
     }
     return `${size.toFixed(2)} ${units[unitIndex]}`;
+  }
+
+  // Set the first message for a new chat
+  setSelectedModel(data: string) {
+    this.selectedModel = data;
+  }
+
+  // Get the first message for a new chat
+  getSelectedModel() {
+    return this.selectedModel;
   }
 
   // Set the first message for a new chat
@@ -165,7 +179,7 @@ export class ChatService {
     }
 
     // Fetch server response
-    fetch('http://127.0.0.1:5000/ask_pdf', {
+    fetch(`${this.flaskUrl}/${this.selectedModel}`, {
       method: 'POST',
       body: formData
     }).then((response) => {
@@ -271,8 +285,8 @@ export class ChatService {
   }
 
   // Function to save the current conversation to a database
-  saveConversation(currentConId: String | null, title: String, userToken: String) {
-    if (!(currentConId && title && userToken)) {
+  saveConversation(currentConId: String | null, title: String, userId: String) {
+    if (!(currentConId && title && userId)) {
       alert("Save conversation failed");
       return;
     }
@@ -281,11 +295,11 @@ export class ChatService {
     const payload = {
       id: currentConId,
       title: title,
-      userToken: userToken
+      userId: userId
     };
 
     // Send the conversation data to the server
-    fetch('http://localhost:8080/user/set-new-conversations', {
+    fetch(`${this.baseUrl}/user/set-new-conversations`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -297,13 +311,13 @@ export class ChatService {
   }
 
   // Function to send a message (either user or bot)
-  sendMessage(token: String) {
+  sendMessage() {
     let queryText = '';
     setTimeout(() => {
       // Handle initial message (if new conversation)
       if (this.firstMsg) {
         queryText = this.firstMsg;
-        this.saveConversation(this.currentConId, this.firstMsg, token);
+        this.saveConversation(this.currentConId, this.firstMsg , this.authService.getMssv());
         this.firstMsg = '';
       } else {
         // Get query from input field
@@ -332,7 +346,7 @@ export class ChatService {
 
   // Fetch a new conversation ID from the server
   getNewConvId() {
-    return fetch('http://127.0.0.1:5000/new_conversation', {
+    return fetch(`${this.flaskUrl}/new_conversation`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

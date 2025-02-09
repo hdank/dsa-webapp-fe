@@ -6,6 +6,7 @@ import { AuthserviceService } from '../authservice.service';
 import {UserComponent} from "../user/user.component";
 import {NgIf} from "@angular/common";
 import { ActivatedRoute } from '@angular/router';
+import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-sidebar',
@@ -19,14 +20,13 @@ export class SidebarComponent implements OnInit{
 
   }
   public role!: string;
-  private userUrl = "http://localhost:8080/user";
+  private userUrl = `${environments.API_JAVA_BE}/user`;
   user!: UserComponent;
   activeItem = 'general';
   ngOnInit(): void {
     this.activeRouter.url.subscribe(segments => {
       this.activeItem = segments[0].path
     })
-    //let token = localStorage.getItem('authToken');
     let token = this.authService.getToken();
     let parsedToken =  String(token);
     this.http.get<{role: string}>(`${this.userUrl}/is-admin-or-user`, {params: {token:parsedToken}}).subscribe(
