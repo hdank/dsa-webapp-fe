@@ -47,7 +47,6 @@ export class StatisticComponent implements OnInit {
     this.http.get<{ role: string }>(`${this.userUrl}/is-admin-or-user`, { params: { token: parsedToken } })
       .subscribe(data => {
         this.role = data.role;  // Set the role of the user
-        console.log(this.role);  // Log the role for debugging purposes
       });
   }
 

@@ -21,9 +21,6 @@ export class LandingpageComponent implements OnInit {
         var rect = eyes.getBoundingClientRect();
         var x = (event.pageX - rect.left) / 100 + "px";
         var y = (event.pageY - rect.top) / 100 + "px";
-
-      console.log("x",x);
-      console.log("y",y);
         eyes.style.transform = "translate3d(" + x + "," + y + ", 0px)";
     }
   }

@@ -23,7 +23,6 @@ export class AuthserviceService {
 
   autoLogin(token:string): Observable<any>{
     const stringToken = String(token);
-    console.log("Sending token:", stringToken);
     return this.http.get(`${this.baseUrl}/auto-login?token=${stringToken}`)
             .pipe(catchError(()=>of(null)));
   }
@@ -57,14 +56,11 @@ export class AuthserviceService {
   }
 
   getMssv() {
-    console.log(document.cookie)
     const name = "authMssv=";
     const decodedCookie = decodeURIComponent(document.cookie);
     const cookies = decodedCookie.split(';');
-    console.log("decodedCookie",cookies)
     for (let i = 0; i < cookies.length; i++) {
       let c = cookies[i].trim();
-      console.log("c",c)
       if (c.indexOf(name) === 0) {
         return c.substring(name.length, c.length);
       }

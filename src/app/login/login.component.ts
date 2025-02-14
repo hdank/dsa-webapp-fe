@@ -43,7 +43,6 @@ export class LoginComponent implements OnInit {
 
   userLogin() {
     this.authService.userLogin(this.user).subscribe(response=>{
-      console.log(response)
       if(response){
         const tokenString = String(response.token);
         const mssvString = String(response.mssv);
