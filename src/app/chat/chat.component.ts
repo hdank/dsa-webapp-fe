@@ -58,11 +58,9 @@ export class ChatComponent implements OnInit {
           .then(response => response.json())  // Parse the response as JSON
           .then(data => {
             this.chatHistory = data.data.history;  // Set chat history from the response
-            console.log(data.data)
             this.setHistoryInit();  // Initialize the chat history
           })
           .catch(error => {
-            console.log(error);  // Log error if fetch fails
             //this.router.navigate(['/chat']);  // Redirect to chat if an error occurs
           });
       } else {
@@ -101,7 +99,10 @@ export class ChatComponent implements OnInit {
 
   // Initialize chat history if available
   setHistoryInit() {
-    console.log(this.chatHistory)
+    const messagesContainer = document.getElementById("messages-container") as HTMLDivElement;
+    if (messagesContainer) {
+      messagesContainer.innerHTML = "";
+    }
     if (this.chatHistory.length > 0) {
       for (const item of this.chatHistory) {
         this.chatService.setHistory(item);  // Add each item to chat history in the service

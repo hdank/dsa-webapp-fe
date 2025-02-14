@@ -23,10 +23,15 @@ import {environments} from "../../environments/environments";
 })
 export class NewChatComponent {
   selectedModel = ''
-  private userId = ''
+
   isRecording = false;  // Flag to check if recording is in progress
   isSending = false;    // Flag to check if the message is being sent
-  public convHistory: any[] = []  // Array to store conversation history
+  public suggestedQues = [
+    'Khái niệm cấu trúc dữ liệu là gì?',
+    'Khái niệm thuật toán là gì?',
+    'Thuật toán DFS là gì?',
+    'Bubble sort là gì'
+  ]
 
   // Constructor to inject services
   constructor(
@@ -38,7 +43,7 @@ export class NewChatComponent {
 
   // On component initialization, check token and fetch conversation history
   ngOnInit(): void {
-    this.userId = this.authService.getMssv()  // Set init userId for set conversations record
+
     const token = this.authService.getToken();  // Get the authentication token
 
     if (token != null) {  // If token exists, continue
@@ -46,15 +51,6 @@ export class NewChatComponent {
     } else {
       this.router.navigate(['/login']);  // Redirect to login page if no token
     }
-
-    // Fetch conversations from the backend
-    fetch(`${environments.API_JAVA_BE}/user/get-conversations?id=${this.userId}`)
-      .then(response => response.json())
-      .then(data => {
-        this.convHistory = data;  // Store conversation history
-      });
-
-    console.log("this.convHistory", this.convHistory);  // Log for debugging purposes
 
     // Check selectedModel for option button render
     this.selectedModel = this.chatService.getSelectedModel()
@@ -109,7 +105,7 @@ export class NewChatComponent {
 
     this.chatService.setFirstMsg(queryText);  // Set the first message for the conversation
     let newConvId = await this.chatService.getNewConvId();  // Get the new conversation ID
-    this.router.navigate([`/chat/${newConvId}`]);  // Navigate to the new conversation page
+    await this.router.navigate([`/chat/${newConvId}`]);  // Navigate to the new conversation page
   };
 
   // Stop the speech recognition
@@ -122,11 +118,6 @@ export class NewChatComponent {
   startRecord(): void {
     this.isRecording = true;  // Update recording flag
     this.speechService.startRecognition();  // Start speech recognition
-  }
-
-  // Navigate to a specific conversation by its ID
-  navigateHistory(convId: String) {
-    this.router.navigate([`/chat/${convId}`]);  // Navigate to the selected conversation
   }
 
   // Format the date using DatePipe
@@ -179,5 +170,11 @@ export class NewChatComponent {
     if (file) {
       this.chatService.setImageAttached(file);  // Call the service to attach the dropped file (image)
     }
+  }
+
+  async sendSuggestMsg(suggest:string){
+    this.chatService.setFirstMsg(suggest);  // Set the first message for the conversation
+    let newConvId = await this.chatService.getNewConvId();  // Get the new conversation ID
+    await this.router.navigate([`/chat/${newConvId}`]);  // Navigate to the new conversation page
   }
 }

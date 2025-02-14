@@ -73,7 +73,6 @@ export class GeneralDSAComponent implements OnInit {
     ).subscribe(response => {
       // If response is valid, update the content of the 'graph' element
       if (response) {
-        console.log(response);  // Log the response for debugging
         document.getElementById('graph')!.innerHTML = response.toString();  // Insert the response into the 'graph' element
       } else {
         console.log('No response received or an error occurred.');  // Log if no response is received or an error occurs

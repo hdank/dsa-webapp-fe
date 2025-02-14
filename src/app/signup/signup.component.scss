@@ -131,3 +131,241 @@
     opacity: 1;
   }
 }
+
+@media (max-width: 1025px){
+  .authPage-container{
+    .frame {
+      width: 80%;
+      height: fit-content;
+      .frame-left{
+        form {
+          row-gap: 1rem;
+          padding: 30px;
+          h2 {
+            font-size: 1.8rem;
+          }
+          .avatar-container{
+            height: 4rem;
+            .avatar{
+              width: 4rem;
+              height: 4rem;
+            }
+          }
+          .form-field {
+            padding: 0.5rem;
+            padding-right: 3rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+          }
+
+          input, select {
+            width: 30rem;
+            height: 2rem;
+          }
+
+          .form-itemGr {
+            column-gap: 1rem;
+
+            #message {
+              font-size: 0.75rem;
+            }
+          }
+          .submit-container{
+            .submitBtn {
+              padding: 0.75rem 1.25rem;
+              font-size: 0.875rem;
+              line-height: 1.25rem;
+            }
+            .backToLogin{
+              font-size: 14px;
+            }
+          }
+        }
+      }
+      .frame-right{
+        height: 530px;
+      }
+    }
+  }
+}
+@media (max-width: 769px){
+  .authPage-container{
+    .frame {
+      width: 90%;
+      height: fit-content;
+      .frame-left{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        form {
+          row-gap: 1rem;
+          padding: 30px;
+          h2 {
+            font-size: 1.8rem;
+          }
+          .avatar-container{
+            height: 4rem;
+            .avatar{
+              width: 4rem;
+              height: 4rem;
+            }
+          }
+          .form-field {
+            padding: 0.5rem;
+            padding-right: 3rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+          }
+
+          input, select {
+            width: 30rem;
+            height: 2rem;
+          }
+
+          .form-itemGr {
+            column-gap: 1rem;
+
+            #message {
+              font-size: 0.75rem;
+            }
+          }
+          .submit-container{
+            .submitBtn {
+              padding: 0.75rem 1.25rem;
+              font-size: 0.875rem;
+              line-height: 1.25rem;
+            }
+            .backToLogin{
+              font-size: 14px;
+            }
+          }
+        }
+      }
+      .frame-right{
+        display: none;
+      }
+    }
+  }
+}
+@media (max-width: 426px){
+  .authPage-container{
+    .frame {
+      width: 90%;
+      height: fit-content;
+      .frame-left{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        form {
+          row-gap: 1rem;
+          padding: 30px;
+          h2 {
+            font-size: 1.8rem;
+          }
+          .avatar-container{
+            height: 4rem;
+            .avatar{
+              width: 4rem;
+              height: 4rem;
+            }
+          }
+          .form-field {
+            padding: 0.5rem;
+            padding-right: 3rem;
+            font-size: 0.675rem;
+            line-height: 1.25rem;
+          }
+
+          input, select {
+            width: 30rem;
+            height: 2rem;
+          }
+
+          .form-itemGr {
+            column-gap: 1rem;
+            font-size: 0.75rem;
+
+            #message {
+              font-size: 0.75rem;
+            }
+          }
+          .submit-container{
+            .submitBtn {
+              padding: 0.75rem 1.25rem;
+              font-size: 0.675rem;
+              line-height: 1.25rem;
+            }
+            .backToLogin{
+              font-size: 0.675rem;
+            }
+          }
+        }
+      }
+      .frame-right{
+        display: none;
+      }
+    }
+  }
+}
+@media (max-width: 321px){
+  .authPage-container{
+    height: auto;
+    .frame {
+      width: 90%;
+      .frame-left{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        form {
+          row-gap: 1rem;
+          padding: 30px;
+          h2 {
+            font-size: 1.8rem;
+          }
+          .avatar-container{
+            height: 4rem;
+            .avatar{
+              width: 4rem;
+              height: 4rem;
+            }
+          }
+          .form-field {
+            padding: 0.5rem;
+            padding-right: 3rem;
+            font-size: 0.675rem;
+            line-height: 1.25rem;
+          }
+
+          input, select {
+            width: 30rem;
+            height: 2rem;
+          }
+
+          .form-itemGr {
+            flex-direction: column;
+            row-gap: 1rem;
+            column-gap: 1rem;
+            font-size: 0.75rem;
+
+            #message {
+              font-size: 0.75rem;
+            }
+          }
+          .submit-container{
+            .submitBtn {
+              padding: 0.75rem 1.25rem;
+              font-size: 0.675rem;
+              line-height: 1.25rem;
+            }
+            .backToLogin{
+              font-size: 0.675rem;
+            }
+          }
+        }
+      }
+      .frame-right{
+        display: none;
+      }
+    }
+  }
+}

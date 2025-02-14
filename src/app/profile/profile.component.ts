@@ -25,12 +25,10 @@ export class ProfileComponent implements OnInit{
       const token = this.authService.getToken();
       const userId = this.authService.getMssv();
       const userRole = this.authService.getRole();
-      console.log(userId);
-      console.log(userRole)
+
       if(token){
         this.http.get<UserComponent>(`${this.baseUrl}/get-user-by-token`,{params:{token:token}}).subscribe(
           data=>{
-            console.log("user",this.user)
             this.user = data;
           }
         );

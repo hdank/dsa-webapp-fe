@@ -33,9 +33,6 @@ export class SignupComponent {
   }
   constructor(private router:Router, private http: HttpClient){}
   signUp(){
-    console.log("signUp method triggered");
-    console.log(this.user);
-    console.log(this.user.password);
     this.http.post<Authresponse>(`${this.baseUrl}`,this.user)
         .pipe(
           map(response => response),
@@ -43,7 +40,6 @@ export class SignupComponent {
         )
         .subscribe((response) => {
           if(response){
-            console.log("User successfully signed up: ", response);
             this.router.navigate(['/login'])
           }
           else{
