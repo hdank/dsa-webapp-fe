@@ -64,7 +64,6 @@ export class ChatService {
         }
       });
     }
-    console.log("this.attachedImage", this.attachedImage);
   }
 
   // Set the attached image and handle the preview display
@@ -106,7 +105,6 @@ export class ChatService {
 
   // Speech synthesis for reading messages aloud
   textSpeeching(message: "" | null | string) {
-    console.log(message);
     if (message == null) {
       alert("Have some problem with speeching");
       return;
@@ -194,8 +192,8 @@ export class ChatService {
             return;
           }
           const decoder = new TextDecoder();
-          console.log(decoder.decode(value));
-          const jsonData = JSON.parse(decoder.decode(value).replace(/^data:\s*/, ''));
+          const cleanValue = decoder.decode(value).replace(/^data:\s*/, '').replace(/\n/, '\\n').trim()
+          const jsonData = JSON.parse(cleanValue);
 
           // Append related documents to dropdown
           if (!getRelateDoc) {
