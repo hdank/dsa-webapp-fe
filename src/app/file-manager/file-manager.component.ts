@@ -100,11 +100,8 @@ export class FileManagerComponent implements OnInit {
   // Load files with optional search term
   loadFiles(searchTerm: any) {
     this.filesService.getFiles(this.currentPage, this.pageSize, searchTerm).subscribe((response: any) => {
-      console.log(response.content)
       this.files = response.content;  // Store the files data
       this.totalPages = response.totalPages;  // Store the total number of pages
-      console.log(this.files);  // Log the files data for debugging
-      console.log(this.totalPages);  // Log total pages for debugging
     });
   }
 
@@ -124,7 +121,6 @@ export class FileManagerComponent implements OnInit {
           id: response.document_id,
           filename: response.filename
         };
-        console.log("saveInfo", saveInfo);  // Log file save info for debugging
 
         // Save file info to the backend server
         this.filesService.uploadFile(this.selectedFile).subscribe(() => {
