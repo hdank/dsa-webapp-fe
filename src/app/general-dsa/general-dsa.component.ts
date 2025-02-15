@@ -62,28 +62,12 @@ export class GeneralDSAComponent implements OnInit {
       .subscribe(data => {
         this.role = data.role;  // Set the user's role
       });
-
-    // Fetch data for the general DSA and display it in the graph container
-    this.http.get(`${this.baseUrl}/general`, { responseType: 'text' }).pipe(
-      map(response => response),  // Map the response (in this case, it's text)
-      catchError(error => {
-        console.error("Error occurred: ", error);  // Handle errors if they occur
-        return of(null);  // Return a null observable to prevent breaking the flow
-      })
-    ).subscribe(response => {
-      // If response is valid, update the content of the 'graph' element
-      if (response) {
-        document.getElementById('graph')!.innerHTML = response.toString();  // Insert the response into the 'graph' element
-      } else {
-        console.log('No response received or an error occurred.');  // Log if no response is received or an error occurs
-      }
-    });
   }
 
   // Load the files based on the current page, page size, and search term
   loadFiles() {
     this.filesService.getFiles(this.currentPage, this.pageSize, this.searchTerm).subscribe((response:any) => {
-      this.files = response;  // Store the fetched files into the 'files' array
+      this.files = response.content;  // Store the fetched files into the 'files' array
     });
   }
 

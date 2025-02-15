@@ -60,7 +60,6 @@ export class FileManagerComponent implements OnInit {
   ) {
     // Load files when component is initialized
     this.loadFiles(this.searchTerm);
-    this.pagesArray = Array(this.totalPages).fill(0).map((_, index) => index);
   }
 
   ngOnInit() {
@@ -102,6 +101,7 @@ export class FileManagerComponent implements OnInit {
     this.filesService.getFiles(this.currentPage, this.pageSize, searchTerm).subscribe((response: any) => {
       this.files = response.content;  // Store the files data
       this.totalPages = response.totalPages;  // Store the total number of pages
+      this.pagesArray = Array(this.totalPages).fill(0).map((_, index) => index);
     });
   }
 
