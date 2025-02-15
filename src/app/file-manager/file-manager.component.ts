@@ -68,7 +68,7 @@ export class FileManagerComponent implements OnInit {
     window.onclick = (e: MouseEvent) => {
       let uploadEl: HTMLElement = $('.upload-container')[0];
       let showBtn: HTMLElement = $('.showBtn')[0];
-      if (uploadEl.contains(e.target as Node) || e.target == showBtn) {
+      if (uploadEl?.contains(e.target as Node) || e.target == showBtn) {
         return;
       }
       $(".upload-container").slideUp("fast");

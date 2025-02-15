@@ -64,6 +64,7 @@ export class ChatService {
         }
       });
     }
+    console.log("this.attachedImage", this.attachedImage);
   }
 
   // Set the attached image and handle the preview display
@@ -105,6 +106,7 @@ export class ChatService {
 
   // Speech synthesis for reading messages aloud
   textSpeeching(message: "" | null | string) {
+    console.log(message);
     if (message == null) {
       alert("Have some problem with speeching");
       return;
@@ -192,42 +194,53 @@ export class ChatService {
             return;
           }
           const decoder = new TextDecoder();
-          const cleanValue = decoder.decode(value).replace(/^data:\s*/, '').replace(/\n/, '\\n').trim()
-          const jsonData = JSON.parse(cleanValue);
-
-          // Append related documents to dropdown
-          if (!getRelateDoc) {
-            console.log(jsonData.docs);
-            const docList = jsonData.docs;
-            if (docList.length != 0) {
-              for (const doc of docList) {
-                let filePathSplit = doc.metadata.file_path.split("\\");
-                const fileName = filePathSplit[filePathSplit.length - 1];
-                if (!appendedList.includes(fileName)) {
-                  let relateDocEl = document.createElement("div");
-                  let docName = document.createElement("p");
-                  let author = document.createElement("p");
-                  let score = document.createElement("p");
-                  relateDocEl.className = "relate-doc";
-                  docName.className = "doc-name";
-                  author.className = "author";
-                  score.className = "score";
-                  docName.innerText = fileName;
-                  author.innerText = doc.metadata.Author;
-                  score.innerText = doc.score;
-                  relateDocEl.appendChild(docName);
-                  relateDocEl.appendChild(author);
-                  relateDocEl.appendChild(score);
-                  relateDocDropdown.appendChild(relateDocEl);
-                  appendedList.push(fileName);
+          const jsonString = decoder.decode(value).split("data: ")
+          //log for debug check if more than 1 response in stream at the same time
+          if(jsonString.length>2){
+            console.log(jsonString)
+          }
+          for (const string of jsonString.slice(1)) {
+            //console.log(string)
+            try {
+              const jsonData =JSON.parse(string)
+              // Append related documents to dropdown
+              if (!getRelateDoc) {
+                const docList = jsonData.docs;
+                if (docList.length != 0) {
+                  for (const doc of docList) {
+                    let filePathSplit = doc.metadata.file_path.split("\\");
+                    const fileName = filePathSplit[filePathSplit.length - 1];
+                    if (!appendedList.includes(fileName)) {
+                      let relateDocEl = document.createElement("div");
+                      let docName = document.createElement("p");
+                      let author = document.createElement("p");
+                      let score = document.createElement("p");
+                      relateDocEl.className = "relate-doc";
+                      docName.className = "doc-name";
+                      author.className = "author";
+                      score.className = "score";
+                      docName.innerText = fileName;
+                      author.innerText = doc.metadata.Author;
+                      score.innerText = doc.score;
+                      relateDocEl.appendChild(docName);
+                      relateDocEl.appendChild(author);
+                      relateDocEl.appendChild(score);
+                      relateDocDropdown.appendChild(relateDocEl);
+                      appendedList.push(fileName);
+                    }
+                  }
                 }
               }
+              // Collect and display the response
+              fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g, '');
+              p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g, '<code>');
+              readButton.addEventListener('click', () => this.textSpeeching(fullResponse));
+            } catch (error){
+              console.error("Lỗi parse JSON:", error, jsonString);
             }
           }
-          // Collect and display the response
-          fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g, '');
-          p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g, '<code>');
-          readButton.addEventListener('click', () => this.textSpeeching(fullResponse));
+          //console.log(decoder.decode(value).replace(/^data:\s*/, ''));
+          //const jsonData = JSON.parse(decoder.decode(value).replace(/^data:\s*/, ''));
           read();
         });
       };
