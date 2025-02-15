@@ -68,6 +68,9 @@ export class FileManagerComponent implements OnInit {
     window.onclick = (e: MouseEvent) => {
       let uploadEl: HTMLElement = $('.upload-container')[0];
       let showBtn: HTMLElement = $('.showBtn')[0];
+      if (!uploadEl){
+        return;
+      }
       if (uploadEl?.contains(e.target as Node) || e.target == showBtn) {
         return;
       }
@@ -97,7 +100,7 @@ export class FileManagerComponent implements OnInit {
   // Load files with optional search term
   loadFiles(searchTerm: any) {
     this.filesService.getFiles(this.currentPage, this.pageSize, searchTerm).subscribe((response: any) => {
-      this.files = response;  // Store the files data
+      this.files = response.content;  // Store the files data
       this.totalPages = response.totalPages;  // Store the total number of pages
     });
   }
