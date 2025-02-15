@@ -55,12 +55,14 @@ export class StatisticComponent implements OnInit {
   loadUsers(searchingKey: any) {
     // Get all users information from the backend
     this.http.get<UserComponent[]>(`${this.userUrl}/get-all-user`).subscribe((data) => {
-        searchingKey = searchingKey.toLowerCase();  // Convert searching key to lowercase
+        if (searchingKey){
+          searchingKey = searchingKey.toLowerCase();  // Convert searching key to lowercase
+        }
 
         // Filter users based on the searching key
-        searchingKey = ''
+        searchingKey == ''
           ? this.users = data  // If the search key is empty, display all users
-          : this.users = data.filter(item => item.mssv == searchingKey || (item.fname.toLowerCase() + " " + item.lname.toLowerCase()).includes(searchingKey));
+          : this.users = data.filter(item => item.mssv == searchingKey || (item.fname?.toLowerCase() + " " + item.lname?.toLowerCase()).includes(searchingKey));
 
         // Set the total pages based on the number of users and the page size
         this.totalPages = new Array(Math.ceil(this.users.length / this.pageSize));
