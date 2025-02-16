@@ -185,7 +185,7 @@ export class ChatService {
     }).then((response) => {
       let getRelateDoc = false;
       const reader = response.body?.getReader();
-
+      let streamingData = ""
       const read = () => {
         reader?.read().then(({ done, value }) => {
           if (done) {
@@ -194,53 +194,55 @@ export class ChatService {
             return;
           }
           const decoder = new TextDecoder();
-          const jsonString = decoder.decode(value).split("data: ")
-          //log for debug check if more than 1 response in stream at the same time
-          if(jsonString.length>2){
-            console.log(jsonString)
-          }
-          for (const string of jsonString.slice(1)) {
-            //console.log(string)
-            try {
-              const jsonData =JSON.parse(string)
-              // Append related documents to dropdown
-              if (!getRelateDoc) {
-                const docList = jsonData.docs;
-                if (docList.length != 0) {
-                  for (const doc of docList) {
-                    let filePathSplit = doc.metadata.file_path.split("\\");
-                    const fileName = filePathSplit[filePathSplit.length - 1];
-                    if (!appendedList.includes(fileName)) {
-                      let relateDocEl = document.createElement("div");
-                      let docName = document.createElement("p");
-                      let author = document.createElement("p");
-                      let score = document.createElement("p");
-                      relateDocEl.className = "relate-doc";
-                      docName.className = "doc-name";
-                      author.className = "author";
-                      score.className = "score";
-                      docName.innerText = fileName;
-                      author.innerText = doc.metadata.Author;
-                      score.innerText = doc.score;
-                      relateDocEl.appendChild(docName);
-                      relateDocEl.appendChild(author);
-                      relateDocEl.appendChild(score);
-                      relateDocDropdown.appendChild(relateDocEl);
-                      appendedList.push(fileName);
+          streamingData += decoder.decode(value) //append response value until have completed stream
+
+          if (streamingData.trim().endsWith("}")) { //If streamData is endswith "}" => completed stream
+            let jsonString = streamingData.split("data: ") //split by data : for separate each completed stream
+            if(jsonString.length>2){
+              //log for debug check if more than 1 response in stream at the same time
+              //console.log(jsonString)
+            }
+            for (const string of jsonString.slice(1)) {
+              try {
+                const jsonData =JSON.parse(string)
+                // Append related documents to dropdown
+                if (!getRelateDoc) {
+                  const docList = jsonData.docs;
+                  if (docList.length != 0) {
+                    for (const doc of docList) {
+                      let filePathSplit = doc.metadata.file_path.split("\\");
+                      const fileName = filePathSplit[filePathSplit.length - 1];
+                      if (!appendedList.includes(fileName)) {
+                        let relateDocEl = document.createElement("div");
+                        let docName = document.createElement("p");
+                        let author = document.createElement("p");
+                        let score = document.createElement("p");
+                        relateDocEl.className = "relate-doc";
+                        docName.className = "doc-name";
+                        author.className = "author";
+                        score.className = "score";
+                        docName.innerText = fileName;
+                        author.innerText = doc.metadata.Author;
+                        score.innerText = doc.score;
+                        relateDocEl.appendChild(docName);
+                        relateDocEl.appendChild(author);
+                        relateDocEl.appendChild(score);
+                        relateDocDropdown.appendChild(relateDocEl);
+                        appendedList.push(fileName);
+                      }
                     }
                   }
                 }
+                // Collect and display the response
+                fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g, '');
+                p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g, '<code>');
+                readButton.addEventListener('click', () => this.textSpeeching(fullResponse));
+              } catch (error){
+                console.error("Lỗi parse JSON:", error, jsonString);
               }
-              // Collect and display the response
-              fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g, '');
-              p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g, '<code>');
-              readButton.addEventListener('click', () => this.textSpeeching(fullResponse));
-            } catch (error){
-              console.error("Lỗi parse JSON:", error, jsonString);
             }
+            streamingData = ""
           }
-          //console.log(decoder.decode(value).replace(/^data:\s*/, ''));
-          //const jsonData = JSON.parse(decoder.decode(value).replace(/^data:\s*/, ''));
           read();
         });
       };
@@ -317,7 +319,7 @@ export class ChatService {
       },
       body: JSON.stringify(payload)
     }).then((response) => {
-      console.log(response);
+      //console.log(response);
     });
   }
 
