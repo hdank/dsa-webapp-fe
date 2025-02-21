@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, QueryList, ViewChildren} from '@angular/core';
 import { FormsModule } from "@angular/forms";
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { Router } from "@angular/router";
@@ -7,6 +7,8 @@ import { SpeechService } from "../../service/speech.service";
 import { ChatService } from "../../service/chat.service";
 import { DatePipe, NgClass, NgForOf, NgIf } from "@angular/common";
 import {environments} from "../../environments/environments";
+import {HistoryBarComponent} from "../history-bar/history-bar.component";
+import {HistoryService} from "../../service/history.service";
 
 @Component({
   selector: 'app-new-chat',
@@ -16,14 +18,20 @@ import {environments} from "../../environments/environments";
     SidebarComponent,
     NgClass,
     NgForOf,
-    NgIf
+    NgIf,
+    HistoryBarComponent
   ],
   templateUrl: './new-chat.component.html',
   styleUrl: '../chat/chat.component.scss'
 })
 export class NewChatComponent {
-  selectedModel = ''
+  @ViewChildren('container') containers!: QueryList<ElementRef>;
+  @ViewChildren('text') texts!: QueryList<ElementRef>;
 
+  ngAfterViewInit() {
+    this.resetScroll();
+  }
+  selectedModel = ''
   isRecording = false;  // Flag to check if recording is in progress
   isSending = false;    // Flag to check if the message is being sent
   public suggestedQues = [
@@ -38,7 +46,8 @@ export class NewChatComponent {
     private router: Router,
     private authService: AuthserviceService,
     private speechService: SpeechService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private historyService: HistoryService,
   ) { }
 
   // On component initialization, check token and fetch conversation history
@@ -176,5 +185,31 @@ export class NewChatComponent {
     this.chatService.setFirstMsg(suggest);  // Set the first message for the conversation
     let newConvId = await this.chatService.getNewConvId();  // Get the new conversation ID
     await this.router.navigate([`/chat/${newConvId}`]);  // Navigate to the new conversation page
+  }
+
+  startScroll(index: number) {
+    const container = this.containers.toArray()[index].nativeElement;
+    const text = this.texts.toArray()[index].nativeElement;
+
+    const containerWidth = container.clientWidth;
+    const textWidth = text.scrollWidth;
+
+    if (textWidth > containerWidth) {
+      text.style.overflow = "visible";
+      text.style.transition = 'transform 2s linear';
+      text.style.transform = `translateX(-${textWidth - containerWidth}px)`;
+    }
+  }
+
+  stopScroll(index: number) {
+    const text = this.texts.toArray()[index].nativeElement;
+    text.style.transition = 'transform 0.5s ease-out';
+    text.style.transform = 'translateX(0)';
+  }
+
+  resetScroll() {
+    this.texts.forEach(text => {
+      text.nativeElement.style.transform = 'translateX(0)';
+    });
   }
 }

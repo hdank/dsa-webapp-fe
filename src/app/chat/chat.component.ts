@@ -9,11 +9,13 @@ import { AuthserviceService } from "../authservice.service";
 import { SpeechService } from "../../service/speech.service";
 import { ChatService } from "../../service/chat.service";
 import {environments} from "../../environments/environments";
+import {HistoryBarComponent} from "../history-bar/history-bar.component";
+import {HistoryService} from "../../service/history.service";
 
 @Component({
   selector: 'app-chat',
   standalone: true,  // This component is a standalone component
-  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass, NgIf], // Import necessary modules and components
+  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass, NgIf, HistoryBarComponent], // Import necessary modules and components
   templateUrl: './chat.component.html',  // Path to the HTML template
   styleUrl: './chat.component.scss',  // Path to the component's CSS/SCSS
   encapsulation: ViewEncapsulation.None // Apply the component's CSS to the inserted HTML elements
@@ -27,7 +29,7 @@ export class ChatComponent implements OnInit {
   isRecording = false;  // State to track if speech recognition is active
   isSending = false;  // State to track if a message is being sent
   content: any;  // Placeholder for content, may be used later
-  testStatus = false;  // Toggle state for testing purposes
+  userId = '';  // Toggle state for testing purposes
 
   // Inject necessary services and modules into the constructor
   constructor(
@@ -36,7 +38,8 @@ export class ChatComponent implements OnInit {
     private http: HttpClient,
     private authService: AuthserviceService,
     private speechService: SpeechService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private historyService: HistoryService
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +53,10 @@ export class ChatComponent implements OnInit {
 
     // Get conversation ID from URL parameters
     this.route.paramMap.subscribe(params => {
+      const messagesContainer = document.getElementById("messages-container") as HTMLDivElement;
+      if (messagesContainer) {
+        messagesContainer.innerHTML = "";
+      }
       const convId = params.get('id');
       if (convId) {
         this.chatService.setCurrentConvId(convId);  // Set the current conversation ID
@@ -63,7 +70,8 @@ export class ChatComponent implements OnInit {
           .catch(error => {
             //this.router.navigate(['/chat']);  // Redirect to chat if an error occurs
           });
-      } else {
+      }
+      else {
         this.router.navigate(['/chat']);  // Redirect to chat if no conversation ID
       }
     });
@@ -71,6 +79,7 @@ export class ChatComponent implements OnInit {
     // Check if it's a new conversation and send the first message if required
     let firstMsg = this.chatService.getFirstMsg();
     if (firstMsg) {
+      console.log("firstMsg1", firstMsg);
       this.chatService.sendMessage();  // Send the first message
     }
 
@@ -83,6 +92,14 @@ export class ChatComponent implements OnInit {
       let radioBtn = document.getElementById("llamaVision") as HTMLInputElement;
       radioBtn.checked = true;
     }
+
+    // Fetch conversations from the backend
+    this.userId = this.authService.getMssv()
+    fetch(`${environments.API_JAVA_BE}/user/get-conversations?id=${this.userId}`)
+      .then(response => response.json())
+      .then(data => {
+        this.historyService.setHistoryConv(data);  // Store conversation history
+      });
   }
 
   onSetModel(modelValue:string){
@@ -99,10 +116,6 @@ export class ChatComponent implements OnInit {
 
   // Initialize chat history if available
   setHistoryInit() {
-    const messagesContainer = document.getElementById("messages-container") as HTMLDivElement;
-    if (messagesContainer) {
-      messagesContainer.innerHTML = "";
-    }
     if (this.chatHistory.length > 0) {
       for (const item of this.chatHistory) {
         this.chatService.setHistory(item);  // Add each item to chat history in the service

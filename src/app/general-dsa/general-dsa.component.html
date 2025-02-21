@@ -1,33 +1,36 @@
-<div  class="block"><app-sidebar></app-sidebar></div>
-<div id="file">
-  <div class="container mx-auto p-8 max-w-3xl">
-    <div class="bg-white shadow-md rounded-lg p-6">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Tài liệu liên quan</h2>
-      <!-- Uploaded Files List -->
-      <div *ngIf="files.length > 0" class="bg-gray-100 p-4 rounded-lg">
-        <h3 class="text-xl font-semibold text-gray-600 mb-4">Các tài liệu về Cấu trúc dữ liệu và Giải thuật</h3>
-        <ul>
-          <li
-            *ngFor="let file of files"
-            class="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm mb-2"
-          >
-            <span class="text-gray-700">{{ file.fileName }}</span>
-            <div class="flex space-x-3">
-              <button
-                (click)="downloadFile(file.id, file.fileName)"
-                class="text-green-600 hover:text-green-800 transition"
-                title="Tải xuống"
-              >
-                ⬇️
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
+<div class="page-cont">
+  <app-sidebar></app-sidebar>
+  <div id="file">
+    <div class="container mx-auto p-8 max-w-3xl">
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Tài liệu liên quan</h2>
+        <!-- Uploaded Files List -->
+        <div *ngIf="files.length > 0" class="bg-gray-100 p-4 rounded-lg">
+          <h3 class="text-xl font-semibold text-gray-600 mb-4">Các tài liệu về Cấu trúc dữ liệu và Giải thuật</h3>
+          <ul>
+            <li
+              *ngFor="let file of files"
+              class="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm mb-2"
+            >
+              <span class="text-gray-700 file-name">{{ file.fileName }}</span>
+              <div class="flex space-x-3">
+                <button
+                  (click)="downloadFile(file.id, file.fileName)"
+                  class="text-green-600 hover:text-green-800 transition"
+                  title="Tải xuống"
+                >
+                  ⬇️
+                </button>
+              </div>
+            </li>
+          </ul>
+          <p class="hint"><sup>*</sup>Nhấn để tải tài liệu</p>
+        </div>
 
-      <!-- No Files Message -->
-      <div *ngIf="files.length === 0" class="text-center text-gray-500">
-        Chưa có tài liệu nào được tải lên.
+        <!-- No Files Message -->
+        <div *ngIf="files.length === 0" class="text-center text-gray-500">
+          Chưa có tài liệu nào được tải lên.
+        </div>
       </div>
     </div>
   </div>

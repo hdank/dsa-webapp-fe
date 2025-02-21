@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import {environments} from "../environments/environments";
 import {AuthserviceService} from "../app/authservice.service";
+import {HistoryService} from "./history.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import {AuthserviceService} from "../app/authservice.service";
 export class ChatService {
   private flaskUrl = `${environments.API_FLASK_BE}`
   private baseUrl = `${environments.API_JAVA_BE}`
+  private checkTitle:boolean = false
   private currentConId: string | null = null; // Holds the current conversation ID
   private firstMsg: string = ''; // First message for a new chat, shared between components
   private selectedModel: string = 'ask_llama' // Set init and share selected model between components
@@ -16,7 +18,20 @@ export class ChatService {
   attachedImage!: File | null; // Holds the image attached by the user
   MAX_SIZE = 10 * 1024 * 1024; // Maximum allowed image size (10MB)
 
-  constructor(private route: ActivatedRoute, private authService: AuthserviceService,) { }
+  constructor(private route: ActivatedRoute,
+              private authService: AuthserviceService,
+              private historyService: HistoryService,) { }
+
+  //Response bouncing point
+  resBouncingPnt(){
+    let div = document.createElement("div");
+    for (let i = 0; i < 3; i++) {
+      let span = document.createElement("span");
+      div.appendChild(span);
+    }
+    div.classList.add("typing-indicator");
+    return div
+  }
 
   //conver to Byte
   convertFileSize(sizeInBytes: number): string {
@@ -127,6 +142,7 @@ export class ChatService {
   async serverResponse(query: string) {
     let div = document.createElement('div');
     let p = document.createElement('p');
+    let bouncingPoint = this.resBouncingPnt()
     let time = document.createElement('p');
     let readButton = document.createElement('button');
     let messageTime = new Date();
@@ -135,7 +151,8 @@ export class ChatService {
     readButton.innerHTML = "<span class=\"material-symbols-outlined\">volume_up</span>";
     readButton.className = "read-button";
     div.className = "message-box left";
-    p.className = "response" + this.count;
+    p.className = "response";
+    p.appendChild(bouncingPoint);
     div.appendChild(time);
     div.appendChild(p);
     div.appendChild(readButton);
@@ -187,8 +204,9 @@ export class ChatService {
       const reader = response.body?.getReader();
       let streamingData = ""
       const read = () => {
-        reader?.read().then(({ done, value }) => {
+        reader?.read().then(async ({done, value}) => {
           if (done) {
+            this.checkTitle = false
             div.appendChild(relateFileBox);
             console.log("end");
             return;
@@ -198,13 +216,31 @@ export class ChatService {
 
           if (streamingData.trim().endsWith("}")) { //If streamData is endswith "}" => completed stream
             let jsonString = streamingData.split("data: ") //split by data : for separate each completed stream
-            if(jsonString.length>2){
+            if (jsonString.length > 2) {
               //log for debug check if more than 1 response in stream at the same time
               //console.log(jsonString)
             }
             for (const string of jsonString.slice(1)) {
               try {
-                const jsonData =JSON.parse(string)
+                const jsonData = JSON.parse(string)
+                // is first request => currentConTitle = ''
+                if (!this.checkTitle) {
+                  // fetch and compare old title with currently title
+                  await fetch(`${this.baseUrl}/user/get-conversation?id=${this.currentConId}`)
+                    .then(res => res.json())
+                    .then(async data => {
+                      if (data.title != jsonData.name) {
+                        //rename conversation title
+                        await fetch(`${this.baseUrl}/user/rename-conversation?id=${this.currentConId}&name=${jsonData.name.replace(/^[“”"'\s]+|[“”"'\s]+$/g, '')}`)
+                          .then(res => res.json())
+                          .then(data => {
+                            console.log('Đổi tiêu đề chat thành công')
+                            this.historyService.fetchConversation();
+                            this.checkTitle = true
+                          })
+                      }
+                    })
+                }
                 // Append related documents to dropdown
                 if (!getRelateDoc) {
                   const docList = jsonData.docs;
@@ -234,10 +270,13 @@ export class ChatService {
                   }
                 }
                 // Collect and display the response
+                if (fullResponse == '') {
+                  p.removeChild(bouncingPoint);
+                }
                 fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g, '');
                 p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g, '<code>');
                 readButton.addEventListener('click', () => this.textSpeeching(fullResponse));
-              } catch (error){
+              } catch (error) {
                 console.error("Lỗi parse JSON:", error, jsonString);
               }
             }
@@ -298,7 +337,7 @@ export class ChatService {
   }
 
   // Function to save the current conversation to a database
-  saveConversation(currentConId: String | null, title: String, userId: String) {
+  async saveConversation(currentConId: String | null, title: String, userId: String) {
     if (!(currentConId && title && userId)) {
       alert("Save conversation failed");
       return;
@@ -312,7 +351,7 @@ export class ChatService {
     };
 
     // Send the conversation data to the server
-    fetch(`${this.baseUrl}/user/set-new-conversations`, {
+    await fetch(`${this.baseUrl}/user/set-new-conversations`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -330,7 +369,9 @@ export class ChatService {
       // Handle initial message (if new conversation)
       if (this.firstMsg) {
         queryText = this.firstMsg;
-        this.saveConversation(this.currentConId, this.firstMsg , this.authService.getMssv());
+        this.saveConversation(this.currentConId, 'Hộp thoại mới', this.authService.getMssv()).then(r =>
+          this.historyService.fetchConversation()
+        ) ;
         this.firstMsg = '';
       } else {
         // Get query from input field
@@ -380,7 +421,7 @@ export class ChatService {
     this.currentConId = convId;
   }
 
-  // Function to set history from previous conversations
+  // Function to set history from previous conversationstyping-indicator
   setHistory(item: any) {
     var div = document.createElement('div');
     var p = document.createElement('p');

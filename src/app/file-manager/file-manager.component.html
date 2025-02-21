@@ -1,31 +1,33 @@
-<div  class="block"><app-sidebar></app-sidebar></div>
-<div class="page-container">
-  <h2>Quản lý tài liệu</h2>
-  <!-- File Upload Section -->
-  <div class="tools-container">
-  <div class="tools-section">
-    <button class="showBtn" (click)="showUpload()">
-      Thêm tài liệu mới
-    </button>
-    <span class="sumaryCount">Tổng cộng : {{files.length || 0}} tài liệu</span>
-  </div>
-  <div class="tools-searching">
-    <input id="searchInp" type="text" placeholder="Search by keywords or ID">
-    <button (click)="search()">
-      🔍
-    </button>
-  </div>
-  </div>
-  <div class="upload-container" *ngIf="role ==='admin'">
-    <label class="upload-file-label">Chọn file cần tải lên (không quá 10MB):</label>
-    <input
-      id="uploadFileInp"
-      type="file"
-      (change)="onFileSelected($event)"
-      class="block w-200 text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+<div  class="page-cont">
+  <app-sidebar></app-sidebar>
+  <div class="page-container">
+    <h2>Quản lý tài liệu</h2>
+    <!-- File Upload Section -->
+    <div class="tools-container">
+      <div class="tools-section">
+        <button class="showBtn" (click)="showUpload()">
+          Thêm tài liệu mới
+        </button>
+        <span class="sumaryCount">Tổng cộng : {{files.length || 0}} tài liệu</span>
+      </div>
+      <div class="tools-searching">
+        <input id="searchInp" type="text" placeholder="Search by keywords or ID">
+        <button (click)="search()">
+          🔍
+        </button>
+      </div>
+    </div>
+    <div class="upload-container" *ngIf="role ==='admin'">
+      <label class="upload-file-label">Chọn file cần tải lên (không quá 10MB):</label>
+      <input
+        id="uploadFileInp"
+        type="file"
+        (change)="onFileSelected($event)"
+        class="block"
+      />
       <button *ngIf="role ==='admin'"
               (click)="uploadFile()"
+              [disabled]="uploading"
               class="uploadBtn"
       >
         <svg
@@ -38,9 +40,10 @@
           <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
         </svg>
         Tải lên tài liệu
+        <span [class]="uploading ? 'spinner' : ''"></span>
       </button>
-  </div>
-  <!-- Uploaded Files List -->
+    </div>
+    <!-- Uploaded Files List -->
     <table class="table table-striped">
       <thead class="">
       <tr>
@@ -76,9 +79,9 @@
       </tr>
       </tbody>
       <tbody *ngIf="files?.length === 0">
-        <tr>
-          <td colspan="5" style="text-align: center">Chưa có tài liệu nào được tải lên.</td>
-        </tr>
+      <tr>
+        <td colspan="5" style="text-align: center">Chưa có tài liệu nào được tải lên.</td>
+      </tr>
       </tbody>
     </table>
     <nav aria-label="Page navigation example">
@@ -91,3 +94,5 @@
       </ul>
     </nav>
   </div>
+</div>
+

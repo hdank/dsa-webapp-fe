@@ -1,76 +1,84 @@
-<app-sidebar></app-sidebar>
-<script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
-    <div class="card-container">
-      <div class="card-header">
-        <div class="bot-status">
-          <div class="img-avatar"><img src="/logo-removebg-preview.png" class="img-avatar"></div>
-          <div class="text-chat">DSA Bot</div>
-          <div class="online"></div>
-        </div>
-        <div class="new-chat-navTools">
-          <button class="new-chat-btn" (click)="navigateNewChat()">
+<div class="page-cont">
+  <app-sidebar></app-sidebar>
+  <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+  <div class="card-container">
+    <div class="card-header">
+      <div class="bot-status">
+        <div class="img-avatar"><img src="/logo-removebg-preview.png" class="img-avatar"></div>
+        <div class="text-chat">Algo Bot</div>
+        <div class="online"></div>
+      </div>
+      <div class="new-chat-navTools">
+        <button class="new-chat-btn" (click)="navigateNewChat()">
           <span class="material-symbols-outlined">
           add_comment
           </span>
-            New chat
-          </button>
-          <div class="wrapper">
-            <div class="option">
-              <input (click)="onSetModel('ask_llama')" id="llama" value="option1" name="btn" type="radio" class="input">
-              <div class="btn">
-                <span class="span">Llama3.2</span>
-              </div>
+          New chat
+        </button>
+        <div class="wrapper">
+          <div class="option">
+            <input (click)="onSetModel('ask_llama')" id="llama" value="option1" name="btn" type="radio" class="input">
+            <div class="btn">
+              <span class="span">Llama3.2</span>
             </div>
-            <div class="option">
-              <input (click)="onSetModel('ask_llama_vision')" id="llamaVision" value="option2" name="btn" type="radio" class="input">
-              <div class="btn">
-                <span class="span">Llama3.2-vision</span>
-              </div>  </div>
           </div>
+          <div class="option">
+            <input (click)="onSetModel('ask_llama_vision')" id="llamaVision" value="option2" name="btn" type="radio" class="input">
+            <div class="btn">
+              <span class="span">Llama3.2-vision</span>
+            </div>  </div>
         </div>
       </div>
-      <div class="card-body">
-        <div id="messages-container" class="messages-container">
-        </div>
-        <div id="message-input" class="message-input">
-          <div id="attached-img-container" class="attached-img-container">
+    </div>
+    <div class="card-body">
+      <div class="typing-indicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div id="messages-container" class="messages-container">
+
+      </div>
+      <div id="message-input" class="message-input">
+        <div id="attached-img-container" class="attached-img-container">
             <span class="material-symbols-outlined clear-attach-btn" (click)="clearAttached()">
               close
             </span>
 
-          </div>
-          <form>
+        </div>
+        <form>
             <textarea id="textarea" placeholder="Nhập câu hỏi của bạn" class="message-send hover"
                       (dragover)="dragHover($event)"
                       (dragleave)="dragLeave($event)"
                       (drop)="onDrop($event)"
                       (keydown)="onKeyDown($event)"></textarea>
-            <div class="btn-box">
-              <button [ngClass]="!isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
+          <div class="btn-box">
+            <button [ngClass]="!isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
                 <span class="material-symbols-outlined" (click)="stopRecord()">
                   stop
                 </span>
-              </button>
-              <button [ngClass]="isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
+            </button>
+            <button [ngClass]="isRecording ? 'button-target hide' : 'button-target'" [disabled]="isSending">
                 <span class="material-symbols-outlined" (click)="startRecord()">
                   mic
                 </span>
-              </button>
-              <label *ngIf="selectedModel == 'ask_llama_vision'" for="attacheFile" class="button-target">
+            </button>
+            <label *ngIf="selectedModel == 'ask_llama_vision'" for="attacheFile" class="button-target">
                 <span class="material-symbols-outlined">
                   image
                 </span>
-              </label>
-              <input id="attacheFile" type="file" (change)="onImageAttached($event)">
-              <button (click)="sendMessage()" id="button-attach-image" type="submit" class="button-target send-msg" [disabled]="isSending">
+            </label>
+            <input id="attacheFile" type="file" (change)="onImageAttached($event)">
+            <button (click)="sendMessage()" id="button-attach-image" type="submit" class="button-target send-msg" [disabled]="isSending">
                 <span class="material-symbols-outlined">
                 send
                 </span>
-              </button>
-            </div>
-          </form>
-        </div>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-
+  </div>
+  <app-history-bar></app-history-bar>
+</div>
 

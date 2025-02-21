@@ -1,0 +1,43 @@
+<div [ngClass]="historyService.extendHisBar ? 'history-bar-container' : 'history-bar-container hide'" >
+  <div class="history-list">
+    <button class="history-bar-close-btn" (click)="historyService.setExtendHis(false)">
+      <span>
+        Đóng lịch sử trò chuyện
+      </span>
+      <span class="material-symbols-outlined">
+        arrow_forward_ios
+      </span>
+    </button>
+    <div *ngIf="historyService.historyConv.length != 0">
+      <li *ngFor="let conv of historyService.historyConv" [ngClass]="activatedHistory == conv.id ? 'history-item active' : 'history-item'" >
+        <div class="history-detail" (click)="navigateHistory(conv.id)">
+          <a class="history-time">
+            {{dateFormat(conv.createdDate)}}
+          </a>
+          <a id="{{conv.id}}-title" class="history-title">
+            {{conv.title}}
+          </a>
+        </div>
+        <button id='{{conv.id}}-btn' class="history-operator" (click)="handleDrp(conv.id)">
+        <span class="material-symbols-outlined">
+        more_horiz
+        </span>
+        </button>
+        <div id='{{conv.id}}-drp' class="operate-dropdown">
+          <span class="operate-item" (click)="handleRename(conv.id,conv.title)">Sửa tiêu đề</span>
+          <span class="operate-item" (click)="confirm('Bạn có chắc muốn xóa chứ?') && handleDelete(conv.id)">Xóa</span>
+        </div>
+      </li>
+    </div>
+    <div *ngIf="historyService.historyConv.length == 0" class="history-empty">
+      Hiện chưa có cuộc hội thoại nào !
+    </div>
+  </div>
+  <button class="history-bar-extend-btn" (click)="historyService.setExtendHis(true)">Lịch<br>sử<br>trò<br>chuyện<br>
+    <span class="material-symbols-outlined">
+        arrow_back_ios
+      </span>
+  </button>
+</div>
+
+

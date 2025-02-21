@@ -1,10 +1,10 @@
 <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
-<div class="page-contr">
+<div class="page-cont">
   <app-sidebar></app-sidebar>
   <div class="card-container new-chat-container">
     <div class="card-body">
       <div class="card-slogan-container">
-        <h2 class="card-title">Xin chào, Mình là trợ thủ DSA.</h2>
+        <h2 class="card-title">Xin chào, Mình là trợ thủ AlgoBot.</h2>
         <h4>Hôm nay tôi có thể giúp gì cho bạn nào?</h4>
         <div class="wrapper">
           <div class="option">
@@ -56,15 +56,15 @@
             </button>
           </div>
         </form>
-        <div *ngIf="suggestedQues && suggestedQues.length > 0" class="history-container">
+        <div *ngIf="suggestedQues && suggestedQues.length > 0" class="suggest-container">
           <h5>Câu hỏi gợi ý</h5>
-          <div class="history-box">
-            <div class="history-item" *ngFor="let ques of suggestedQues; let i = index" (click)="sendSuggestMsg(ques)">
+          <div class="suggest-box">
+            <div class="suggest-item" *ngFor="let ques of suggestedQues; let i = index" (click)="sendSuggestMsg(ques)" >
             <span class="material-symbols-outlined">
               sort
             </span>
-              <div class="history-detail">
-                <p class="history-title">{{ques}}</p>
+              <div class="suggest-detail" #container (mouseenter)="startScroll(i)" (mouseleave)="stopScroll(i)">
+                <p class="suggest-title" #text>{{ques}}</p>
               </div>
             </div>
           </div>
@@ -72,5 +72,6 @@
       </div>
     </div>
   </div>
+  <app-history-bar></app-history-bar>
 </div>
 

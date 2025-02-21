@@ -19,7 +19,7 @@ interface UserChat {
   standalone: true,  // The component is standalone
   imports: [SidebarComponent, NgForOf],  // Import necessary components and modules
   templateUrl: './statistic.component.html',  // Path to the HTML template
-  styleUrl: './statistic.component.css'  // Path to the component's CSS
+  styleUrl: './statistic.component.scss'  // Path to the component's CSS
 })
 export class StatisticComponent implements OnInit {
   private userUrl = `${environments.API_JAVA_BE}/user`;  // API URL for user-related operations

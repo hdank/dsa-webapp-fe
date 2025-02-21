@@ -4,14 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthserviceService } from '../authservice.service';
 import {UserComponent} from "../user/user.component";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import { ActivatedRoute } from '@angular/router';
 import {environments} from "../../environments/environments";
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [SharedModuleComponent, NgIf, NgForOf],
+  imports: [SharedModuleComponent, NgIf, NgForOf, NgClass],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
@@ -20,9 +20,9 @@ export class SidebarComponent implements OnInit{
 
   }
   private userId = ''
-  public convHistory: any[] = []  // Array to store conversation history
   public role!: string;
   private userUrl = `${environments.API_JAVA_BE}/user`;
+  public sideExtend = true;
   user!: UserComponent;
   activeItem = 'general';
   ngOnInit(): void {
@@ -37,13 +37,6 @@ export class SidebarComponent implements OnInit{
         this.role = data.role;
       }
     );
-
-    // Fetch conversations from the backend
-    fetch(`${environments.API_JAVA_BE}/user/get-conversations?id=${this.userId}`)
-      .then(response => response.json())
-      .then(data => {
-        this.convHistory = data;  // Store conversation history
-      });
   }
 
   logout(){
@@ -70,8 +63,9 @@ export class SidebarComponent implements OnInit{
     document.getElementById("history-list")?.classList.toggle('show');
   }
 
-  // Navigate to a specific conversation by its ID
-  navigateHistory(convId: String) {
-    this.router.navigate([`/chat/${convId}`]);  // Navigate to the selected conversation
+
+
+  onExtend(){
+    this.sideExtend = !this.sideExtend
   }
 }
