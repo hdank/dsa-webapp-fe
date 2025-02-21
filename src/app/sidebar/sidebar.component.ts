@@ -16,7 +16,10 @@ import {environments} from "../../environments/environments";
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit{
-  constructor(private authService: AuthserviceService, private router: Router, private http:HttpClient , private activeRouter:ActivatedRoute){
+  constructor(private authService: AuthserviceService,
+              private router: Router,
+              private http:HttpClient ,
+              private activeRouter:ActivatedRoute){
 
   }
   private userId = ''

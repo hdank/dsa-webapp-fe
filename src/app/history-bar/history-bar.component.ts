@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, QueryList, ViewChildren} from '@angular/core';
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {environments} from "../../environments/environments";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -19,6 +19,8 @@ import {HistoryService} from "../../service/history.service";
   styleUrl: './history-bar.component.scss'
 })
 export class HistoryBarComponent {
+  @ViewChildren('container') containers!: QueryList<ElementRef>;
+  @ViewChildren('text') texts!: QueryList<ElementRef>;
   constructor(private chatService: ChatService,
               private route: ActivatedRoute,
               private router: Router,
@@ -132,7 +134,7 @@ export class HistoryBarComponent {
     inputTag.type = "text";
     inputTag.id = `${convId}-title`;
     inputTag.value = convTitle;
-    inputTag.className = 'history-title'
+    inputTag.className = 'title-editable';
     //replace <a> with <input>
     aTag.parentNode?.replaceChild(inputTag, aTag);
     //add event for input tag rename title when click outside input field
@@ -174,5 +176,35 @@ export class HistoryBarComponent {
       })
     //after click rename slide up dropdown
     this.closeAllDrp()
+  }
+
+  startScroll(index: number) {
+    const container = this.containers.toArray()[index].nativeElement;
+    const text = this.texts.toArray()[index].nativeElement;
+
+    const containerWidth = container.clientWidth;
+    const textWidth = text.scrollWidth;
+    console.log()
+    if (textWidth > containerWidth) {
+      text.style.overflow = "visible";
+      if (text.textContent.length <=40){
+        text.style.transition = `transform 1s linear`;
+      }else{
+        text.style.transition = `transform ${text.textContent.length/20}s linear`;
+      }
+      text.style.transform = `translateX(-${textWidth - containerWidth}px)`;
+    }
+  }
+
+  stopScroll(index: number) {
+    const text = this.texts.toArray()[index].nativeElement;
+    text.style.transition = 'transform 1s ease-out';
+    text.style.transform = 'translateX(0)';
+  }
+
+  resetScroll() {
+    this.texts.forEach(text => {
+      text.nativeElement.style.transform = 'translateX(0)';
+    });
   }
 }

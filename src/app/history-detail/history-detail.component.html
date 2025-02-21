@@ -1,0 +1,17 @@
+<div class="page-cont">
+  <app-sidebar></app-sidebar>
+  <div class="page-container">
+    <h2>Lịch sử trò chuyện</h2>
+    <p class="chat-id">ID Hội thoại : {{convId}}</p>
+    <div class="his-detail-container">
+      <div *ngFor="let item of convDetail" class="chat-boxes-container">
+        <span class="chat-role">{{item.role?.toUpperCase() + ' : '}}</span>
+        <div [class]="item.role == 'user' ? 'chat-box user' : 'chat-box bot' ">
+          <span class="chat-time">{{dateFormat(item.created_at)}}</span><br>
+          <span class="chat-content">{{item.content}}</span><br>
+        </div>
+      </div>
+    </div>
+    <button class="back-btn" (click)="navBack()">Trở về</button>
+  </div>
+</div>

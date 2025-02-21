@@ -10,6 +10,8 @@ import {StatisticComponent} from "./statistic/statistic.component";
 import {FileManagerComponent} from "./file-manager/file-manager.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {NewChatComponent} from "./new-chat/new-chat.component";
+import {UserHistoryComponent} from "./user-history/user-history.component";
+import {HistoryDetailComponent} from "./history-detail/history-detail.component";
 
 export const routes: Routes = [
     {path: 'login', component: LoginComponent},
@@ -22,6 +24,8 @@ export const routes: Routes = [
     {path: 'general', component:GeneralDSAComponent},
     {path: 'home', component:LandingpageComponent},
     {path: 'statistics', component:StatisticComponent},
+    {path: 'statistics/history/:user-id', component:UserHistoryComponent},
+    {path: 'statistics/history/:user-id/:conv-id', component:HistoryDetailComponent},
     {path: 'file-manager', component:FileManagerComponent},
     {path: 'profile', component:ProfileComponent}
 ];

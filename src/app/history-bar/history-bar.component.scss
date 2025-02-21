@@ -74,7 +74,8 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding-left: 10px;
+        margin-left: 10px;
+        overflow: hidden;
         .history-time{
           font-size: 0.6rem;
           color: black;

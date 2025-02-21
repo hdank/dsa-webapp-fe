@@ -4,6 +4,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: var(--base-color);
+  z-index: -10;
   .frame{
     position: relative;
     width: fit-content;
@@ -11,6 +13,7 @@
     padding: 30px;
     display: flex;
     border-radius: 0.5rem;
+    background-color: var(--base-varian);
     box-shadow: 0 15px 25px -3px rgba(0, 0, 0, 0.2), 0 10px 15px -2px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     .frame-left{
@@ -21,8 +24,10 @@
       max-width: 300px;
       padding-left: 50px;
       text-space: 0.5rem;
-      color: #fff;
+      color: #ffffff;
+      z-index: 2;
       h3,p{
+        color: #ffffff;
         font-size: 15px;
         opacity: 0;
         animation: frameLeftText .5s .5s ease-in-out forwards;;
@@ -39,12 +44,13 @@
         height: 100%;
         top: 0;
         left: -10%;
-        background: -webkit-linear-gradient(125deg, #6ca6fa 0%, #2F8EFC 30%,#86eff6 100%);;
+        background: -webkit-linear-gradient(125deg,var(--secondary-gradient-color)  0%, var(--primary-gradient-color) 80%,var(--tertiary-gradient-color) 100%);;
         z-index: -1;
         animation: frameLeftBg .5s ease-in-out forwards;
       }
     }
     .frame-right{
+      z-index: 5;
       .form {
         background: transparent;
         display: flex;
@@ -58,7 +64,7 @@
           padding-bottom: 1rem;
           font-weight: bold;
           text-align: center;
-          color: #000;
+          color: var(--text-color);
         }
         .input-container {
           position: relative;
@@ -78,7 +84,7 @@
         .submit {
           display: block;
           padding: 0.75rem 1.25rem;
-          background:-webkit-linear-gradient(125deg, #005A99 0%, #2F8EFC 30%,#86eff6 100%);
+          background:-webkit-linear-gradient(125deg, var(--primary-btn-gradient) 0%, var(--secondary-btn-gradient) 30%,var(--tertiary-btn-gradient) 100%);
           background-size: 200% 100%;
           transition: all 0.4s ease-in-out;
           color: #ffffff;

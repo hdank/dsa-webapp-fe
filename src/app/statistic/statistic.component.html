@@ -20,7 +20,6 @@
         <th>Email</th>
         <th>Ngày tháng năm sinh</th>
         <th>Vai trò</th>
-        <th>Trạng thái</th>
         <th>Thao tác</th>
       </tr>
       </thead>
@@ -33,19 +32,12 @@
         <td>{{item.birth.split("T")[0]}}</td>
         <td>{{item.role}}</td>
         <td>
-          <label class="switch">
-            <input type="checkbox">
-            <span class="slider"></span>
-            <span class="knob"></span>
-          </label>
-        </td>
-        <td>
           <button
             class="actionBtn"
-            title="Lịch sử trò chuyện">
+            title="Lịch sử trò chuyện" (click)="navHistory(item.mssv)">
             💬
           </button>
-          <button
+          <!--<button
             class="actionBtn"
             title="Đặt lại mật khẩu">
             🔑
@@ -54,7 +46,7 @@
             class="actionBtn"
             title="Bổ nhiệm">
             👤
-          </button>
+          </button>-->
         </td>
         <!-- Display all chat messages for the current user -->
         <!--      <td colspan="2">-->

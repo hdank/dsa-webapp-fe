@@ -9,12 +9,12 @@
       </span>
     </button>
     <div *ngIf="historyService.historyConv.length != 0">
-      <li *ngFor="let conv of historyService.historyConv" [ngClass]="activatedHistory == conv.id ? 'history-item active' : 'history-item'" >
-        <div class="history-detail" (click)="navigateHistory(conv.id)">
+      <li *ngFor="let conv of historyService.historyConv; let i = index" [ngClass]="activatedHistory == conv.id ? 'history-item active' : 'history-item'" >
+        <div class="history-detail" (click)="navigateHistory(conv.id)" #container (mouseenter)="startScroll(i)" (mouseleave)="stopScroll(i)">
           <a class="history-time">
             {{dateFormat(conv.createdDate)}}
           </a>
-          <a id="{{conv.id}}-title" class="history-title">
+          <a id="{{conv.id}}-title" class="history-title" #text>
             {{conv.title}}
           </a>
         </div>

@@ -29,7 +29,7 @@ export class HistoryService {
     await fetch(`${environments.API_JAVA_BE}/user/get-conversations?id=${userId}`)
       .then(response => response.json())
       .then(data => {
-        this.setHistoryConv(data);  // Store conversation history
+        this.setHistoryConv(data.sort((a:any, b:any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()));  // Store conversation history
       });
   }
 }
