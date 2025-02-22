@@ -1,0 +1,53 @@
+.page-cont {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+  .menu-bar{
+    position: fixed;
+    display: flex;
+    width: 82%;
+    height: 40px;
+    background: #fff;
+    z-index: 100;
+    .menu-item{
+      flex: 1;
+      text-align: center;
+      line-height: 30px;
+      cursor: pointer;
+      &:nth-child(1){
+        background: #4A90E2;
+      }
+      &:nth-child(2){
+        background: #50C878;
+      }
+      &:nth-child(3){
+        background: #F5A623;
+      }
+      &:nth-child(4){
+        background: #FF6B6B;
+      }
+      &.active{
+        border-bottom: 5px solid #FFFFFF;
+      }
+    }
+  }
+  .iframe-container{
+    width: 100%;
+    .iframe-item{
+      position: relative;
+      top: -35px;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+@media (max-width: 1025px){
+  .menu-bar {
+    width: 100% !important;
+  }
+  .iframe-container{
+    transform: scale(1);
+  }
+}

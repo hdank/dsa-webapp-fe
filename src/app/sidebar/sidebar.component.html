@@ -32,6 +32,12 @@
         </span>
         Thống kê người dùng
       </a></li>
+        <li class="sidebar-item" *ngIf="role ==='admin'" [class.active]="activeItem === 'visual-go'"><a (click)="navigateToVisualGoPage()">
+        <span class="material-symbols-outlined">
+          person
+        </span>
+        Visual Go
+      </a></li>
       <!--<li class="sidebar-item"><a (click)="navigateToProfile()">
         <span class="material-symbols-outlined">
           contact_page

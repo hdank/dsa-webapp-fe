@@ -59,8 +59,8 @@ export class SidebarComponent implements OnInit{
   navigateToFileManagerPage(){
     this.router.navigate(['/file-manager']);
   }
-  navigateToProfile(){
-    this.router.navigate(['/profile']);
+  navigateToVisualGoPage(){
+    this.router.navigate(['/visual-go/array']);
   }
   historyToggle(){
     document.getElementById("history-list")?.classList.toggle('show');
