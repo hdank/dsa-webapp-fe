@@ -5,7 +5,7 @@
     <p class="chat-id">ID Hội thoại : {{convId}}</p>
     <div class="his-detail-container">
       <div *ngFor="let item of convDetail" class="chat-boxes-container">
-        <span class="chat-role">{{item.role?.toUpperCase() + ' : '}}</span>
+        <span class="chat-role">{{item.role == 'user' ? 'Người dùng' : 'Trợ lý' + ' : '}}</span>
         <div [class]="item.role == 'user' ? 'chat-box user' : 'chat-box bot' ">
           <span class="chat-time">{{dateFormat(item.created_at)}}</span><br>
           <span class="chat-content">{{item.content}}</span><br>

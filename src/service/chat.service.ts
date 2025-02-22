@@ -427,7 +427,7 @@ export class ChatService {
     var p = document.createElement('p');
     var time = document.createElement('p');
     let readButton = document.createElement('button');
-    p.innerHTML = item.content;
+    p.innerHTML = item.content.replace(/\n/g, '<br>').replace(/```/g, '<code>');;
     time.innerHTML = new Date(Math.floor(item.created_at) * 1000).toLocaleString();
     time.className = "messageTime";
     div.appendChild(time);
