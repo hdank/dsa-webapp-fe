@@ -33,7 +33,7 @@ interface FilesResponse {
     NgForOf  // Import necessary modules and components
   ],
   templateUrl: './file-manager.component.html',  // Path to the HTML template
-  styleUrl: './file-manager.component.css'  // Path to the component's CSS
+  styleUrl: './file-manager.component.scss'  // Path to the component's CSS
 })
 export class FileManagerComponent implements OnInit {
 
@@ -51,6 +51,7 @@ export class FileManagerComponent implements OnInit {
   currentPage: number = 0;
   pageSize: number = 10;
   searchTerm: any = '';  // Search term for filtering files
+  uploading = false;
 
   constructor(
     private http: HttpClient,
@@ -107,13 +108,13 @@ export class FileManagerComponent implements OnInit {
 
   // Upload selected file
   uploadFile() {
+    this.uploading = true;
     // Check if a file is selected
     if (this.selectedFile) {
       const formData: FormData = new FormData();  // Create FormData to hold the selected file
       formData.append('file', this.selectedFile);  // Append the file to formData
       const headers = new HttpHeaders();  // Create HTTP headers (if needed)
       let saveInfo;
-
       // Post file to Flask server for processing
       this.http.post(`${this.flaskUrl}/pdf`, formData, { headers }).subscribe((response: any) => {
         // Get response with file info
@@ -127,6 +128,7 @@ export class FileManagerComponent implements OnInit {
           // Clear upload input and close upload container after success
           $(".upload-container").slideUp("fast");
           $("#uploadFileInp").val("");  // Clear file input
+          this.uploading = false;
           alert('File uploaded successfully.');  // Alert user about successful upload
           this.loadFiles(this.searchTerm);  // Reload files list after upload
         });

@@ -1,10 +1,32 @@
-body{
-    background-color: white;
-    color: black;
+@import url('https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&display=swap');
+:root{
+    --base-color: #ffffff;
+    --base-varian: #eeeeee;
+    --text-color:#111528;
+    --contract-text-color:#ffffff;
+    --secondary-text: #232738;
+    --primary-btn-gradient: #2175b8;
+    --secondary-btn-gradient:#2F8EFC;
+    --tertiary-btn-gradient:#86eff6;
+    --primary-gradient-color: #889fdc;
+    --secondary-gradient-color: #0471ba;
+    --tertiary-gradient-color: #E0F7FF;
+    --primary-color: #5ca0ed;
+    --primary-color-btn: #60A7FA;
+    --primary-hover-color-btn:  #DA70D6;
+    --secondary-color-btn: #60A7FA;
+    --secondary-hover-color-btn:  #DA70D6;
+    --primary-font-family:"Changa One";
 }
 .dark-mode{
-    background-color: rgb(30, 30, 30);
-    color: #ffffff;
+  --base-color: #3b3b40;
+  --base-varian: #53535a;
+  --text-color:#ffffff;
+  --secondary-text: #a4a5b8;
+  --primary-color-btn: #3a435d;
+  --primary-hover-color-btn:  #DA70D6;
+  --secondary-color-btn: #3a435d;
+  --secondary-hover-color-btn:  #DA70D6;
 }
 .plane-switch {
     --dot: #fff;

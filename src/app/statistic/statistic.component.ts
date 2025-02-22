@@ -7,6 +7,7 @@ import { Chat } from "../chat";
 import $ from "jquery";
 import { AuthserviceService } from "../authservice.service";
 import {environments} from "../../environments/environments";
+import {Router} from "@angular/router";
 
 // Interface to store user and their associated chat history
 interface UserChat {
@@ -19,7 +20,7 @@ interface UserChat {
   standalone: true,  // The component is standalone
   imports: [SidebarComponent, NgForOf],  // Import necessary components and modules
   templateUrl: './statistic.component.html',  // Path to the HTML template
-  styleUrl: './statistic.component.css'  // Path to the component's CSS
+  styleUrl: './statistic.component.scss'  // Path to the component's CSS
 })
 export class StatisticComponent implements OnInit {
   private userUrl = `${environments.API_JAVA_BE}/user`;  // API URL for user-related operations
@@ -34,7 +35,9 @@ export class StatisticComponent implements OnInit {
   pageEnd: number = this.currentPage * this.pageSize;  // Ending index of the page
   searchingKey: string | number | string[] | undefined = '';  // Key for searching/filtering users
 
-  constructor(private http: HttpClient, private authService: AuthserviceService) {
+  constructor(private http: HttpClient,
+              private authService: AuthserviceService,
+              private router: Router) {
     this.loadUsers(this.searchingKey);  // Load users when the component is constructed
   }
 
@@ -121,5 +124,11 @@ export class StatisticComponent implements OnInit {
   search() {
     this.searchingKey = $("#searchInp").val();  // Get the search term from the input field
     this.loadUsers(this.searchingKey);  // Reload users based on the search term
+  }
+
+  // Navigate to user history page
+  navHistory(mssv:string){
+    console.log('vao')
+    this.router.navigate([`/statistics/history/${mssv}`]);
   }
 }

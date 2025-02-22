@@ -29,7 +29,7 @@ interface FilesResponse {
   standalone: true,  // This component is standalone
   imports: [SidebarComponent, NgForOf, NgIf],  // Import necessary modules and components
   templateUrl: './general-dsa.component.html',  // Path to the HTML template
-  styleUrl: './general-dsa.component.css'  // Path to the component's CSS
+  styleUrl: './general-dsa.component.scss'  // Path to the component's CSS
 })
 
 export class GeneralDSAComponent implements OnInit {

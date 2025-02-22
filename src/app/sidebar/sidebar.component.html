@@ -1,5 +1,12 @@
-<div class="sidebar">
-  <img class="logo" src="/D-logo-removebg-preview.png" alt="">
+<div [ngClass]="sideExtend ? 'sidebar' : 'sidebar hide'">
+  <div class="sidebar-header">
+      <img class="logo" src="/a-logo-removebg-preview.png" alt="">
+      <button class="extend-panel-box" (click)="onExtend()">
+        <span class="material-symbols-outlined extend-icon">
+          {{ sideExtend ? 'left_panel_open' : 'left_panel_close'}}
+        </span>
+      </button>
+  </div>
     <ul>
       <li class="sidebar-item" [class.active]="activeItem === 'general'"><a (click)="navigateToGeneralPage()">
         <span class="material-symbols-outlined">
@@ -25,32 +32,20 @@
         </span>
         Thống kê người dùng
       </a></li>
+        <li class="sidebar-item" *ngIf="role ==='admin'" [class.active]="activeItem === 'visual-go'"><a (click)="navigateToVisualGoPage()">
+        <span class="material-symbols-outlined">
+          person
+        </span>
+        Visual Go
+      </a></li>
       <!--<li class="sidebar-item"><a (click)="navigateToProfile()">
         <span class="material-symbols-outlined">
           contact_page
         </span>
         Hồ sơ
       </a></li>-->
-      <hr>
-      <li class="sidebar-item">
-        <a (click)="historyToggle()">
-          <span class="material-symbols-outlined">
-            history
-          </span>
-          Lịch sử trò chuyện
-        </a>
-      </li>
       <div id="history-list" class="history-list">
-        <li *ngFor="let conv of convHistory" class="sidebar-item" (click)="navigateHistory(conv.id)">
-          <div class="history-detail">
-            <a class="history-time">
-              {{conv.createdDate}}
-            </a>
-            <a class="history-title">
-              {{conv.title}}
-            </a>
-          </div>
-        </li>
+
       </div>
       <hr>
       <li><a  (click)="logout()">

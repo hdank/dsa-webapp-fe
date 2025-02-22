@@ -1,0 +1,37 @@
+<div class="page-cont">
+  <app-sidebar></app-sidebar>
+  <div class="page-container">
+    <h2>Danh sách hội thoại</h2>
+    <div class="table-responsive" style="max-height: 650px; overflow-y: auto;">
+      <table class='table table-striped' >
+        <thead style="position: sticky; top: 0">
+        <tr>
+          <th>#</th>
+          <th>ID hội thoại</th>
+          <th>Tiêu đề</th>
+          <th>Thời gian khởi tạo</th>
+          <th>MSSV</th>
+          <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td *ngIf="historyConv.length == 0" colspan="6" style="text-align: center">Chưa có hội thoại</td>
+        </tr>
+        <tr *ngFor="let item of historyConv; let i = index">
+          <th scope="row">{{i+1}}</th>
+          <td>{{item.id}}</td>
+          <td>{{item.title}}</td>
+          <td>{{dateFormat(item.createdDate)}}</td>
+          <td>{{item.userId}}</td>
+          <td>
+            <a class="view-detail-btn" (click)="navDetail(item.id)">
+              Xem chi tiết
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

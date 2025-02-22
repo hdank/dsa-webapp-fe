@@ -1,0 +1,48 @@
+.page-cont{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  #file{
+    flex: 4;
+    width: 100%;
+    h1{
+      margin-left: 316px;
+      font-weight: bold;
+      font-size: 60px;
+    }
+    .hint{
+      color: red;
+      font-size: 14px;
+      padding: 0 10px;
+    }
+  }
+}
+@media (max-width: 1025px){
+
+}
+@media (max-width: 769px){
+
+}
+@media (max-width: 426px){
+  .page-cont {
+    flex-direction: column;
+  }
+  h2{
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  h3{
+    text-align: center;
+    font-size: 13px;
+  }
+  .file-name{
+    font-size: 13px;
+  }
+  .hint{
+    font-size: 11px !important;
+  }
+}
+@media (max-width: 321px){
+
+}
+
