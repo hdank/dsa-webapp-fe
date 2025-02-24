@@ -7,6 +7,7 @@ import { FileService } from "../../service/file-service";
 import { NgForOf, NgIf } from "@angular/common";
 import { AuthserviceService } from "../authservice.service";
 import {environments} from "../../environments/environments";
+import {ChatService} from "../../service/chat.service";
 
 // Interface to define the structure of the response for file-related operations
 interface FilesResponse {
@@ -47,7 +48,8 @@ export class GeneralDSAComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private filesService: FileService,
-    private authService: AuthserviceService
+    private authService: AuthserviceService,
+    protected chatService: ChatService
   ) {
     this.loadFiles();  // Initial load of files
   }
