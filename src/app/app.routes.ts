@@ -28,5 +28,5 @@ export const routes: Routes = [
     {path: 'statistics/history/:user-id', component:UserHistoryComponent},
     {path: 'statistics/history/:user-id/:conv-id', component:HistoryDetailComponent},
     {path: 'file-manager', component:FileManagerComponent},
-    {path: 'visual-go/:graph', component:VisualGoComponent}
+    {path: 'visual/:graph', component:VisualGoComponent}
 ];

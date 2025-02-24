@@ -60,7 +60,7 @@ export class SidebarComponent implements OnInit{
     this.router.navigate(['/file-manager']);
   }
   navigateToVisualGoPage(){
-    this.router.navigate(['/visual-go/array']);
+    this.router.navigate(['/visual/array']);
   }
   historyToggle(){
     document.getElementById("history-list")?.classList.toggle('show');

@@ -24,9 +24,15 @@ export class VisualGoComponent implements AfterViewInit {
       this.param = params.get('graph');
 
       if (!this.param) {
-        this.router.navigate(['/visual-go/array']);
+        this.router.navigate(['/visual/array']);
       }
     });
+
+    let createEl = document.getElementsByClassName("iframe-container");
+    console.log(createEl)
+    const frameEl = this.iframeRef(document.createElement("array-frame"))
+
+    console.log(frameEl)
   }
 
   ngAfterViewInit() {
@@ -44,8 +50,16 @@ export class VisualGoComponent implements AfterViewInit {
   }
 
   navPage(param: string) {
-    this.router.navigate([`/visual-go/${param}`]).then(() => {
+    this.router.navigate([`/visual/${param}`]).then(() => {
       this.handleActive();
     });
   }
+
+  iframeRef( frameRef:any ) {
+    console.log(frameRef)
+    return frameRef.contentWindow
+      ? frameRef.contentWindow.document
+      : frameRef.contentDocument
+  }
+
 }

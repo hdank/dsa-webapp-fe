@@ -2,22 +2,22 @@
   <app-sidebar></app-sidebar>
   <div class="iframe-container">
     <div class="menu-bar">
-      <div id="array-btn" class="menu-item" (click)="navPage('array')">Array</div>
-      <div id="sorting-btn" class="menu-item" (click)="navPage('sorting')">Sorting</div>
-      <div id="list-btn" class="menu-item" (click)="navPage('list')">Linked List</div>
-      <div id="heap-btn" class="menu-item" (click)="navPage('heap')">Binary Heap</div>
+      <div id="array-btn" class="menu-item" (click)="navPage('array')">Danh sách đặt</div>
+      <div id="sorting-btn" class="menu-item" (click)="navPage('sorting')">Sắp xếp</div>
+      <div id="list-btn" class="menu-item" (click)="navPage('list')">Danh sách liên kết</div>
+      <div id="heap-btn" class="menu-item" (click)="navPage('heap')">Cây nhị phân</div>
     </div>
     <div *ngIf="param == 'array'" class="iframe-item">
-      <iframe src='https://visualgo.net/en/array' width="100%" height="112%"></iframe>
+      <iframe id="array-frame" src='https://visualgo.net/en/array' width="100%" height="112%"></iframe>
     </div>
     <div *ngIf="param == 'sorting'" class="iframe-item">
-      <iframe src='https://visualgo.net/en/sorting' width="100%" height="112%"></iframe>
+      <iframe id="sorting-frame" src='https://visualgo.net/en/sorting' width="100%" height="112%"></iframe>
     </div>
     <div *ngIf="param == 'list'" class="iframe-item">
-      <iframe src='https://visualgo.net/en/list' width="100%" height="112%"></iframe>
+      <iframe id="list-frame" src='https://visualgo.net/en/list' width="100%" height="112%"></iframe>
     </div>
     <div *ngIf="param == 'heap'" class="iframe-item">
-      <iframe src='https://visualgo.net/en/heap' width="100%" height="112%"></iframe>
+      <iframe id="heap-frame" src='https://visualgo.net/en/heap' width="100%" height="112%"></iframe>
     </div>
   </div>
 </div>
