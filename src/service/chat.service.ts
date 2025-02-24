@@ -165,7 +165,7 @@ export class ChatService {
     relateFileBox.className = "relate-doc-container";
     extendBtn.className = "relate-doc-extendBtn";
     relateDocDropdown.className = "relate-doc-dropdown";
-    extendBtn.innerHTML = '<p>Tai lieu lien quan</p>\n' +
+    extendBtn.innerHTML = '<p>Tài liệu liên quan</p>\n' +
       '                <span class="material-symbols-outlined">\n' +
       '                add_box\n' +
       '                </span>';
@@ -259,11 +259,12 @@ export class ChatService {
                         score.className = "score";
                         docName.innerText = fileName;
                         author.innerText = doc.metadata.Author;
-                        score.innerText = doc.score;
+                        score.innerText = doc.score.toFixed(2);
                         relateDocEl.appendChild(docName);
                         relateDocEl.appendChild(author);
                         relateDocEl.appendChild(score);
                         relateDocDropdown.appendChild(relateDocEl);
+                        relateDocEl.addEventListener("click",()=>{this.openRelateDoc(fileName)})
                         appendedList.push(fileName);
                       }
                     }
@@ -483,6 +484,7 @@ export class ChatService {
           relateDocEl.appendChild(author);
           relateDocEl.appendChild(score);
           relateDocDropdown.appendChild(relateDocEl);
+          relateDocEl.addEventListener("click",()=>{this.openRelateDoc(fileName)})
           appendedList.push(fileName);
         }
       }
@@ -494,5 +496,30 @@ export class ChatService {
     }
 
     document.getElementById('messages-container')?.appendChild(div);
+  }
+
+  openRelateDoc (fileName:string){
+    if (!fileName?.endsWith(".pdf")){
+      alert("Tập tin không phải pdf")
+      return;
+    }
+    fileName = fileName.slice(0, -4)
+    fetch(`${this.flaskUrl}/open_pdf`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'  // Thêm dòng này
+      },
+      body: JSON.stringify({file_name:fileName})
+    })
+      .then(res=>{
+        return res.json()
+      })
+      .then(data=>{
+        if (data.pdf_url){
+          window.open(data.pdf_url);
+        }else{
+          alert(data.error && "Lỗi gì đó")
+        }
+      })
   }
 }

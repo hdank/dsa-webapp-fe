@@ -15,6 +15,13 @@
               <span class="text-gray-700 file-name">{{ file.fileName }}</span>
               <div class="flex space-x-3">
                 <button
+                  (click)="this.chatService.openRelateDoc(file.fileName)"
+                  class="text-green-600 hover:text-green-800 transition"
+                  title="Xem tài liệu"
+                >
+                  🔍
+                </button>
+                <button
                   (click)="downloadFile(file.id, file.fileName)"
                   class="text-green-600 hover:text-green-800 transition"
                   title="Tải xuống"
