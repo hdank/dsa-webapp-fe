@@ -2,6 +2,10 @@ import { Component, AfterViewInit } from '@angular/core';
 import { NgForOf, NgIf } from "@angular/common";
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { ActivatedRoute, Router } from "@angular/router";
+import {ArrayVisualizerComponent} from "./array-visualizer/array-visualizer.component";
+import {QueueVisualizerComponent} from "./queue-visualizer/queue-visualizer.component";
+import {StackVisualizerComponent} from "./stack-visualizer/stack-visualizer.component";
+import {LinkedListVisualizerComponent} from "./linked-list-visualizer/linked-list-visualizer.component";
 
 @Component({
   selector: 'app-visual-go',
@@ -9,7 +13,11 @@ import { ActivatedRoute, Router } from "@angular/router";
   imports: [
     NgForOf,
     SidebarComponent,
-    NgIf
+    NgIf,
+    ArrayVisualizerComponent,
+    QueueVisualizerComponent,
+    StackVisualizerComponent,
+    LinkedListVisualizerComponent
   ],
   templateUrl: './visual-go.component.html',
   styleUrls: ['./visual-go.component.scss']
@@ -22,7 +30,6 @@ export class VisualGoComponent implements AfterViewInit {
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.param = params.get('graph');
-
       if (!this.param) {
         this.router.navigate(['/visual/array']);
       }
@@ -30,9 +37,6 @@ export class VisualGoComponent implements AfterViewInit {
 
     let createEl = document.getElementsByClassName("iframe-container");
     console.log(createEl)
-    const frameEl = this.iframeRef(document.createElement("array-frame"))
-
-    console.log(frameEl)
   }
 
   ngAfterViewInit() {
@@ -55,11 +59,5 @@ export class VisualGoComponent implements AfterViewInit {
     });
   }
 
-  iframeRef( frameRef:any ) {
-    console.log(frameRef)
-    return frameRef.contentWindow
-      ? frameRef.contentWindow.document
-      : frameRef.contentDocument
-  }
 
 }
