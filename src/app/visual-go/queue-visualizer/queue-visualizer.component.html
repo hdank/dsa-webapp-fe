@@ -1,0 +1,65 @@
+<div class="visualizer-container">
+  <div class="visualizer-screen">
+    <div class="queue-list">
+      <div *ngFor="let item of queue_value ; let i = index" class="queue-item" [@fadeIn]>
+        <span>{{item}}</span>
+        <span [ngClass]="i == 0 ?'mark-head show' : 'mark-head'" >head</span>
+        <span [ngClass]="i == queue_value.length-1 ?'mark-tail show' : 'mark-tail'" >tail</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-extend-btn" (click)="setMenu()">
+    <span [ngClass]="menuToggle ? 'material-symbols-outlined open' : 'material-symbols-outlined'">
+    chevron_forward
+    </span>
+  </div>
+  <div *ngIf="menuToggle" class="control-menu" [@fadeIn]>
+    <button (click)="setSubMenu('create')">Tạo hàng chờ</button>
+    <button (click)="setSubMenu('enqueue')">Thêm vào hàng chờ</button>
+    <button (click)="setSubMenu('dequeue')">Lấy khỏi hàng chờ</button>
+    <div *ngIf="subMenuToggle != ''" class="control" [@fadeIn]>
+      <div class="control-board" *ngIf="subMenuToggle == 'create'" [@fadeIn]>
+        <label for="array_size">Kích cỡ hàng chờ (random)</label>
+        <input id="array_size" type="number" [(ngModel)]="queue_size"><br>
+        <button (click)="generateQueue([],queue_size)">Go</button>
+        <label for="user_defined">Tạo mảng tùy chọn:</label>
+        <input placeholder="vd:2,3,4,5" id="user_defined" type="text" [(ngModel)]="definedQueue">
+        <button (click)="UserDefinedQueue(definedQueue)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'enqueue'" [@fadeIn]>
+        <label for="enqueue_value">Giá trị</label>
+        <input id="enqueue_value" type="number" [(ngModel)]="enqueue_value"><br>
+        <button (click)="enQueue(enqueue_value)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'dequeue'" [@fadeIn]>
+        <label for="dequeue_count">Số phần tử</label>
+        <input id="dequeue_count" type="number" [(ngModel)]="dequeue_count"><br>
+        <button (click)="deQueue(dequeue_count)">Go</button>
+      </div>
+    </div>
+  </div>
+  <div class="algo-box" [@fadeIn]>
+    <div *ngIf="algoToggle == 'enqueue'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">Verse temp = new Verse(x)</p>
+        <p class="algo-code">tail.next = temp</p>
+        <p class="algo-code">tail = temp</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'dequeue'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">for (i = 0; i < K; ++i)</p>
+        <p class="algo-code">temp = head</p>
+        <p class="algo-code">head = head.next</p>
+        <p class="algo-code">delete = temp</p>
+      </pre>
+    </div>
+  </div>
+  <div class="speed-control">
+    <label for="filter" class="switch" aria-label="Toggle Filter">
+      <input type="checkbox" id="filter" />
+      <span (click)="speedAdjust(500)">Fast</span>
+      <span (click)="speedAdjust(1000)">Slow</span>
+    </label>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="visualizer-container">
+  <div class="visualizer-screen">
+    <div class="stack-list">
+      <div *ngFor="let item of stack_value ; let i = index" class="stack-item" [@fadeInOut]>
+        <span>{{item}}</span>
+        <span [ngClass]="i == 0 ?'mark-head show' : 'mark-head'" >head</span>
+        <span [ngClass]="i == stack_value.length-1 ?'mark-tail show' : 'mark-tail'" >tail</span>
+      </div>
+    </div>
+  </div>
+  <div class="control-extend-btn" (click)="setMenu()">
+    <span [ngClass]="menuToggle ? 'material-symbols-outlined open' : 'material-symbols-outlined'">
+    chevron_forward
+    </span>
+  </div>
+  <div *ngIf="menuToggle" class="control-menu" [@fadeIn]>
+    <button (click)="setSubMenu('create')">Tạo hàng chờ</button>
+    <button (click)="setSubMenu('push')">Thêm vào hàng chờ</button>
+    <button (click)="setSubMenu('pop')">Lấy khỏi hàng chờ</button>
+    <div *ngIf="subMenuToggle != ''" class="control" [@fadeIn]>
+      <div class="control-board" *ngIf="subMenuToggle == 'create'" [@fadeIn]>
+        <label for="array_size">Kích cỡ ngăn xếp (random)</label>
+        <input id="array_size" type="number" [(ngModel)]="stack_size"><br>
+        <button (click)="generateStack([],stack_size)">Go</button>
+        <label for="user_defined">Tạo ngăn xếp tùy chọn:</label>
+        <input placeholder="vd:2,3,4,5" id="user_defined" type="text" [(ngModel)]="definedStack">
+        <button (click)="UserDefinedStack(definedStack)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'push'" [@fadeIn]>
+        <label for="push_value">Giá trị</label>
+        <input id="push_value" type="number" [(ngModel)]="push_value"><br>
+        <button (click)="pushStack(push_value)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'pop'" [@fadeIn]>
+        <label for="pop_count">Số phần tử</label>
+        <input id="pop_count" type="number" [(ngModel)]="pop_count"><br>
+        <button (click)="popStack(pop_count)">Go</button>
+      </div>
+    </div>
+  </div>
+  <div class="algo-box" [@fadeIn]>
+    <div *ngIf="algoToggle == 'push'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">Verse temp = new Verse(x)</p>
+        <p class="algo-code">temp.next = head</p>
+        <p class="algo-code">head = temp</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'pop'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">for (i = 0; i < K; ++i)</p>
+        <p class="algo-code">temp = head</p>
+        <p class="algo-code">head = head.next</p>
+        <p class="algo-code">delete = temp</p>
+      </pre>
+    </div>
+  </div>
+  <div class="speed-control">
+    <label for="filter" class="switch" aria-label="Toggle Filter">
+      <input type="checkbox" id="filter" />
+      <span (click)="speedAdjust(500)">Fast</span>
+      <span (click)="speedAdjust(1000)">Slow</span>
+    </label>
+  </div>
+</div>

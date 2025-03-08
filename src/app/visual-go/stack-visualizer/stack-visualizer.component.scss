@@ -1,0 +1,41 @@
+.stack-list{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  row-gap: 5px;
+  .stack-item{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    padding: 10px 100px;
+    background-color: #24b4fb;
+    .mark-tail{
+      position: absolute;
+      right: -50px;
+      color: red;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s all ease-in-out;
+      &.show{
+        opacity: 1;
+      }
+    }
+    .mark-head{
+      position: absolute;
+      left: -50px;
+      color: red;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s all ease-in-out;
+      &.show{
+        opacity: 1;
+      }
+    }
+    &.high-light{
+      background-color: #F5A623;
+    }
+  }
+}
