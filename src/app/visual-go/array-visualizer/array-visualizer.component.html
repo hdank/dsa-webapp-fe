@@ -1,0 +1,137 @@
+<div class="visualizer-container">
+  <div class="visualizer-screen">
+    <div *ngFor="let frame of frames" class="frame" [@fadeInOut]>
+      <div *ngIf="items_value[frame] !== null" class="square" [@fadeInOut]>
+        {{items_value[frame]}}
+      </div>
+      <span class="frame-index">{{frame}}</span>
+      <span class="frame-for-count-i" [@fadeIn]>i</span>
+      <span class="frame-for-count-j" [@fadeIn]>j</span>
+    </div>
+  </div>
+  <div class="control-extend-btn" (click)="setMenu()">
+    <span [ngClass]="menuToggle ? 'material-symbols-outlined open' : 'material-symbols-outlined'">
+    chevron_forward
+    </span>
+  </div>
+  <div *ngIf="menuToggle" class="control-menu" [@fadeIn]>
+    <button (click)="setSubMenu('create')">Tạo mảng</button>
+    <button (click)="setSubMenu('insert')">Thêm</button>
+    <button (click)="setSubMenu('remove')">Xóa</button>
+    <button (click)="setSubMenu('search')">Tìm Kiếm</button>
+    <button (click)="setSubMenu('update')">Cập nhật</button>
+    <div *ngIf="subMenuToggle != ''" class="control" [@fadeIn]>
+      <div class="control-board" *ngIf="subMenuToggle == 'create'" [@fadeIn]>
+        <label for="array_size">Kích cỡ mảng</label>
+        <input id="array_size" type="number" [(ngModel)]="array_size"><br>
+        <label for="items_number">Số phần tử</label>
+        <input id="items_number" type="number" [(ngModel)]="items_number">
+        <button (click)="generateArray([],items_number,array_size)">Go</button>
+        <label for="user_defined">Tạo mảng tùy chọn:</label>
+        <input placeholder="vd:2,3,4,5" id="user_defined" type="text" [(ngModel)]="definedArray">
+        <button (click)="UserDefinedArray(definedArray)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'insert'" [@fadeIn]>
+        <label for="append_item">Thêm giá trị:</label>
+        <input id="append_item" type="number" [(ngModel)]="appendValue">
+        <button (click)="appendItem(appendValue)">Go</button>
+        <label for="insert_value">Giá trị chèn:</label>
+        <input id="insert_value" type="number" [(ngModel)]="insertValue">
+        <label for="insert_index">Vị trị chèn:</label>
+        <input id="insert_index" type="number" [(ngModel)]="insertIndex">
+        <button (click)="insertItem(insertValue,insertIndex)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'remove'" [@fadeIn]>
+        <label for="remove_item">Xóa giá trị:</label>
+        <input id="remove_item" type="number" [(ngModel)]="removeValue">
+        <button (click)="removeItem(removeValue)">Go</button>
+        <br>
+        <label for="remove_index">Xóa theo chỉ mục:</label>
+        <input id="remove_index" type="number" [(ngModel)]="removeIndex">
+        <button (click)="removeItemByIndex(removeIndex)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'search'" [@fadeIn]>
+        <button (click)="findMin()">Tìm nhỏ nhất</button>
+        <button (click)="findMax()">Tìm lớn nhất</button>
+        <label>Tìm kiếm:</label>
+        <input id="search_value" type="number" [(ngModel)]="searchValue">
+        <button (click)="searchItem(searchValue)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'update'" [@fadeIn]>
+        <label for="update_value">Giá trị:</label>
+        <input id="update_value" type="number" [(ngModel)]="updateValue">
+        <label for="update_index">Vị trí:</label>
+        <input id="update_index" type="number" [(ngModel)]="updateIndex">
+        <button (click)="updateItem(updateValue,updateIndex)">Go</button>
+      </div>
+    </div>
+  </div>
+  <div class="algo-box" [@fadeIn]>
+    <div *ngIf="algoToggle == 'search'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">for(let i = 0 ; i < A.length ; i++)</p>
+        <p class="algo-code">  if(A[i] == value)</p>
+        <p class="algo-code">    return true</p>
+        <p class="algo-code">return false</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'min'">
+      <pre>
+        <p class="algo-code">min = A[0]</p>
+        <p class="algo-code">for(let i = 0 ; i < A.length ; i++)</p>
+        <p class="algo-code">  if(A[i] < min)</p>
+        <p class="algo-code">    min = A[i]</p>
+        <p class="algo-code">return min</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'max'">
+      <pre>
+        <p class="algo-code">max = A[0]</p>
+        <p class="algo-code">for(let i = 0 ; i < A.length ; i++)</p>
+        <p class="algo-code">  if(A[i] > max)</p>
+        <p class="algo-code">    max = A[i]</p>
+        <p class="algo-code">return max</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'update'">
+      <pre>
+        <p class="algo-code">A[i] = value</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'remove-by-index'">
+      <pre>
+        <p class="algo-code">for (i = i + 1; i < lenFilled; j++)</p>
+        <p class="algo-code">  A[i - 1] = A[i]</p>
+        <p class="algo-code">lenFilled--</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'remove-by-value'">
+      <pre>
+        <p class="algo-code">j = 0</p>
+        <p class="algo-code">for (let i = 0 ; i < lenFilled ; i--)</p>
+        <p class="algo-code">	if(A[i] != value)</p>
+        <p class="algo-code">  		A[j]=A[i];</p>
+        <p class="algo-code">lenFilled = j</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'insert'">
+      <pre>
+        <p class="algo-code">if(lenFilled == A.length)</p>
+        <p class="algo-code"> lenFilled++</p>
+        <p class="algo-code">for (let i = lenFilled-1 ; i >= 0 ; i--)</p>
+        <p class="algo-code">	if(i > index)</p>
+        <p class="algo-code">  		A[i]=A[i-1];</p>
+        <p class="algo-code">	else</p>
+        <p class="algo-code">	    A[i]=value;</p>
+        <p class="algo-code">	    break;</p>
+      </pre>
+    </div>
+  </div>
+  <div class="speed-control">
+    <label for="filter" class="switch" aria-label="Toggle Filter">
+      <input type="checkbox" id="filter" />
+      <span (click)="speedAdjust(500)">Fast</span>
+      <span (click)="speedAdjust(1000)">Slow</span>
+    </label>
+  </div>
+</div>

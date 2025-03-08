@@ -4,35 +4,96 @@
   width: 100%;
   overflow: hidden;
   .menu-bar{
-    position: fixed;
     display: flex;
     align-items: center;
-    width: 79%;
+    width: 100%;
     height: 40px;
     background: #fff;
     z-index: 100;
-    .menu-item{
+    .menu-item {
       flex: 1;
       height: 100%;
       text-align: center;
       line-height: 30px;
       cursor: pointer;
-      &:nth-child(1){
-        background: #4A90E2;
-      }
-      &:nth-child(2){
-        background: #50C878;
-      }
-      &:nth-child(3){
-        background: #F5A623;
-      }
-      &:nth-child(4){
-        background: #FF6B6B;
-      }
-      &.active{
-        border-bottom: 5px solid #FFFFFF;
-      }
+      transition: background 0.3s, border-bottom 0.3s;
+      background: linear-gradient(135deg, #3b5360, #2e7d67);
+      color: #fff;
     }
+
+    .menu-item:nth-child(1) {
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+    }
+
+    .menu-item:nth-child(2) {
+      background: linear-gradient(135deg, #2e7d67, #1f5f4a);
+    }
+
+    .menu-item:nth-child(3) {
+      background: linear-gradient(135deg, #c1773e, #a8602b);
+    }
+
+    .menu-item:nth-child(4) {
+      background: linear-gradient(135deg, #b94e4e, #993d3d);
+    }
+
+    .menu-item:nth-child(5) {
+      background: linear-gradient(135deg, #2e7d67, #1f5f4a);
+    }
+
+    .menu-item:nth-child(6) {
+      background: linear-gradient(135deg, #c1773e, #a8602b);
+    }
+
+    .menu-item:hover {
+      filter: brightness(1.05);
+    }
+
+    .menu-item.active {
+      border-bottom: 5px solid #7b68ee; /* Màu violet tối hơn cho viền active */
+    }
+
+
+    .menu-item:nth-child(1) {
+      background: linear-gradient(135deg, #4A90E2, #6AB0F3);
+    }
+
+    .menu-item:nth-child(2) {
+      background: linear-gradient(135deg, #50C878, #7BE495);
+    }
+
+    .menu-item:nth-child(3) {
+      background: linear-gradient(135deg, #F5A623, #FFC371);
+    }
+
+    .menu-item:nth-child(4) {
+      background: linear-gradient(135deg, #FF6B6B, #FF9472);
+    }
+
+    .menu-item:nth-child(5) {
+      background: linear-gradient(135deg, #50C878, #3DBE80);
+    }
+
+    .menu-item:nth-child(6) {
+      background: linear-gradient(135deg, #F5A623, #FFB547);
+    }
+
+    .menu-item:hover {
+      filter: brightness(1.1);
+    }
+
+    .menu-item.active {
+      border-bottom: 5px solid violet;
+    }
+
+  }
+  .visualizer-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
   }
   .iframe-container{
     width: 100%;
