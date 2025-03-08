@@ -1,0 +1,134 @@
+<div class="visualizer-container">
+  <div class="visualizer-screen">
+    <div class="linked-list-container">
+      <div *ngFor="let item of list_value ; let i = index" class="list-item" [@slideIn]>
+        <div *ngIf="list_value[i] !== null && i != list_value.length-1" class="arrow" [@slideIn]>
+          <span class="material-symbols-outlined">
+            arrow_right_alt
+          </span>
+        </div>
+        <span>{{item}}</span>
+        <span class="list-index">{{i}}</span>
+        <span [ngClass]="i == 0 ?'mark-head show' : 'mark-head'" >head</span>
+        <span [ngClass]="i == list_value.length-1 ?'mark-tail show' : 'mark-tail'" >tail</span>
+      </div>
+      <div *ngIf="isNewNode" class="list-item new-item" [@fadeInOut]>
+        <span>New node :</span>
+        {{append_value}}
+      </div>
+    </div>
+  </div>
+  <div class="control-extend-btn" (click)="setMenu()">
+    <span [ngClass]="menuToggle ? 'material-symbols-outlined open' : 'material-symbols-outlined'">
+    chevron_forward
+    </span>
+  </div>
+  <div *ngIf="menuToggle" class="control-menu" [@fadeIn]>
+    <button (click)="setSubMenu('create')">Tạo DSLK</button>
+    <button (click)="setSubMenu('append')">Thêm phần tử</button>
+    <button (click)="setSubMenu('remove')">Xóa phần tử</button>
+    <button (click)="setSubMenu('search')">Tìm kiếm</button>
+    <div *ngIf="subMenuToggle != ''" class="control" [@fadeIn]>
+      <div class="control-board" *ngIf="subMenuToggle == 'create'" [@fadeIn]>
+        <label for="array_size">Kích cỡ danh sách (random)</label>
+        <input id="array_size" type="number" [(ngModel)]="list_size"><br>
+        <button (click)="generateList([],list_size)">Go</button>
+        <label for="user_defined">Tạo danh sách tùy chọn:</label>
+        <input placeholder="vd:2,3,4,5" id="user_defined" type="text" [(ngModel)]="definedList">
+        <button (click)="UserDefinedList(definedList)">Go</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'append'" [@fadeIn]>
+        <label for="append_value">Giá trị</label>
+        <input id="append_value" type="number" [(ngModel)]="append_value"><br>
+        <button (click)="appendItem(append_value,0)">Thêm đầu</button>
+        <button (click)="appendItem(append_value,list_value.length-1)">Thêm cuối</button>
+        <label for="append_index">Chỉ mục</label>
+        <input id="append_index" type="number" [(ngModel)]="append_index"><br>
+        <button (click)="appendItem(append_value,append_index)">Thêm theo chỉ mục</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'remove'" [@fadeIn]>
+        <button (click)="removeItem(0)">Xóa đầu</button>
+        <button (click)="removeItem(list_value.length-1)">Xóa cuối</button>
+        <label for="remove_index">Chỉ mục</label>
+        <input id="remove_index" type="number" [(ngModel)]="remove_index"><br>
+        <button (click)="removeItem(remove_index)">Xóa theo chỉ mục</button>
+      </div>
+      <div class="control-board" *ngIf="subMenuToggle == 'search'" [@fadeIn]>
+        <label for="search_value">Giá trị</label>
+        <input id="search_value" type="number" [(ngModel)]="search_value"><br>
+        <button (click)="searchItem(search_value)">Tìm</button>
+      </div>
+    </div>
+  </div>
+  <div class="algo-box" [@fadeIn]>
+    <div *ngIf="algoToggle == 'append-head'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">Vertex temp = new Vertex(x)</p>
+        <p class="algo-code">temp.next = head</p>
+        <p class="algo-code">head = temp</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'append-tail'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">Vertex temp = new Vertex(x)</p>
+        <p class="algo-code">tail.next = temp</p>
+        <p class="algo-code">tail = temp</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'append-index'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">Vertex p = head</p>
+        <p class="algo-code">for (k = 0; k < i-1; k++)</p>
+        <p class="algo-code"> pre = pre.next</p>
+        <p class="algo-code">Vertex aft = p.next</p>
+        <p class="algo-code">Vertex newNode = new Vertex</p>
+        <p class="algo-code">newNode.next = aft</p>
+        <p class="algo-code">pre.next = newNode</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'remove-head'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">temp = head</p>
+        <p class="algo-code">head = head.next</p>
+        <p class="algo-code">delete tmp</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'remove-tail'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">pre = head</p>
+        <p class="algo-code">temp = head.next</p>
+        <p class="algo-code">while (temp.next != null)</p>
+        <p class="algo-code">  pre = pre.next; temp = temp.next</p>
+        <p class="algo-code">pre.next = null</p>
+        <p class="algo-code">delete temp, tail = pre</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'remove-index'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">Vertex pre = head</p>
+        <p class="algo-code">for (k = 0; k < i-1; k++)</p>
+        <p class="algo-code"> pre = pre.next</p>
+        <p class="algo-code">Vertex del = pre.next, aft = del.next</p>
+        <p class="algo-code">pre.next = aft</p>
+        <p class="algo-code">delete del</p>
+      </pre>
+    </div>
+    <div *ngIf="algoToggle == 'search-item'" [@fadeIn]>
+      <pre>
+        <p class="algo-code">index = 0, tmp = head</p>
+        <p class="algo-code">while (tmp.item != v)</p>
+        <p class="algo-code">  index++, tmp = tmp.next</p>
+        <p class="algo-code">if tmp == null<br>
+            return NOT_FOUND</p>
+        <p class="algo-code">return index</p>
+      </pre>
+    </div>
+  </div>
+  <div class="speed-control">
+    <label for="filter" class="switch" aria-label="Toggle Filter">
+      <input type="checkbox" id="filter" />
+      <span (click)="speedAdjust(500)">Fast</span>
+      <span (click)="speedAdjust(1000)">Slow</span>
+    </label>
+  </div>
+</div>
