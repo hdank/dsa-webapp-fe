@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import {Injectable} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import {environments} from "../environments/environments";
 import {AuthserviceService} from "../app/authservice.service";
 import {HistoryService} from "./history.service";
@@ -13,7 +13,7 @@ export class ChatService {
   private checkTitle:boolean = false
   private currentConId: string | null = null; // Holds the current conversation ID
   private firstMsg: string = ''; // First message for a new chat, shared between components
-  private selectedModel: string = 'ask_llama' // Set init and share selected model between components
+  private selectedModel: string = 'ask_text' // Set init and share selected model between components
   private count = 0; // Used for tracking message counts for unique class names
   attachedImage!: File | null; // Holds the image attached by the user
   MAX_SIZE = 10 * 1024 * 1024; // Maximum allowed image size (10MB)
@@ -138,155 +138,202 @@ export class ChatService {
     speechSynthesis.speak(speech);
   }
 
+  strem_config(data:string){
+    let configData = data;
+    // Replace HTML tags with divs
+    configData = configData.replace(/<CONCEPT>([\s\S]*?)<\/CONCEPT>/g, '<div class="concept"><h3>Khái niệm</h3>$1</div>');
+    configData = configData.replace(/<EXAMPLE>([\s\S]*?)<\/EXAMPLE>/g, '<div class="example"><h3>Ví dụ</h3>$1</div>');
+    configData = configData.replace(/<VISUALIZATION>([\s\S]*?)<\/VISUALIZATION>/g, '<div class="visualization"><h3>Minh họa</h3>$1</div>');
+    configData = configData.replace(/<IMPLEMENTATION>([\s\S]*?)<\/IMPLEMENTATION>/g, '<div class="implementation"><h3>Thực hành</h3>$1</div>');
+    configData = configData.replace(/<EXPLAINATION>([\s\S]*?)<\/EXPLAINATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
+    configData = configData.replace(/<EXPLANATION>([\s\S]*?)<\/EXPLANATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
+    configData = configData.replace(/<COMPLEXITY>([\s\S]*?)<\/COMPLEXITY>/g, '<div class="complexity"><h3>Độ phức tạp</h3>$1</div>');
+    configData = configData.replace(/<VIDEOS>([\s\S]*?)<\/VIDEOS>/g, (match: string, p1: string): string => {
+      const videoItems: string = p1.trim().split("\n").map((line: string): string => {
+        const match: RegExpMatchArray | null = line.match(/\d+\.\s*\[(.+?)]\((https:\/\/(?:www\.youtube\.com\/watch\?v=|youtu\.be\/).+?)\)/)
+        if (match) {
+          const title: string = match[1];
+          const link: string = match[2];
+          return `<figure><iframe width="560" height="315" src="${link}" frameborder="0" allowfullscreen><caption>${title}</caption></figure>`;
+        }
+        return "";
+      }).join("\n");
+      return "<div class='videos'><h3>Video:</h3>\n<div class=\"g\">" + videoItems + "</div></div>";
+    });
+    // Replace code blocks
+    configData = configData.replace(/```(\w*)([\s\S]*?)```/g, function(match: string, language: string, code: string): string {
+      return `<pre><code class="${language}">${code}</code></pre>`;
+    });
+    // Add line breaks for plain text
+    configData = configData.replace(/\n/g, '<br>');
+    return configData
+  }
+
   // Function to handle server responses for queries
+  // Function to handle server response
   async serverResponse(query: string) {
-    let div = document.createElement('div');
-    let p = document.createElement('p');
-    let bouncingPoint = this.resBouncingPnt()
-    let time = document.createElement('p');
-    let readButton = document.createElement('button');
-    let messageTime = new Date();
+    // Create main elements
+    const div = document.createElement('div');
+    const p = document.createElement('p');
+    const time = document.createElement('p');
+    const readButton = document.createElement('button');
+    const bouncingPoint = this.resBouncingPnt();
+    const messageTime = new Date();
+
+    // Set content and styles for elements
     time.innerHTML = messageTime.toLocaleString();
     time.className = "messageTime";
     readButton.innerHTML = "<span class=\"material-symbols-outlined\">volume_up</span>";
     readButton.className = "read-button";
-    div.className = "message-box left";
+    div.className = "message-box assistant-message";
     p.className = "response";
     p.appendChild(bouncingPoint);
+
+    // Append elements to the message box
     div.appendChild(time);
     div.appendChild(p);
     div.appendChild(readButton);
     document.getElementById('messages-container')?.appendChild(div);
 
     // Handle related files and document links
-    let relateFileBox = document.createElement('div');
-    let extendBtn = document.createElement('div');
-    let relateDocDropdown = document.createElement('div');
+    const relateFileBox = document.createElement('div');
+    const extendBtn = document.createElement('div');
+    const relateDocDropdown = document.createElement('div');
+
     relateFileBox.className = "relate-doc-container";
     extendBtn.className = "relate-doc-extendBtn";
     relateDocDropdown.className = "relate-doc-dropdown";
-    extendBtn.innerHTML = '<p>Tài liệu liên quan</p>\n' +
-      '                <span class="material-symbols-outlined">\n' +
-      '                add_box\n' +
-      '                </span>';
-    extendBtn.addEventListener('click', () => {
-      relateDocDropdown?.classList.toggle("show");
-    });
+    extendBtn.innerHTML = `
+        <p>Tài liệu liên quan</p>
+        <span class="material-symbols-outlined">add_box</span>`;
 
-    let span = extendBtn.querySelector('span');
-    if (span != null) {
-      if (relateDocDropdown.classList.contains("show")) {
-        span.textContent = 'remove_box';
-      } else {
-        span.textContent = 'add_box';
+    extendBtn.addEventListener('click', () => {
+      relateDocDropdown.classList.toggle("show");
+      const span = extendBtn.querySelector('span');
+      if (span) {
+        span.textContent = relateDocDropdown.classList.contains("show")
+          ? 'remove_box'
+          : 'add_box';
       }
-    }
+    });
 
     relateFileBox.appendChild(extendBtn);
     relateFileBox.appendChild(relateDocDropdown);
 
-    // Collect full response
-    let fullResponse = '';
-    let appendedList: any[] = [];
+    // Prepare form data
     const formData = new FormData();
     formData.append("image", this.attachedImage || '');
     formData.append("query", query);
-    if (this.currentConId != null) {
+    if (this.currentConId) {
       formData.append("conversation_id", this.currentConId);
     }
+
+    // Variables for handling response
+    let fullResponse = '';
+    let appendedList: any[] = [];
+    let getRelateDoc = false;
 
     // Fetch server response
     fetch(`${this.flaskUrl}/${this.selectedModel}`, {
       method: 'POST',
       body: formData
     }).then((response) => {
-      let getRelateDoc = false;
       const reader = response.body?.getReader();
-      let streamingData = ""
+      let streamingData = "";
+
       const read = () => {
-        reader?.read().then(async ({done, value}) => {
+        reader?.read().then(async ({ done, value }) => {
           if (done) {
-            this.checkTitle = false
+            this.checkTitle = false;
             div.appendChild(relateFileBox);
             console.log("end");
             return;
           }
-          const decoder = new TextDecoder();
-          streamingData += decoder.decode(value) //append response value until have completed stream
 
-          if (streamingData.trim().endsWith("}")) { //If streamData is endswith "}" => completed stream
-            let jsonString = streamingData.split("data: ") //split by data : for separate each completed stream
-            if (jsonString.length > 2) {
-              //log for debug check if more than 1 response in stream at the same time
-              //console.log(jsonString)
-            }
-            for (const string of jsonString.slice(1)) {
+          // Decode streaming data
+          const decoder = new TextDecoder();
+          streamingData += decoder.decode(value);
+
+          // Check for complete JSON object
+          if (streamingData.trim().endsWith("}")) {
+            const jsonStrings = streamingData.split("data: ");
+
+            for (const string of jsonStrings.slice(1)) {
               try {
-                const jsonData = JSON.parse(string)
-                // is first request => currentConTitle = ''
-                if (!this.checkTitle) {
-                  // fetch and compare old title with currently title
+                const jsonData = JSON.parse(string);
+
+                // Update conversation title if needed
+                if (!this.checkTitle && jsonData.conversation_name) {
                   await fetch(`${this.baseUrl}/user/get-conversation?id=${this.currentConId}`)
                     .then(res => res.json())
                     .then(async data => {
-                      if (data.title != jsonData.name) {
-                        //rename conversation title
-                        await fetch(`${this.baseUrl}/user/rename-conversation?id=${this.currentConId}&name=${jsonData.name.replace(/^[“”"'\s]+|[“”"'\s]+$/g, '')}`)
-                          .then(res => res.json())
-                          .then(data => {
-                            console.log('Đổi tiêu đề chat thành công')
+                      if (data.title !== jsonData.conversation_name) {
+                        await fetch(`${this.baseUrl}/user/rename-conversation?id=${this.currentConId}&name=${jsonData.conversation_name.trim()}`)
+                          .then(() => {
+                            console.log('Đổi tiêu đề chat thành công');
                             this.historyService.fetchConversation();
-                            this.checkTitle = true
-                          })
+                            this.checkTitle = true;
+                          });
                       }
-                    })
+                    });
                 }
-                // Append related documents to dropdown
-                if (!getRelateDoc) {
+
+                // Handle related documents
+                if (!getRelateDoc && jsonData.docs) {
+                  getRelateDoc = true;
                   const docList = jsonData.docs;
-                  if (docList.length != 0) {
+
+                  if (docList?.length) {
                     for (const doc of docList) {
-                      let filePathSplit = doc.metadata.file_path.split("\\");
+                      const filePathSplit = doc.metadata.file_path?.split("\\")
+                        || doc.metadata.source?.split("\\")
+                        || ["Unknown file"];
                       const fileName = filePathSplit[filePathSplit.length - 1];
+
                       if (!appendedList.includes(fileName)) {
-                        let relateDocEl = document.createElement("div");
-                        let docName = document.createElement("p");
-                        let author = document.createElement("p");
-                        let score = document.createElement("p");
-                        relateDocEl.className = "relate-doc";
-                        docName.className = "doc-name";
-                        author.className = "author";
-                        score.className = "score";
-                        docName.innerText = fileName;
-                        author.innerText = doc.metadata.Author;
-                        score.innerText = doc.score.toFixed(2);
-                        relateDocEl.appendChild(docName);
-                        relateDocEl.appendChild(author);
-                        relateDocEl.appendChild(score);
+                        const relateDocEl = document.createElement("div");
+                        relateDocEl.className = "doc-metadata";
+                        relateDocEl.innerHTML = `
+                                                <div><strong>${doc.metadata.source?.split('\\').pop() || 'Không rõ'}</strong> (độ liên quan: ${(doc.score * 100).toFixed(1)}%)</div>
+                                                <div>Tác giả: ${doc.metadata.Author || 'Không rõ'}</div>
+                                                <div>Trang: ${doc.metadata.page} / ${doc.metadata.total_pages}</div>`;
+
+                        relateDocEl.addEventListener("click", () => this.openRelateDoc(fileName));
                         relateDocDropdown.appendChild(relateDocEl);
-                        relateDocEl.addEventListener("click",()=>{this.openRelateDoc(fileName)})
                         appendedList.push(fileName);
                       }
                     }
                   }
                 }
-                // Collect and display the response
-                if (fullResponse == '') {
-                  p.removeChild(bouncingPoint);
+
+                // Handle different response types
+                if (jsonData.type === 'content') {
+                  if (fullResponse === '') {
+                    p.removeChild(bouncingPoint);
+                  }
+
+                  fullResponse = this.strem_config(jsonData.full);
+                  p.innerHTML = fullResponse;
+                } else if (jsonData.type === 'context') {
+                  getRelateDoc = true;
+                } else if (jsonData.error) {
+                  if (fullResponse === '') {
+                    p.removeChild(bouncingPoint);
+                  }
+                  p.innerHTML += `Error: ${jsonData.error}`;
                 }
-                fullResponse += jsonData.answer.replace(/\n/g, '').replace(/```/g, '');
-                p.innerHTML += jsonData.answer.replace(/\n/g, '<br>').replace(/```/g, '<code>');
+
+                // Read button for text-to-speech
                 readButton.addEventListener('click', () => this.textSpeeching(fullResponse));
               } catch (error) {
-                console.error("Lỗi parse JSON:", error, jsonString);
+                console.error("Lỗi parse JSON:", error, string);
               }
             }
-            streamingData = ""
+            streamingData = "";
           }
           read();
         });
       };
-
       read();
     });
 
@@ -303,7 +350,7 @@ export class ChatService {
     p.innerHTML = query;
     time.innerHTML = messageTime.toLocaleString();
     time.className = "messageTime";
-    div.className = "message-box right";
+    div.className = "message-box user-message";
     div.appendChild(time);
     div.appendChild(p);
     document.getElementById('messages-container')?.appendChild(div);
@@ -422,81 +469,72 @@ export class ChatService {
     this.currentConId = convId;
   }
 
-  // Function to set history from previous conversationstyping-indicator
+  // Function to set history from previous conversations
   setHistory(item: any) {
-    var div = document.createElement('div');
-    var p = document.createElement('p');
-    var time = document.createElement('p');
-    let readButton = document.createElement('button');
-    p.innerHTML = item.content.replace(/\n/g, '<br>').replace(/```/g, '<code>');;
+    console.log(item);
+
+    // Create main elements
+    const div = document.createElement('div');
+    const p = document.createElement('p');
+    const time = document.createElement('p');
+    const readButton = document.createElement('button');
+
+    // Set content for elements
+    p.innerHTML = this.strem_config(item.content);
     time.innerHTML = new Date(Math.floor(item.created_at) * 1000).toLocaleString();
     time.className = "messageTime";
+    readButton.innerHTML = "<span class=\"material-symbols-outlined\">volume_up</span>";
+    readButton.className = "read-button";
+
+    // Append time, message, and read button
     div.appendChild(time);
     div.appendChild(p);
     div.appendChild(readButton);
 
+    // Set up read button functionality
+    readButton.addEventListener('click', () => this.textSpeeching(item.content));
+
     // Determine if the message is from the user or bot
-    if (item.role == 'user') {
-      div.className = "message-box right";
+    if (item.role === 'user') {
+      div.className = "message-box user-message";
     } else {
-      let appendedList: any[] = [];
-      let relateFileBox = document.createElement('div');
-      let extendBtn = document.createElement('div');
-      let relateDocDropdown = document.createElement('div');
+      div.className = "message-box assistant-message";
+
+      // Create related document elements
+      const relateFileBox = document.createElement('div');
+      const extendBtn = document.createElement('div');
+      const relateDocDropdown = document.createElement('div');
+
       relateFileBox.className = "relate-doc-container";
       extendBtn.className = "relate-doc-extendBtn";
       relateDocDropdown.className = "relate-doc-dropdown";
-      extendBtn.innerHTML = '<p>Tài liệu liên quan</p>\n' +
-        '                <span class="material-symbols-outlined">\n' +
-        '                add_box\n' +
-        '                </span>';
 
+      // Set content for expand button
+      extendBtn.innerHTML = `
+            <p>Tài liệu liên quan</p>
+            <span class="material-symbols-outlined">add_box</span>`;
+
+      // Toggle dropdown visibility
       extendBtn.addEventListener('click', () => {
-        relateDocDropdown?.classList.toggle("show");
-        let span = extendBtn.querySelector('span');
-        if (span != null) {
-          if (relateDocDropdown.classList.contains("show")) {
-            span.textContent = 'disabled_by_default';
-          } else {
-            span.textContent = 'add_box';
-          }
+        relateDocDropdown.classList.toggle("show");
+        const span = extendBtn.querySelector('span');
+        if (span) {
+          span.textContent = relateDocDropdown.classList.contains("show")
+            ? 'disabled_by_default'
+            : 'add_box';
         }
       });
+
+      // Append related documents elements
       relateFileBox.appendChild(extendBtn);
       relateFileBox.appendChild(relateDocDropdown);
-      const docList = item.docs;
-      for (const doc of docList) {
-        let filePathSplit = doc.metadata.file_path.split("\\");
-        const fileName = filePathSplit[filePathSplit.length - 1];
-        if (!appendedList.includes(fileName)) {
-          let relateDocEl = document.createElement("div");
-          let docName = document.createElement("p");
-          let author = document.createElement("p");
-          let score = document.createElement("p");
-          relateDocEl.className = "relate-doc";
-          docName.className = "doc-name";
-          author.className = "author";
-          score.className = "score";
-          docName.innerText = fileName;
-          author.innerText = doc.metadata.Author;
-          score.innerText = doc.score.toFixed(2);
-          relateDocEl.appendChild(docName);
-          relateDocEl.appendChild(author);
-          relateDocEl.appendChild(score);
-          relateDocDropdown.appendChild(relateDocEl);
-          relateDocEl.addEventListener("click",()=>{this.openRelateDoc(fileName)})
-          appendedList.push(fileName);
-        }
-      }
-      div.className = "message-box left";
-      readButton.innerHTML = "<span class=\"material-symbols-outlined\">volume_up</span>";
-      readButton.className = "read-button";
-      readButton.addEventListener('click', () => this.textSpeeching(item.content));
       div.appendChild(relateFileBox);
     }
 
+    console.log(div);
     document.getElementById('messages-container')?.appendChild(div);
   }
+
 
   openRelateDoc (fileName:string){
     if (!fileName?.endsWith(".pdf")){
