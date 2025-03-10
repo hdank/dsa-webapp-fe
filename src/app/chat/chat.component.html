@@ -4,7 +4,7 @@
   <div class="card-container">
     <div class="card-header">
       <div class="bot-status">
-        <div class="img-avatar"><img src="/logo-removebg-preview.png" class="img-avatar"></div>
+        <div class="img-avatar"><img ngSrc="/robot-head.png" class="img-avatar" alt="" height="201" width="219"></div>
         <div class="text-chat">Algo Bot</div>
         <div class="online"></div>
       </div>
@@ -17,15 +17,15 @@
         </button>
         <div class="wrapper">
           <div class="option">
-            <input (click)="onSetModel('ask_llama')" id="llama" value="option1" name="btn" type="radio" class="input">
+            <input (click)="onSetModel('ask_text')" id="text_model" value="option1" name="btn" type="radio" class="input">
             <div class="btn">
               <span class="span">Llama3.2</span>
             </div>
           </div>
           <div class="option">
-            <input (click)="onSetModel('ask_llama_vision')" id="llamaVision" value="option2" name="btn" type="radio" class="input">
+            <input (click)="onSetModel('ask_vision')" id="vision_model" value="option2" name="btn" type="radio" class="input">
             <div class="btn">
-              <span class="span">Llama3.2-vision</span>
+              <span class="span">Qwen3.2-vision</span>
             </div>  </div>
         </div>
       </div>

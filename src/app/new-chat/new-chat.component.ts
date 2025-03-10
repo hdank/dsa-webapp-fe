@@ -63,11 +63,11 @@ export class NewChatComponent {
 
     // Check selectedModel for option button render
     this.selectedModel = this.chatService.getSelectedModel()
-    if (this.selectedModel == 'ask_llama'){
-      let radioBtn = document.getElementById("llama") as HTMLInputElement;
+    if (this.selectedModel == 'ask_text'){
+      let radioBtn = document.getElementById("text_model") as HTMLInputElement;
       radioBtn.checked = true;
     }else{
-      let radioBtn = document.getElementById("llamaVision") as HTMLInputElement;
+      let radioBtn = document.getElementById("vision_model") as HTMLInputElement;
       radioBtn.checked = true;
     }
   }

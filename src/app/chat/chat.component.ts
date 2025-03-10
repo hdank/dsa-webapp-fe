@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import {NgClass, NgFor, NgIf} from '@angular/common';
+import {NgClass, NgFor, NgIf, NgOptimizedImage} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -15,7 +15,7 @@ import {HistoryService} from "../../service/history.service";
 @Component({
   selector: 'app-chat',
   standalone: true,  // This component is a standalone component
-  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass, NgIf, HistoryBarComponent], // Import necessary modules and components
+  imports: [NgFor, FormsModule, SidebarComponent, NavbarComponent, NgClass, NgIf, HistoryBarComponent, NgOptimizedImage], // Import necessary modules and components
   templateUrl: './chat.component.html',  // Path to the HTML template
   styleUrl: './chat.component.scss',  // Path to the component's CSS/SCSS
   encapsulation: ViewEncapsulation.None // Apply the component's CSS to the inserted HTML elements
@@ -64,7 +64,7 @@ export class ChatComponent implements OnInit {
         fetch(`${this.flaskUrl}/conversation_history/${convId}`)
           .then(response => response.json())  // Parse the response as JSON
           .then(data => {
-            this.chatHistory = data.data.history;  // Set chat history from the response
+            this.chatHistory = data.data.messages;  // Set chat history from the response
             this.setHistoryInit();  // Initialize the chat history
           })
           .catch(error => {
@@ -85,11 +85,11 @@ export class ChatComponent implements OnInit {
 
     // Check selectedModel for option button render
     this.selectedModel = this.chatService.getSelectedModel()
-    if (this.selectedModel == 'ask_llama'){
-      let radioBtn = document.getElementById("llama") as HTMLInputElement;
+    if (this.selectedModel == 'ask_text'){
+      let radioBtn = document.getElementById("text_model") as HTMLInputElement;
       radioBtn.checked = true;
     }else{
-      let radioBtn = document.getElementById("llamaVision") as HTMLInputElement;
+      let radioBtn = document.getElementById("vision_model") as HTMLInputElement;
       radioBtn.checked = true;
     }
 
