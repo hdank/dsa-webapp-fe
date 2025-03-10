@@ -1,8 +1,12 @@
-import {Component} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import {Location, NgForOf, NgIf} from "@angular/common";
 import {SidebarComponent} from "../sidebar/sidebar.component";
 import {environments} from "../../environments/environments";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ChatService} from "../../service/chat.service";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HistoryBarComponent} from "../history-bar/history-bar.component";
+import { ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-history-detail',
@@ -10,14 +14,19 @@ import {ActivatedRoute, Router} from "@angular/router";
   imports: [
     NgForOf,
     NgIf,
-    SidebarComponent
+    SidebarComponent,
+    FormsModule,
+    HistoryBarComponent,
+    ReactiveFormsModule
   ],
   templateUrl: './history-detail.component.html',
-  styleUrl: './history-detail.component.scss'
+  styleUrls: ['../chat/chat.component.scss','history-detail.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class HistoryDetailComponent {
-  protected historyConv:any[]= []
-  protected convDetail:any[]= []
+
+export class HistoryDetailComponent implements OnInit  {
+  protected historyConv: Array<{ id: string; name: string }> = [];
+  protected convDetail: Array<{ sender: string; message: string }> = [];
   protected userId: string|null = null
   protected convId: string|null = null
   private flaskUrl = `${environments.API_FLASK_BE}`;  // Base API URL
@@ -25,45 +34,43 @@ export class HistoryDetailComponent {
 
   constructor(private route:ActivatedRoute,
               private router:Router,
-              private location:Location) {
+              private location:Location,
+              protected chatService: ChatService,
+              ) {
   }
+
   async ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.userId = params.get('user-id')
-      this.convId = params.get('conv-id')
-    })
+      this.userId = params.get('user-id');
+      this.convId = params.get('conv-id');
+    });
 
-    await fetch(`${this.baseUrl}/user/get-conversations?id=${this.userId}`)
-      .then(response => response.json())
-      .then(data => {
-        this.historyConv = data  // Store conversation history
-      });
+    try {
+      const historyResponse = await fetch(`${this.baseUrl}/user/get-conversations?id=${this.userId}`);
+      this.historyConv = await historyResponse.json();  // Store conversation history
 
-    await fetch(`${this.flaskUrl}/conversation_history/${this.convId}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.data.history)
-        this.convDetail = data.data.history  // Store conversation history
-      });
+      const detailResponse = await fetch(`${this.flaskUrl}/conversation_history/${this.convId}`);
+      const detailData = await detailResponse.json();
+      console.log(detailData.data.messages);
+      this.convDetail = detailData.data.messages;
+      this.setHistoryInit();
+    } catch (error) {
+      console.error("Error fetching conversation data:", error);
+    }
+
   }
+
 
   navBack(){
     this.location.back();
   }
 
-  dateFormat(date:string){
-    let newDate = new Date(Number(date)*1000);
-    // Get day , month , year
-    const day = String(newDate.getDate()).padStart(2, "0");
-    const month = String(newDate.getMonth() + 1).padStart(2, "0"); // Tháng trong JS tính từ 0
-    const year = newDate.getFullYear();
-
-    // Get hour , min , sec
-    const hours = String(newDate.getHours()).padStart(2, "0");
-    const minutes = String(newDate.getMinutes()).padStart(2, "0");
-    const seconds = String(newDate.getSeconds()).padStart(2, "0");
-
-    // format
-    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+  // Initialize chat history if available
+  setHistoryInit() {
+    if (this.convDetail.length > 0) {
+      for (const item of this.convDetail) {
+        this.chatService.setHistory(item);
+      }
+    }
   }
 }
