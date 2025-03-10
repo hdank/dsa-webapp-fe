@@ -138,8 +138,9 @@ export class ChatService {
     speechSynthesis.speak(speech);
   }
 
-  strem_config(data:string){
+  strem_config(data: string) {
     let configData = data;
+
     // Replace HTML tags with divs
     configData = configData.replace(/<CONCEPT>([\s\S]*?)<\/CONCEPT>/g, '<div class="concept"><h3>Khái niệm</h3>$1</div>');
     configData = configData.replace(/<EXAMPLE>([\s\S]*?)<\/EXAMPLE>/g, '<div class="example"><h3>Ví dụ</h3>$1</div>');
@@ -148,25 +149,56 @@ export class ChatService {
     configData = configData.replace(/<EXPLAINATION>([\s\S]*?)<\/EXPLAINATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
     configData = configData.replace(/<EXPLANATION>([\s\S]*?)<\/EXPLANATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
     configData = configData.replace(/<COMPLEXITY>([\s\S]*?)<\/COMPLEXITY>/g, '<div class="complexity"><h3>Độ phức tạp</h3>$1</div>');
+
     configData = configData.replace(/<VIDEOS>([\s\S]*?)<\/VIDEOS>/g, (match: string, p1: string): string => {
       const videoItems: string = p1.trim().split("\n").map((line: string): string => {
+        // Match YouTube links
         const match: RegExpMatchArray | null = line.match(/\d+\.\s*\[(.+?)]\((https:\/\/(?:www\.youtube\.com\/watch\?v=|youtu\.be\/).+?)\)/)
+
         if (match) {
           const title: string = match[1];
-          const link: string = match[2];
-          return `<figure><iframe width="560" height="315" src="${link}" frameborder="0" allowfullscreen><caption>${title}</caption></figure>`;
+          const url: string = match[2];
+
+          // Extract video ID from YouTube URL
+          let videoId: string | null = null;
+
+          // Handle youtube.com/watch?v= format
+          if (url.includes('youtube.com/watch?v=')) {
+            const urlObj = new URL(url);
+            videoId = urlObj.searchParams.get('v');
+          }
+          // Handle youtu.be/ format
+          else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+          }
+
+          if (videoId) {
+            // Create proper embed URL
+            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            return `<figure class="video-container">
+            <iframe width="560" height="315" src="${embedUrl}"
+              frameborder="0" allowfullscreen title="${title}"></iframe>
+            <figcaption>${title}</figcaption>
+          </figure>`;
+          }
+
+          // Fallback to just showing the link if we can't extract video ID
+          return `<div class="video-link"><a href="${url}" target="_blank">${title}</a></div>`;
         }
         return "";
       }).join("\n");
-      return "<div class='videos'><h3>Video:</h3>\n<div class=\"g\">" + videoItems + "</div></div>";
+
+      return '<div class="videos"><h3>Video:</h3>\n<div class="video-grid">' + videoItems + '</div></div>';
     });
+
     // Replace code blocks
     configData = configData.replace(/```(\w*)([\s\S]*?)```/g, function(match: string, language: string, code: string): string {
       return `<pre><code class="${language}">${code}</code></pre>`;
     });
+
     // Add line breaks for plain text
     configData = configData.replace(/\n/g, '<br>');
-    return configData
+    return configData;
   }
 
   // Function to handle server responses for queries
