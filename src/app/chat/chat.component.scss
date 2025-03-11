@@ -375,32 +375,37 @@
         }
       }
 
-      .relate-doc-dropdown {
+      .docs-section {
         display: none;
         overflow: hidden;
-        margin-top: 20px;
         background-color: #f1f8e9;
         border-radius: 8px;
+        margin-top: 20px;
         padding: 15px;
-        transition: max-height 0.5s ease-out;
-
+        .section-title{
+          font-weight: 600;
+          color: #555;
+        }
         .doc-item {
+          display: flex;
+          flex-direction: column;
+          row-gap: 10px;
           margin-bottom: 15px;
           padding-bottom: 15px;
           border-bottom: 1px solid #ddd;
-
-          &:hover {
-            background-color: #7D8590;
+          .doc-content {
+            font-size: 0.9em;
+            background-color: white;
+            border-radius: 4px;
+            margin-top: 5px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
           }
-
-          .doc-name,
-          .author,
-          .score {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 10px
+          .doc-metadata {
+            font-size: 0.8em;
+            line-height: 5px;
+            color: #666;
           }
         }
 
@@ -412,7 +417,92 @@
 
         &.show {
           display: block;
-          max-height: 100%;
+        }
+      }
+    }
+    .evaluate-container{
+      .evaluate-extendBtn{
+        background-color: palegoldenrod;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+        min-width: 300px;
+        cursor: pointer;
+      }
+      .evaluation-section{
+        display: none;
+        background-color: #fff8e1;
+        border: 1px solid #ffecb3;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        &.show {
+          display: block;
+        }
+        .section-title{
+          font-size: 15px;
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: #555;
+        }
+        .score-container{
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 15px;
+          .score-item{
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+            text-align: center;
+            flex-basis: 23%;
+            line-height: 5px;
+            .score-value{
+              font-size: 24px;
+              font-weight: bold;
+              margin: 10px 0;
+            }
+            .score-bar{
+              position: relative;
+              height: 8px;
+              width: 100%;
+              background-color: #e0e0e0;
+              border-radius: 4px;
+              overflow: hidden;
+              .score-fill{
+                position: absolute;
+                top: 0;
+                height: 100%;
+                border-radius: 4px;
+                transition: width 0.3s ease;
+              }
+              .score-excellent {
+                background-color: #4caf50;
+              }
+              .score-good {
+                background-color: #8bc34a;
+              }
+              .score-fair {
+                background-color: #ffc107;
+              }
+              .score-poor {
+                background-color: #ff5722;
+              }
+            }
+            .score-label{
+              font-size: 12px;
+              color: #666;
+              margin-top: 5px;
+            }
+          }
+        }
+        .sumary-section{
+          display: flex;
+          flex-direction: column;
+          .summary-item{
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #ddd;
+          }
         }
       }
     }

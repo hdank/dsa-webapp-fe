@@ -31,7 +31,7 @@ export class UserHistoryComponent {
       await fetch(`${this.baseUrl}/user/get-conversations?id=${this.userId}`)
         .then(response => response.json())
         .then(data => {
-          this.historyConv = data  // Store conversation history
+          this.historyConv = data.sort((a:any, b:any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())  // Store conversation history
         });
     }
 

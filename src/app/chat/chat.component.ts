@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {NgClass, NgFor, NgIf, NgOptimizedImage} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -35,10 +35,9 @@ export class ChatComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
     private authService: AuthserviceService,
     private speechService: SpeechService,
-    private chatService: ChatService,
+    protected chatService: ChatService,
     private historyService: HistoryService
   ) {}
 
@@ -83,16 +82,6 @@ export class ChatComponent implements OnInit {
       this.chatService.sendMessage();  // Send the first message
     }
 
-    // Check selectedModel for option button render
-    this.selectedModel = this.chatService.getSelectedModel()
-    if (this.selectedModel == 'ask_text'){
-      let radioBtn = document.getElementById("text_model") as HTMLInputElement;
-      radioBtn.checked = true;
-    }else{
-      let radioBtn = document.getElementById("vision_model") as HTMLInputElement;
-      radioBtn.checked = true;
-    }
-
     // Fetch conversations from the backend
     this.userId = this.authService.getMssv()
     fetch(`${environments.API_JAVA_BE}/user/get-conversations?id=${this.userId}`)
@@ -104,7 +93,6 @@ export class ChatComponent implements OnInit {
 
   onSetModel(modelValue:string){
     this.chatService.setSelectedModel(modelValue);
-    this.selectedModel = this.chatService.getSelectedModel()
   }
 
   // Handle key press to send message on "Enter" key press
