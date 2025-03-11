@@ -13,8 +13,7 @@ export class ChatService {
   private checkTitle:boolean = false
   private currentConId: string | null = null; // Holds the current conversation ID
   private firstMsg: string = ''; // First message for a new chat, shared between components
-  private selectedModel: string = 'ask_text' // Set init and share selected model between components
-  private count = 0; // Used for tracking message counts for unique class names
+  public selectedModel: string = 'ask_text' // Set init and share selected model between components
   attachedImage!: File | null; // Holds the image attached by the user
   MAX_SIZE = 10 * 1024 * 1024; // Maximum allowed image size (10MB)
 
@@ -150,11 +149,38 @@ export class ChatService {
     configData = configData.replace(/<COMPLEXITY>([\s\S]*?)<\/COMPLEXITY>/g, '<div class="complexity"><h3>Độ phức tạp</h3>$1</div>');
     configData = configData.replace(/<VIDEOS>([\s\S]*?)<\/VIDEOS>/g, (match: string, p1: string): string => {
       const videoItems: string = p1.trim().split("\n").map((line: string): string => {
+        // Match YouTube links
         const match: RegExpMatchArray | null = line.match(/\d+\.\s*\[(.+?)]\((https:\/\/(?:www\.youtube\.com\/watch\?v=|youtu\.be\/).+?)\)/)
+
         if (match) {
           const title: string = match[1];
-          const link: string = match[2];
-          return `<figure><iframe width="560" height="315" src="${link}" frameborder="0" allowfullscreen><caption>${title}</caption></figure>`;
+          const url: string = match[2];
+
+          // Extract video ID from YouTube URL
+          let videoId: string | null = null;
+
+          // Handle youtube.com/watch?v= format
+          if (url.includes('youtube.com/watch?v=')) {
+            const urlObj = new URL(url);
+            videoId = urlObj.searchParams.get('v');
+          }
+          // Handle youtu.be/ format
+          else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+          }
+
+          if (videoId) {
+            // Create proper embed URL
+            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            return `<figure class="video-container">
+            <iframe width="560" height="315" src="${embedUrl}"
+              frameborder="0" allowfullscreen title="${title}"></iframe>
+            <figcaption>${title}</figcaption>
+          </figure>`;
+          }
+
+          // Fallback to just showing the link if we can't extract video ID
+          return `<div class="video-link"><a href="${url}" target="_blank">${title}</a></div>`;
         }
         return "";
       }).join("\n");
@@ -169,8 +195,15 @@ export class ChatService {
     return configData
   }
 
+  // Get score color class based on score value
+  getScoreClass(score:number) {
+    if (score >= 80) return 'score-excellent';
+    if (score >= 65) return 'score-good';
+    if (score >= 50) return 'score-fair';
+    return 'score-poor';
+  }
+
   // Function to handle server responses for queries
-  // Function to handle server response
   async serverResponse(query: string) {
     // Create main elements
     const div = document.createElement('div');
@@ -195,31 +228,6 @@ export class ChatService {
     div.appendChild(readButton);
     document.getElementById('messages-container')?.appendChild(div);
 
-    // Handle related files and document links
-    const relateFileBox = document.createElement('div');
-    const extendBtn = document.createElement('div');
-    const relateDocDropdown = document.createElement('div');
-
-    relateFileBox.className = "relate-doc-container";
-    extendBtn.className = "relate-doc-extendBtn";
-    relateDocDropdown.className = "relate-doc-dropdown";
-    extendBtn.innerHTML = `
-        <p>Tài liệu liên quan</p>
-        <span class="material-symbols-outlined">add_box</span>`;
-
-    extendBtn.addEventListener('click', () => {
-      relateDocDropdown.classList.toggle("show");
-      const span = extendBtn.querySelector('span');
-      if (span) {
-        span.textContent = relateDocDropdown.classList.contains("show")
-          ? 'remove_box'
-          : 'add_box';
-      }
-    });
-
-    relateFileBox.appendChild(extendBtn);
-    relateFileBox.appendChild(relateDocDropdown);
-
     // Prepare form data
     const formData = new FormData();
     formData.append("image", this.attachedImage || '');
@@ -230,8 +238,6 @@ export class ChatService {
 
     // Variables for handling response
     let fullResponse = '';
-    let appendedList: any[] = [];
-    let getRelateDoc = false;
 
     // Fetch server response
     fetch(`${this.flaskUrl}/${this.selectedModel}`, {
@@ -240,12 +246,15 @@ export class ChatService {
     }).then((response) => {
       const reader = response.body?.getReader();
       let streamingData = "";
+      let conId = '';
 
       const read = () => {
         reader?.read().then(async ({ done, value }) => {
           if (done) {
             this.checkTitle = false;
-            div.appendChild(relateFileBox);
+            setTimeout(()=>{
+              this.getExtendElAfterResp(conId)
+            },500)
             console.log("end");
             return;
           }
@@ -257,11 +266,11 @@ export class ChatService {
           // Check for complete JSON object
           if (streamingData.trim().endsWith("}")) {
             const jsonStrings = streamingData.split("data: ");
-
+            console.log(jsonStrings)
             for (const string of jsonStrings.slice(1)) {
               try {
                 const jsonData = JSON.parse(string);
-
+                conId = jsonData.conversation_id
                 // Update conversation title if needed
                 if (!this.checkTitle && jsonData.conversation_name) {
                   await fetch(`${this.baseUrl}/user/get-conversation?id=${this.currentConId}`)
@@ -277,35 +286,6 @@ export class ChatService {
                       }
                     });
                 }
-
-                // Handle related documents
-                if (!getRelateDoc && jsonData.docs) {
-                  getRelateDoc = true;
-                  const docList = jsonData.docs;
-
-                  if (docList?.length) {
-                    for (const doc of docList) {
-                      const filePathSplit = doc.metadata.file_path?.split("\\")
-                        || doc.metadata.source?.split("\\")
-                        || ["Unknown file"];
-                      const fileName = filePathSplit[filePathSplit.length - 1];
-
-                      if (!appendedList.includes(fileName)) {
-                        const relateDocEl = document.createElement("div");
-                        relateDocEl.className = "doc-metadata";
-                        relateDocEl.innerHTML = `
-                                                <div><strong>${doc.metadata.source?.split('\\').pop() || 'Không rõ'}</strong> (độ liên quan: ${(doc.score * 100).toFixed(1)}%)</div>
-                                                <div>Tác giả: ${doc.metadata.Author || 'Không rõ'}</div>
-                                                <div>Trang: ${doc.metadata.page} / ${doc.metadata.total_pages}</div>`;
-
-                        relateDocEl.addEventListener("click", () => this.openRelateDoc(fileName));
-                        relateDocDropdown.appendChild(relateDocEl);
-                        appendedList.push(fileName);
-                      }
-                    }
-                  }
-                }
-
                 // Handle different response types
                 if (jsonData.type === 'content') {
                   if (fullResponse === '') {
@@ -314,9 +294,7 @@ export class ChatService {
 
                   fullResponse = this.strem_config(jsonData.full);
                   p.innerHTML = fullResponse;
-                } else if (jsonData.type === 'context') {
-                  getRelateDoc = true;
-                } else if (jsonData.error) {
+                }else if (jsonData.error) {
                   if (fullResponse === '') {
                     p.removeChild(bouncingPoint);
                   }
@@ -471,8 +449,6 @@ export class ChatService {
 
   // Function to set history from previous conversations
   setHistory(item: any) {
-    console.log(item);
-
     // Create main elements
     const div = document.createElement('div');
     const p = document.createElement('p');
@@ -499,42 +475,181 @@ export class ChatService {
       div.className = "message-box user-message";
     } else {
       div.className = "message-box assistant-message";
+      //--------------------------------Doc----------------------------------------
+      div.appendChild(this.getRelateDocBox(item.docs));
 
-      // Create related document elements
-      const relateFileBox = document.createElement('div');
-      const extendBtn = document.createElement('div');
-      const relateDocDropdown = document.createElement('div');
+      //--------------------------------Evaluate----------------------------------------
 
-      relateFileBox.className = "relate-doc-container";
-      extendBtn.className = "relate-doc-extendBtn";
-      relateDocDropdown.className = "relate-doc-dropdown";
-
-      // Set content for expand button
-      extendBtn.innerHTML = `
-            <p>Tài liệu liên quan</p>
-            <span class="material-symbols-outlined">add_box</span>`;
-
-      // Toggle dropdown visibility
-      extendBtn.addEventListener('click', () => {
-        relateDocDropdown.classList.toggle("show");
-        const span = extendBtn.querySelector('span');
-        if (span) {
-          span.textContent = relateDocDropdown.classList.contains("show")
-            ? 'disabled_by_default'
-            : 'add_box';
-        }
-      });
-
-      // Append related documents elements
-      relateFileBox.appendChild(extendBtn);
-      relateFileBox.appendChild(relateDocDropdown);
-      div.appendChild(relateFileBox);
+      div.appendChild(this.getEvaluateBox(item.evaluation));
     }
 
     console.log(div);
     document.getElementById('messages-container')?.appendChild(div);
   }
 
+  getRelateDocBox(item:any){
+    // Create related document elements
+    const relateFileBox = document.createElement('div');
+    const extendBtn = document.createElement('div');
+    const relateDocDropdown = document.createElement('div');
+
+    relateFileBox.className = "relate-doc-container";
+    extendBtn.className = "relate-doc-extendBtn";
+    relateDocDropdown.className = "docs-section";
+
+    // Set content for expand button
+    extendBtn.innerHTML = `
+            <p>Tài liệu liên quan</p>
+            <span class="material-symbols-outlined">add_box</span>`;
+
+    // Toggle dropdown visibility
+    extendBtn.addEventListener('click', () => {
+      relateDocDropdown.classList.toggle("show");
+      const span = extendBtn.querySelector('span');
+      if (span) {
+        span.textContent = relateDocDropdown.classList.contains("show")
+          ? 'disabled_by_default'
+          : 'add_box';
+      }
+    });
+
+    // Append related documents elements
+    let docList = item;
+    if (docList?.length){
+
+      for (let doc of docList) {
+        const filePathSplit = doc.metadata.file_path?.split("\\")
+          || doc.metadata.source?.split("\\")
+          || ["Unknown file"];
+        const fileName = filePathSplit[filePathSplit.length - 1];
+        const relateDocEl = document.createElement("div");
+        relateDocEl.className = "doc-item";
+        relateDocEl.innerHTML = `
+                                                <div><strong style="cursor: pointer">${doc.metadata.source?.split('\\').pop() || 'Không rõ'}</strong> (độ liên quan: ${(doc.score * 100).toFixed(1)}%)</div>
+                                                <pre class="doc-content">${doc.content}</pre>
+                                                <div class="doc-metadata">
+                                                    <div>Tác giả: ${doc.metadata.Author || 'Không rõ'}</div>
+                                                    <div>Nguồn: ${doc.metadata.source.split('\\').pop() || 'Không rõ'}</div>
+                                                    <div>Trang: ${doc.metadata.page} / ${doc.metadata.total_pages}</div>
+                                                </div>`;
+        const strongEl = relateDocEl.querySelector('strong');
+        strongEl?.addEventListener("click", (event) => {
+          event.stopPropagation();
+          this.openRelateDoc(fileName);
+        });
+        relateDocDropdown.appendChild(relateDocEl);
+      }
+    }
+    relateFileBox.appendChild(extendBtn);
+    relateFileBox.appendChild(relateDocDropdown);
+    return relateFileBox
+  }
+
+  getEvaluateBox(item:any){
+    // Handle evaluate links
+    const evaluateBox = document.createElement('div');
+    const evaluateExtendBtn = document.createElement('div');
+    const evaluateDropdown = document.createElement('div');
+    evaluateBox.className = "evaluate-container";
+    evaluateExtendBtn.className = "evaluate-extendBtn";
+    evaluateDropdown.className = "evaluation-section";
+
+    evaluateExtendBtn.innerHTML = `
+        <p>Đánh giá phản hồi</p>
+        <span class="material-symbols-outlined">add_box</span>`;
+
+    evaluateExtendBtn.addEventListener('click', () => {
+      evaluateDropdown.classList.toggle("show");
+      const span = evaluateExtendBtn.querySelector('span');
+      if (span) {
+        span.textContent = evaluateDropdown.classList.contains("show")
+          ? 'disabled_by_default'
+          : 'add_box';
+      }
+    });
+
+    evaluateBox.appendChild(evaluateExtendBtn);
+    evaluateBox.appendChild(evaluateDropdown);
+    // Handle evaluation
+    let scores = item.scores
+    let summary = item.summary_vi
+    evaluateDropdown.innerHTML = `
+      <div class="section-title">Đánh giá phản hồi</div>
+        <div class="score-container">
+            <div class="score-item">
+                <div>Tổng điểm</div>
+                <div class="score-value">${scores.combined.toFixed(1)}</div>
+                <div class="score-bar">
+                    <div class="score-fill ${this.getScoreClass(scores.combined)}" style="width: ${scores.combined}%"></div>
+                </div>
+                <div class="score-label">/ 100</div>
+            </div>
+            <div class="score-item">
+                <div>Cấu trúc</div>
+                <div class="score-value">${scores.structure.toFixed(1)}</div>
+                <div class="score-bar">
+                    <div class="score-fill ${this.getScoreClass(scores.structure)}" style="width: ${scores.structure}%"></div>
+                </div>
+                <div class="score-label">/ 100</div>
+            </div>
+            <div class="score-item">
+                <div>Nội dung</div>
+                <div class="score-value">${scores.content.toFixed(1)}</div>
+                <div class="score-bar">
+                    <div class="score-fill ${this.getScoreClass(scores.content)}" style="width: ${scores.content}%"></div>
+                </div>
+                <div class="score-label">/ 100</div>
+            </div>
+            <div class="score-item">
+                <div>Liên quan</div>
+                <div class="score-value">${scores.relevance.toFixed(1)}</div>
+                <div class="score-bar">
+                    <div class="score-fill ${this.getScoreClass(scores.relevance)}" style="width: ${scores.relevance}%"></div>
+                </div>
+                <div class="score-label">/ 100</div>
+            </div>
+        </div>
+        <div class="sumary-section">
+            <div class="section-title">Tóm tắt đánh giá</div>
+            <div class="summary-item">${summary.structure}</div>
+            <div class="summary-item">${summary.content}</div>
+            <div class="summary-item">${summary.relevance}</div>
+        </div>
+      `
+    return evaluateBox;
+  }
+
+  async getExtendElAfterResp(conId: string) {
+    let evaluationList: any[] = [];
+    let docList: any[] = [];
+    try {
+      const response = await fetch(`${this.flaskUrl}/conversation_history/${conId}`);
+      const data = await response.json();
+      evaluationList = data.data.messages
+        .filter((item: any) => item.role === "assistant")
+        .map((item: any) => item.evaluation);
+      docList = data.data.messages
+        .filter((item: any) => item.role === "assistant")
+        .map((item: any) => item.docs);
+      console.log(data.data.messages
+        .filter((item: any) => item.role === "assistant")
+        )
+    } catch (error) {
+      // this.router.navigate(['/chat']);  // Uncomment if you want to redirect on error
+      console.error("Failed to fetch evaluation data:", error);
+      return;
+    }
+
+    const messageBoxes = document.querySelectorAll(".message-box.assistant-message");
+    document.querySelectorAll(".evaluate-container").forEach((item) => {item.remove()})
+    document.querySelectorAll(".relate-doc-container").forEach((item) => {item.remove()})
+    messageBoxes.forEach((item, index) => {
+      if (evaluationList[index]) {  // Check if the evaluation exists for the index
+        item.appendChild(this.getRelateDocBox(docList[index]))
+        item.appendChild(this.getEvaluateBox(evaluationList[index]));
+      }
+    });
+  }
 
   openRelateDoc (fileName:string){
     if (!fileName?.endsWith(".pdf")){

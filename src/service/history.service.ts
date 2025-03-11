@@ -19,10 +19,6 @@ export class HistoryService {
     this.historyConv = data
   }
 
-  getHistoryConv(){
-    return this.historyConv
-  }
-
   async fetchConversation() {
     let userId = this.authservice.getMssv()
     // Fetch conversations from the backend

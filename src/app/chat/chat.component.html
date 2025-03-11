@@ -17,13 +17,13 @@
         </button>
         <div class="wrapper">
           <div class="option">
-            <input (click)="onSetModel('ask_text')" id="text_model" value="option1" name="btn" type="radio" class="input">
+            <input [checked]="this.chatService.selectedModel == 'ask_text'" (click)="onSetModel('ask_text')" id="text_model" value="option1" name="btn" type="radio" class="input">
             <div class="btn">
               <span class="span">Llama3.2</span>
             </div>
           </div>
           <div class="option">
-            <input (click)="onSetModel('ask_vision')" id="vision_model" value="option2" name="btn" type="radio" class="input">
+            <input [checked]="this.chatService.selectedModel == 'ask_vision'" (click)="onSetModel('ask_vision')" id="vision_model" value="option2" name="btn" type="radio" class="input">
             <div class="btn">
               <span class="span">Qwen3.2-vision</span>
             </div>  </div>
@@ -63,7 +63,7 @@
                   mic
                 </span>
             </button>
-            <label *ngIf="selectedModel == 'ask_llama_vision'" for="attacheFile" class="button-target">
+            <label *ngIf="selectedModel == 'ask_vision'" for="attacheFile" class="button-target">
                 <span class="material-symbols-outlined">
                   image
                 </span>

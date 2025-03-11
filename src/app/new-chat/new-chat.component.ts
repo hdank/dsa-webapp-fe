@@ -46,7 +46,7 @@ export class NewChatComponent {
     private router: Router,
     private authService: AuthserviceService,
     private speechService: SpeechService,
-    private chatService: ChatService,
+    protected chatService: ChatService,
     private historyService: HistoryService,
   ) { }
 
