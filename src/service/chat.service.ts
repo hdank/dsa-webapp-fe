@@ -147,8 +147,14 @@ export class ChatService {
     configData = configData.replace(/<EXPLAINATION>([\s\S]*?)<\/EXPLAINATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
     configData = configData.replace(/<EXPLANATION>([\s\S]*?)<\/EXPLANATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
     configData = configData.replace(/<COMPLEXITY>([\s\S]*?)<\/COMPLEXITY>/g, '<div class="complexity"><h3>Độ phức tạp</h3>$1</div>');
+    configData = configData.replace(/<LAB>([\s\S]*?)<\/LAB>/g, '<div class="lab"><h3>Bài tập</h3>$1</div>');
     configData = configData.replace(/<VIDEOS>([\s\S]*?)<\/VIDEOS>/g, (match: string, p1: string): string => {
-      const videoItems: string = p1.trim().split("\n").map((line: string): string => {
+      const trimmedContent = p1.trim();
+      if (trimmedContent === "") {
+        return "";
+      }
+
+      const videoItems: string = trimmedContent.split("\n").map((line: string): string => {
         // Match YouTube links
         const match: RegExpMatchArray | null = line.match(/\d+\.\s*\[(.+?)]\((https:\/\/(?:www\.youtube\.com\/watch\?v=|youtu\.be\/).+?)\)/)
 
@@ -173,10 +179,10 @@ export class ChatService {
             // Create proper embed URL
             const embedUrl = `https://www.youtube.com/embed/${videoId}`;
             return `<figure class="video-container">
-            <iframe width="560" height="315" src="${embedUrl}"
-              frameborder="0" allowfullscreen title="${title}"></iframe>
-            <figcaption>${title}</figcaption>
-          </figure>`;
+        <iframe width="560" height="315" src="${embedUrl}"
+          frameborder="0" allowfullscreen title="${title}"></iframe>
+        <figcaption>${title}</figcaption>
+      </figure>`;
           }
 
           // Fallback to just showing the link if we can't extract video ID
@@ -184,8 +190,10 @@ export class ChatService {
         }
         return "";
       }).join("\n");
+
       return "<div class='videos'><h3>Video:</h3>\n<div class=\"g\">" + videoItems + "</div></div>";
     });
+
     // Replace code blocks
     configData = configData.replace(/```(\w*)([\s\S]*?)```/g, function(match: string, language: string, code: string): string {
       return `<pre><code class="${language}">${code}</code></pre>`;
