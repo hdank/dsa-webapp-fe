@@ -147,6 +147,7 @@ export class ChatService {
     configData = configData.replace(/<EXPLAINATION>([\s\S]*?)<\/EXPLAINATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
     configData = configData.replace(/<EXPLANATION>([\s\S]*?)<\/EXPLANATION>/g, '<div class="explaination"><h3>Giải thích</h3>$1</div>');
     configData = configData.replace(/<COMPLEXITY>([\s\S]*?)<\/COMPLEXITY>/g, '<div class="complexity"><h3>Độ phức tạp</h3>$1</div>');
+    configData = configData.replace(/<LAB>([\s\S]*?)<\/LAB>/g, '<div class="lab"><h3>Bài tập</h3>$1</div>');
     configData = configData.replace(/<VIDEOS>([\s\S]*?)<\/VIDEOS>/g, (match: string, p1: string): string => {
       const videoItems: string = p1.trim().split("\n").map((line: string): string => {
         // Match YouTube links
